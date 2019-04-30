@@ -13,6 +13,8 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+from decouple import config
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
@@ -75,8 +77,12 @@ WSGI_APPLICATION = 'zathura_bugtracker.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': config("DB_NAME", None),
+        'USER': config("DB_USER", None),
+        'PASSWORD': config("DB_PASSWORD", None),
+        'HOST': config("DB_URL", None),
+        'PORT': config("DB_PORT", None),
     }
 }
 
