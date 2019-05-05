@@ -23,5 +23,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('zathura/', include('bugtracker.urls')),
     path('accounts/', include('django.contrib.auth.urls')),
-    path('', include('bugtracker.urls')),
+    path('', include('bugtracker.urls'), name='home'),
 ]

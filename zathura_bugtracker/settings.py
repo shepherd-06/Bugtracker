@@ -25,9 +25,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '&0gi$w@^ju1y^u8ahh3dgyqjs)!%u2u6uw299ij&k5nd4w$zv1'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = Trues  # Never Go Live with Debug - True!
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1']  # For Live -> Change this url.
 
 
 # Application definition
@@ -57,7 +57,8 @@ ROOT_URLCONF = 'zathura_bugtracker.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        # 'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -127,7 +128,5 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 
-# Login Redirect Url
-# This has to be the default index file or dashboard file. Probably change it later and may be
-# make it dynamic.
-LOGIN_REDIRECT_URL = 'index'  # This is the name parameter of uri schemes.
+LOGIN_REDIRECT_URL = 'home'  # Login Redirect Uri
+LOGOUT_REDIRECT_URL = 'home'  # Logout Redirection Uri
