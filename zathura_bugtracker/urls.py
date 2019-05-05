@@ -19,4 +19,5 @@ from django.urls import path, include
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('zathura/', include('bugtracker.urls')),
+    path('', include('bugtracker.urls')),
 ]
