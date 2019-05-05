@@ -128,4 +128,6 @@ STATIC_URL = '/static/'
 
 
 # Login Redirect Url
-LOGIN_REDIRECT_URL = 'home' # TODO: change this later. This is filler
+# This has to be the default index file or dashboard file. Probably change it later and may be
+# make it dynamic.
+LOGIN_REDIRECT_URL = 'index'  # This is the name parameter of uri schemes.
