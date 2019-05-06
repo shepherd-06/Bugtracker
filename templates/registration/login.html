@@ -4,10 +4,15 @@
 {% block title %}Login{% endblock %}
 
 {% block content %}
-<h2>Login</h2>
-<form method="post">
-  {% csrf_token %}
-  {{ form.as_p }}
-  <button type="submit">Login</button>
-</form>
+    <br>
+    <div class="col-lg-4">
+        <h2 class="headline">Login</h2>
+        <form method="post">
+            <div class="form-group">
+              {% csrf_token %}
+              {{ form.as_p }}
+            </div>
+          <button type="submit" class="btn btn-primary">Login</button>
+        </form>
+    </div>
 {% endblock %}
