@@ -7,7 +7,8 @@ from django.utils import timezone
 # Create your models here.
 
 class User(models.Model):
-    user_id = models.UUIDField(unique=True, primary_key=True, default=uuid4())
+    user_id = models.UUIDField(unique=True, primary_key=True,
+                               default=uuid4())
     user_name = models.CharField(max_length=20, blank=False, null=False)
     created_at = models.DateTimeField(default=timezone.now())
     updated_at = models.DateTimeField(default=timezone.now())
@@ -23,7 +24,8 @@ class Projects(models.Model):
     _id = models.UUIDField(default=uuid4(), primary_key=True)
     project_id = models.UUIDField(unique=True, default=uuid4())
     project_name = models.CharField(max_length=30)
-    project_description = models.TextField(max_length=500, null=True, blank=True, default=None)
+    project_description = models.TextField(max_length=500, null=True, blank=True,
+                                           default=None)
     registered_by = models.ForeignKey(User, on_delete=models.PROTECT)
     registered_at = models.DateTimeField(default=timezone.now())
     # updated_by = models.ManyToManyField(User, blank=True, default=None)
@@ -31,6 +33,17 @@ class Projects(models.Model):
 
     def __str__(self):
         return self.project_name
+
+
+class ProjectToken(models.Model):
+    _id = models.UUIDField(default=uuid4(), primary_key=True)
+    project = models.ForeignKey(Projects, on_delete=models.CASCADE)
+    token = models.UUIDField(default=uuid4(), unique=True)
+    refresh_token = models.UUIDField(default=uuid4(), unique=True)
+    generated_at = models.DateTimeField(default=timezone.now())
+
+    def __str__(self):
+        return "For {} || Generated At: {}".format(self.project, self.generated_at)
 
 
 class Errors(models.Model):
@@ -41,7 +54,8 @@ class Errors(models.Model):
     logged_at = models.DateTimeField(default=timezone.now())
     is_resolved = models.BooleanField(default=False)
     resolved_at = models.DateTimeField(default=None, null=True, blank=True)
-    resolved_by = models.ForeignKey(User, on_delete=models.PROTECT, blank=True, default=None, null=True)
+    resolved_by = models.ForeignKey(User, on_delete=models.PROTECT, blank=True, default=None,
+                                    null=True)
     warning_level = models.IntegerField(default=3, null=True, blank=True)
     reference_project = models.ManyToManyField(Projects, blank=True, default=None)
 
