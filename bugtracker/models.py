@@ -41,6 +41,7 @@ class ProjectToken(models.Model):
     token = models.UUIDField(default=uuid4(), unique=True)
     refresh_token = models.UUIDField(default=uuid4(), unique=True)
     generated_at = models.DateTimeField(default=timezone.now())
+    time_to_live = models.IntegerField(default=864000)
 
     def __str__(self):
         return "For {} || Generated At: {}".format(self.project, self.generated_at)
