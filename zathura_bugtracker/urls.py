@@ -19,9 +19,16 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
+from zathura_bugtracker.settings import DEBUG
+
 urlpatterns = [
-    path('admin/', admin.site.urls),
     path('zathura/', include('bugtracker.urls')),
     path('accounts/', include('django.contrib.auth.urls')),
     path('', include('bugtracker.urls'), name='home'),
 ]
+
+if DEBUG:
+    # Only add certain urls if it's in Debug mode.
+    urlpatterns.append(
+    path('admin/', admin.site.urls),
+    )
