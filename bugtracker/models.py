@@ -1,3 +1,4 @@
+from datetime import datetime
 from uuid import uuid4
 
 from django.db import models
@@ -55,9 +56,8 @@ class Errors(models.Model):
     logged_at = models.DateTimeField(default=timezone.now())
     is_resolved = models.BooleanField(default=False)
     resolved_at = models.DateTimeField(default=None, null=True, blank=True)
-    resolved_by = models.ForeignKey(User, on_delete=models.PROTECT, blank=True, default=None,
-                                    null=True)
-    warning_level = models.IntegerField(default=3, null=True, blank=True)
+    resolved_by = models.ForeignKey(User, on_delete=models.PROTECT, blank=True, default=None, null=True)
+    warning_level = models.IntegerField(default=-1, null=True, blank=True)
     reference_project = models.ManyToManyField(Projects, blank=True, default=None)
 
     class Meta:

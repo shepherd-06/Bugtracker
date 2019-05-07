@@ -1,12 +1,13 @@
 from datetime import timedelta
 
-from django.http import Http404
+from django.core.exceptions import ValidationError
 from django.utils import timezone
+from rest_framework.views import APIView
 
 from bugtracker.models import ProjectToken
 
 
-class CustomAuthentication:
+class TokenAuth(APIView):
 
     @staticmethod
     def token_validate(token):
@@ -16,10 +17,12 @@ class CustomAuthentication:
         :param token: token parameter from the url.
         :return: -1, 0, 1 for Invalid, Valid , Expired token
         """
-        # request.REQUEST['param1']
         try:
             project_token = ProjectToken.objects.get(token=token)
         except ProjectToken.DoesNotExist:
+            # Token Invalid
+            return -1
+        except ValidationError:
             # Token Invalid
             return -1
 
