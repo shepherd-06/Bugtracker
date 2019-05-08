@@ -1,21 +1,39 @@
-from datetime import datetime
 from uuid import uuid4
 
+from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
+from django.contrib.auth.models import PermissionsMixin
 from django.db import models
 from django.utils import timezone
 
 
 # Create your models here.
 
-class User(models.Model):
+
+class MyUserManager(BaseUserManager):
+
+    def _create_user(self, email, password, is_admin, **extra_fields):
+        email = self.normalize_email(email)
+        user = self.model(email=email, is_admin = is_admin, **extra_fields)
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
+
+    def create_user(self, email, password=None, **extra_fields):
+        return self._create_user(email, password, False, **extra_fields)
+
+    def create_superuser(self, email, password, **extra_fields):
+        return self._create_user(email, password, True, **extra_fields)
+
+
+class User(AbstractBaseUser):
     user_id = models.UUIDField(unique=True, primary_key=True,
                                default=uuid4())
     user_name = models.CharField(max_length=20, blank=False, null=False)
+    user_email = models.EmailField(unique=True)
     created_at = models.DateTimeField(default=timezone.now())
     updated_at = models.DateTimeField(default=timezone.now())
     is_admin = models.BooleanField(default=False)
-    user_email = models.EmailField(unique=True)
-    user_mobile = models.CharField(unique=True, max_length=20)
+    objects = MyUserManager()
 
     def __str__(self):
         return self.user_name

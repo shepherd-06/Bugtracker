@@ -1,13 +1,12 @@
-from django.core import serializers
 from django.core.exceptions import ValidationError
 from django.http import JsonResponse
 from django.utils import timezone
+from rest_framework import status as http_status
 
 from bugtracker.models import ProjectToken, Errors
 from bugtracker.serializer import ErrorSerializer
 from bugtracker.utility import *
 from zathura_bugtracker.custom_auth import TokenAuth
-from rest_framework import status as http_status
 
 
 class Error(TokenAuth):
