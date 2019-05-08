@@ -8,6 +8,12 @@ class TokenSerializer(serializers.ModelSerializer):
         model = ProjectToken
         fields = ('project', 'token', 'refresh_token', 'time_to_live')
 
+
+class ErrorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Errors
+        fields = ('error_name', 'error_description', 'point_of_origin', 'reference_project')
+
 # class UserRegistrationSerializer(serializers.ModelSerializer):
 #     email = serializers.EmailField()
 #
