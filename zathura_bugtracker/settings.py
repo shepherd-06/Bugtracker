@@ -130,3 +130,7 @@ STATIC_URL = '/static/'
 
 LOGIN_REDIRECT_URL = 'home'  # Login Redirect Uri
 LOGOUT_REDIRECT_URL = 'home'  # Logout Redirection Uri
+
+# AUTH_USER_MODEL = 'users.CustomUser'
+# https://wsvincent.com/django-custom-user-model-tutorial/
+# https://stackoverflow.com/questions/16606312/django-custom-user-model-and-usermanager 
