@@ -13,7 +13,7 @@ class MyUserManager(BaseUserManager):
 
     def _create_user(self, email, password, is_admin, **extra_fields):
         email = self.normalize_email(email)
-        user = self.model(email=email, is_admin = is_admin, **extra_fields)
+        user = self.model(email=email, is_admin=is_admin, **extra_fields)
         user.set_password(password)
         user.save(using=self._db)
         return user
@@ -37,6 +37,18 @@ class User(AbstractBaseUser):
 
     def __str__(self):
         return self.user_name
+
+
+class UserToken(models.Model):
+    _id = models.UUIDField(default=uuid4(), primary_key=True)
+    authorized_user = models.ForeignKey(User, on_delete=models.CASCADE)
+    token = models.UUIDField(default=uuid4(), unique=True)
+    refresh_token = models.UUIDField(default=uuid4(), unique=True)
+    generated_at = models.DateTimeField(default=timezone.now())
+    time_to_live = models.IntegerField(default=864000)
+
+    def __str__(self):
+        return "For {} || Generated At: {}".format(self.authorized_user, self.generated_at)
 
 
 class Projects(models.Model):
