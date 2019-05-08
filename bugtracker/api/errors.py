@@ -8,7 +8,7 @@ from zathura_bugtracker.custom_auth import TokenAuth
 class Error(TokenAuth):
 
     def post(self, request):
-        token = request.POST.get('token')
+        token = request.POST["token"]
         print("Token: {}".format(token))
         if token is None:
             return JsonResponse(token_invalid)
