@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from bugtracker.models import *
+from bugtracker.model_managers.models import *
 
 
 class TokenSerializer(serializers.ModelSerializer):
@@ -20,6 +20,13 @@ class UserTokenSerializer(serializers.ModelSerializer):
         model = UserToken
         fields = "__all__"
 
+    def create(self, validated_data):
+        validated_data['_id'] = uuid4()
+        validated_data['token'] = uuid4()
+        validated_data['refresh_token'] = uuid4()
+        validated_data['generated_at'] = timezone.now()
+        return UserToken(**validated_data)
+
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
     user_email = serializers.EmailField()
@@ -30,6 +37,7 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         validated_data['created_at'] = timezone.now()
+        validated_data['user_id'] = uuid4()
         validated_data['updated_at'] = timezone.now()
         user = User.objects.create(**validated_data)
         user.set_password(validated_data['password'])

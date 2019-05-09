@@ -3,8 +3,8 @@ from django.http import JsonResponse
 from django.utils import timezone
 from rest_framework import status as http_status
 
-from bugtracker.models import ProjectToken, Errors
-from bugtracker.serializer import ErrorSerializer
+from bugtracker.model_managers.models import ProjectToken, Errors
+from bugtracker.model_managers.serializer import ErrorSerializer
 from bugtracker.utility import *
 from zathura_bugtracker.custom_auth import TokenAuth
 

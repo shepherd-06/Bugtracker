@@ -1,32 +1,15 @@
 from uuid import uuid4
 
-from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
-from django.contrib.auth.models import PermissionsMixin
+from django.contrib.auth.base_user import AbstractBaseUser
 from django.db import models
 from django.utils import timezone
 
-
 # Create your models here.
-
-
-class MyUserManager(BaseUserManager):
-
-    def _create_user(self, email, password, is_admin, **extra_fields):
-        email = self.normalize_email(email)
-        user = self.model(email=email, is_admin=is_admin, **extra_fields)
-        user.set_password(password)
-        user.save(using=self._db)
-        return user
-
-    def create_user(self, email, password, **extra_fields):
-        return self._create_user(email, password, False, **extra_fields)
-
-    def create_superuser(self, email, password, **extra_fields):
-        return self._create_user(email, password, True, **extra_fields)
+from bugtracker.model_managers.managers import MyUserManager
 
 
 class User(AbstractBaseUser):
-    user_id = models.UUIDField(unique=True, primary_key=True, default=uuid4())
+    user_id = models.UUIDField(unique=True, primary_key=True)
     user_name = models.CharField(max_length=20, blank=False, null=False)
     user_email = models.EmailField(unique=True)
     created_at = models.DateTimeField()
@@ -39,10 +22,10 @@ class User(AbstractBaseUser):
 
 
 class UserToken(models.Model):
-    _id = models.UUIDField(default=uuid4(), primary_key=True)
+    _id = models.UUIDField(primary_key=True, default=uuid4())
     authorized_user = models.ForeignKey(User, on_delete=models.CASCADE)
-    token = models.UUIDField(default=uuid4(), unique=True)
-    refresh_token = models.UUIDField(default=uuid4(), unique=True)
+    token = models.UUIDField(unique=True, default=uuid4())
+    refresh_token = models.UUIDField(unique=True, default=uuid4())
     generated_at = models.DateTimeField(default=timezone.now())
     time_to_live = models.IntegerField(default=864000)
 

@@ -2,7 +2,7 @@ from django.http import JsonResponse
 from rest_framework import status
 from rest_framework.views import APIView
 
-from bugtracker.serializer import UserRegistrationSerializer
+from bugtracker.model_managers.serializer import UserRegistrationSerializer
 
 
 class UserRegistration(APIView):

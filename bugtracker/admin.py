@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 # Register your models here
-from bugtracker.models import *
+from bugtracker.model_managers.models import *
 
 admin.site.register(User)
 admin.site.register(Projects)

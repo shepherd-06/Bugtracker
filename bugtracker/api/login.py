@@ -6,8 +6,8 @@ from rest_framework import status
 from rest_framework.views import APIView
 from uuid import uuid4
 
-from bugtracker.models import User, UserToken
-from bugtracker.serializer import UserTokenSerializer
+from bugtracker.model_managers.models import User, UserToken
+from bugtracker.model_managers.serializer import UserTokenSerializer
 
 
 class Login(APIView):

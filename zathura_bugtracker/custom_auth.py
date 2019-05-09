@@ -4,7 +4,7 @@ from django.core.exceptions import ValidationError
 from django.utils import timezone
 from rest_framework.views import APIView
 
-from bugtracker.models import ProjectToken
+from bugtracker.model_managers.models import ProjectToken
 
 
 class TokenAuth(APIView):
