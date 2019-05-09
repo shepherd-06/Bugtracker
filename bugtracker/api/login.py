@@ -72,6 +72,9 @@ class Login(APIView):
                         "ttl": token.time_to_live
                     })
                 else:
+                    print("----------------------------")
+                    print(token_serializer.errors)
+                    print("----------------------------")
                     return JsonResponse({
                         "message": "Token Rejected",
                         "status": status.HTTP_409_CONFLICT,

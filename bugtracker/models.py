@@ -18,7 +18,7 @@ class MyUserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
-    def create_user(self, email, password=None, **extra_fields):
+    def create_user(self, email, password, **extra_fields):
         return self._create_user(email, password, False, **extra_fields)
 
     def create_superuser(self, email, password, **extra_fields):
@@ -26,17 +26,16 @@ class MyUserManager(BaseUserManager):
 
 
 class User(AbstractBaseUser):
-    user_id = models.UUIDField(unique=True, primary_key=True,
-                               default=uuid4())
+    user_id = models.UUIDField(unique=True, primary_key=True, default=uuid4())
     user_name = models.CharField(max_length=20, blank=False, null=False)
     user_email = models.EmailField(unique=True)
-    created_at = models.DateTimeField(default=timezone.now())
-    updated_at = models.DateTimeField(default=timezone.now())
+    created_at = models.DateTimeField()
+    updated_at = models.DateTimeField()
     is_admin = models.BooleanField(default=False)
     objects = MyUserManager()
 
     def __str__(self):
-        return self.user_name
+        return "{} - {}".format(self.user_name, self.user_email)
 
 
 class UserToken(models.Model):

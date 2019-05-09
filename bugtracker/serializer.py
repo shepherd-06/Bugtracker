@@ -29,6 +29,8 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         fields = ('user_email', 'user_name', 'password', 'is_admin')
 
     def create(self, validated_data):
+        validated_data['created_at'] = timezone.now()
+        validated_data['updated_at'] = timezone.now()
         user = User.objects.create(**validated_data)
         user.set_password(validated_data['password'])
         user.save()
