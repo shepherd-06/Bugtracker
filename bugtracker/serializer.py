@@ -15,6 +15,12 @@ class ErrorSerializer(serializers.ModelSerializer):
         fields = ('error_name', 'error_description', 'point_of_origin', 'reference_project')
 
 
+class UserTokenSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserToken
+        fields = "__all__"
+
+
 class UserRegistrationSerializer(serializers.ModelSerializer):
     user_email = serializers.EmailField()
 
