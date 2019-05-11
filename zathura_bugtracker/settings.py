@@ -17,7 +17,6 @@ from decouple import config
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
@@ -28,7 +27,6 @@ SECRET_KEY = '&0gi$w@^ju1y^u8ahh3dgyqjs)!%u2u6uw299ij&k5nd4w$zv1'
 DEBUG = True  # Never Go Live with Debug - True!
 
 ALLOWED_HOSTS = ['127.0.0.1']  # For Live -> Change this url.
-
 
 # Application definition
 
@@ -73,7 +71,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'zathura_bugtracker.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
@@ -87,7 +84,6 @@ DATABASES = {
         'PORT': config("DB_PORT", None),
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
@@ -107,7 +103,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
 
@@ -121,12 +116,10 @@ USE_L10N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
 STATIC_URL = '/static/'
-
 
 LOGIN_REDIRECT_URL = 'home'  # Login Redirect Uri
 LOGOUT_REDIRECT_URL = 'home'  # Logout Redirection Uri
