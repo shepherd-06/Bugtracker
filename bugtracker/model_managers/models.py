@@ -41,11 +41,20 @@ class Projects(models.Model):
                                            default=None)
     registered_by = models.ForeignKey(User, on_delete=models.PROTECT)
     registered_at = models.DateTimeField(default=timezone.now())
-    # updated_by = models.ManyToManyField(User, blank=True, default=None)
-    updated_at = models.DateTimeField(blank=True, null=True)
 
     def __str__(self):
         return self.project_name
+
+
+class ProjectUpdate(models.Model):
+    project = models.ForeignKey(Projects, on_delete=models.CASCADE)
+    updated_by = models.ForeignKey(User, on_delete=models.CASCADE)
+    updated_at = models.DateTimeField(blank=True, null=True)
+
+    def __str__(self):
+        title = "Project name: {}, updated_by: {}".format(self.project.project_name,
+                                                          self.updated_by.user_email)
+        return title
 
 
 class ProjectToken(models.Model):
@@ -67,14 +76,9 @@ class Errors(models.Model):
     point_of_origin = models.CharField(max_length=100, null=False)
     logged_at = models.DateTimeField(default=timezone.now())
     is_resolved = models.BooleanField(default=False)
-    # issued_by = models.ForeignKey(User, on_delete=models.PROTECT, blank=True,
-    #                               default=None, null=True, related_name="user_email")
-    resolved_at = models.DateTimeField(default=None, null=True, blank=True)
-    resolved_by = models.ForeignKey(User, on_delete=models.PROTECT, blank=True, default=None,
-                                    null=True)
+    issued_by = models.ForeignKey(User, on_delete=models.PROTECT, blank=True, default=None, null=True)
     warning_level = models.IntegerField(default=-1, null=True, blank=True)
     reference_project = models.ForeignKey(Projects, on_delete=models.PROTECT, default=None, null=True)
-    updated_at = models.DateTimeField(null=True, blank=True, default=None)
 
     class Meta:
         get_latest_by = ['-logged_at']
@@ -82,6 +86,16 @@ class Errors(models.Model):
 
     def __str__(self):
         return self.error_name
+
+
+class ErrorStatus(models.Model):
+    error = models.ForeignKey(Errors, on_delete=models.CASCADE)
+    resolved_by = models.ForeignKey(User, on_delete=models.PROTECT)
+    resolved_at = models.DateTimeField(default=timezone.now())
+    updated_at = models.DateTimeField(default=timezone.now())
+
+    def __str__(self):
+        return "Error name: {}, resolved_by: {}".format(self.error.error_name, self.resolved_by.user_email)
 
 
 class Logs(models.Model):
