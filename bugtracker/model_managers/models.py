@@ -67,8 +67,11 @@ class Errors(models.Model):
     point_of_origin = models.CharField(max_length=100, null=False)
     logged_at = models.DateTimeField(default=timezone.now())
     is_resolved = models.BooleanField(default=False)
+    # issued_by = models.ForeignKey(User, on_delete=models.PROTECT, blank=True,
+    #                               default=None, null=True, related_name="user_email")
     resolved_at = models.DateTimeField(default=None, null=True, blank=True)
-    resolved_by = models.ForeignKey(User, on_delete=models.PROTECT, blank=True, default=None, null=True)
+    resolved_by = models.ForeignKey(User, on_delete=models.PROTECT, blank=True, default=None,
+                                    null=True)
     warning_level = models.IntegerField(default=-1, null=True, blank=True)
     reference_project = models.ForeignKey(Projects, on_delete=models.PROTECT, default=None, null=True)
     updated_at = models.DateTimeField(null=True, blank=True, default=None)
