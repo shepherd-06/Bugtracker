@@ -32,6 +32,7 @@ class UserToken(models.Model):
     token = models.UUIDField(unique=True, blank=True)
     refresh_token = models.UUIDField(unique=True, blank=True)
     generated_at = models.DateTimeField(blank=True)
+    updated_at = models.DateTimeField(blank=True)
     time_to_live = models.IntegerField(default=864000)
 
     def __str__(self):
@@ -43,6 +44,11 @@ class UserToken(models.Model):
         self.token = uuid4()
         self._id = uuid4()
         super().save(*args, **kwargs)  # Call the "real" save() method.
+
+    def _do_update(self, *args, **kwargs):
+        # Some Business Logic
+        self.updated_at = timezone.now()
+        super()._do_update(*args, **kwargs)
 
 
 class Projects(models.Model):
@@ -84,6 +90,11 @@ class ProjectUpdate(models.Model):
         self.updated_at = timezone.now()
         super().save(*args, **kwargs)  # Call the "real" save() method.
 
+    def _do_update(self, *args, **kwargs):
+        # Some Business Logic
+        self.updated_at = timezone.now()
+        super()._do_update(*args, **kwargs)
+
 
 class ProjectToken(models.Model):
     _id = models.UUIDField(primary_key=True, blank=True)
@@ -91,6 +102,7 @@ class ProjectToken(models.Model):
     token = models.UUIDField(unique=True, blank=True)
     refresh_token = models.UUIDField(unique=True, blank=True)
     generated_at = models.DateTimeField(blank=True)
+    updated_at = models.DateTimeField(blank=True)
     time_to_live = models.IntegerField(default=864000)
 
     def __str__(self):
@@ -104,7 +116,13 @@ class ProjectToken(models.Model):
         self.token = uuid4()
         self.refresh_token = uuid4()
         self.generated_at = timezone.now()
+        self.updated_at = timezone.now()
         super().save(*args, **kwargs)  # Call the "real" save() method.
+
+    def _do_update(self, *args, **kwargs):
+        # Some Business Logic
+        self.updated_at = timezone.now()
+        super()._do_update(*args, **kwargs)
 
 
 class Errors(models.Model):
@@ -113,6 +131,7 @@ class Errors(models.Model):
     error_description = models.TextField(max_length=500, null=False)
     point_of_origin = models.CharField(max_length=100, null=False)
     logged_at = models.DateTimeField(blank=True)
+    updated_at = models.DateTimeField(blank=True)
     is_resolved = models.BooleanField(default=False)
     issued_by = models.ForeignKey(User, on_delete=models.PROTECT, blank=True, default=None, null=True)
     warning_level = models.IntegerField(default=-1, null=True, blank=True)
@@ -128,7 +147,13 @@ class Errors(models.Model):
     def save(self, *args, **kwargs):
         self._id = uuid4()
         self.logged_at = timezone.now()
+        self.updated_at = timezone.now()
         super().save(*args, **kwargs)  # Call the "real" save() method.
+
+    def _do_update(self, *args, **kwargs):
+        # Some Business Logic
+        self.updated_at = timezone.now()
+        super()._do_update(*args, **kwargs)
 
 
 class ErrorStatus(models.Model):
@@ -154,6 +179,7 @@ class Logs(models.Model):
     log_title = models.CharField(max_length=30, null=True, blank=True, default=None)
     logs = models.TextField(max_length=1000, null=False)
     logged_at = models.DateTimeField(blank=True)
+    updated_at = models.DateTimeField(blank=True)
     reference_project = models.ForeignKey(Projects, on_delete=models.PROTECT, blank=True,
                                           default=None, null=True)
 
@@ -166,4 +192,10 @@ class Logs(models.Model):
     def save(self, *args, **kwargs):
         self._id = uuid4()
         self.logged_at = timezone.now()
+        self.updated_at = timezone.now()
         super().save(*args, **kwargs)  # Call the "real" save() method.
+
+    def _do_update(self, *args, **kwargs):
+        # Some Business Logic
+        self.updated_at = timezone.now()
+        super()._do_update(*args, **kwargs)
