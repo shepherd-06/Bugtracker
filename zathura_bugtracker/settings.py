@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'bugtracker.apps.BugtrackerConfig',
+    'ping_app.apps.PingAppConfig'
 ]
 
 MIDDLEWARE = [
