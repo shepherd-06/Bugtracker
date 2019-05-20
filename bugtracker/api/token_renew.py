@@ -1,7 +1,6 @@
-from uuid import uuid4
+import uuid
 
 from django.http import JsonResponse
-from django.utils import timezone
 from rest_framework import status
 from rest_framework.views import APIView
 
@@ -32,19 +31,31 @@ class UserTokenRenew(APIView):
                 "message": "Invalid User!",
                 "status": status.HTTP_401_UNAUTHORIZED
             })
-
-        if token_obj.token != data['token'] or token_obj.refresh_token != data['refresh_token']:
+        try:
+            if token_obj.token != uuid.UUID(data['token'])\
+                    or token_obj.refresh_token != uuid.UUID(data['refresh_token']):
+                return JsonResponse({
+                    "message": "Invalid Token/Refresh Token!",
+                    "status": status.HTTP_401_UNAUTHORIZED
+                })
+        except ValueError:
             return JsonResponse({
-                "message": "Invalid Token/Refresh Token!",
+                "message": "Token malformed!",
                 "status": status.HTTP_401_UNAUTHORIZED
             })
-
-        token_obj.token = uuid4()
-        token_obj.refresh_token = uuid4()
-        token_obj.generated_at = timezone.now()
-        update_status = token_obj.save()
-
-        print(update_status)
-        return JsonResponse({
-            "status": status.HTTP_200_OK
-        })
+        token_obj.save()
+        if token_obj.pk:
+            return JsonResponse({
+                "message": "success",
+                "status": status.HTTP_202_ACCEPTED  ,
+                "user_id": data['user_id'],
+                "token": token_obj.token,
+                "refresh_token": token_obj.refresh_token,
+                "generated_at": token_obj.generated_at,
+                "ttl": token_obj.time_to_live
+            })
+        else:
+            return JsonResponse({
+                "message": "Token Rejected",
+                "status": status.HTTP_409_CONFLICT,
+            })

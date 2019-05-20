@@ -51,42 +51,45 @@ class Login(APIView):
                 token_serializer = UserTokenSerializer(data=payload)
                 if token_serializer.is_valid():
                     token = token_serializer.save()
-                    print(token_serializer.validated_data)
 
-                    return JsonResponse({
-                        "message": "success",
-                        "status": status.HTTP_202_ACCEPTED,
-                        "user_id": user.user_id,
-                        "token": token.token,
-                        "refresh_token": token.refresh_token,
-                        "generated_at": token.generated_at,
-                        "ttl": token.time_to_live
-                    })
+                    if token.pk:
+                        return JsonResponse({
+                            "message": "success",
+                            "status": status.HTTP_202_ACCEPTED,
+                            "user_id": user.user_id,
+                            "token": token.token,
+                            "refresh_token": token.refresh_token,
+                            "generated_at": token.generated_at,
+                            "ttl": token.time_to_live
+                        })
+                    else:
+                        return JsonResponse({
+                            "message": "Token Rejected",
+                            "status": status.HTTP_409_CONFLICT,
+                        })
                 else:
-                    print("----------------------------")
-                    print(token_serializer.errors)
-                    print("----------------------------")
                     return JsonResponse({
                         "message": "Token Rejected",
                         "status": status.HTTP_409_CONFLICT,
                     })
             else:
                 # change the previous access token
-                print("Token obj is not None")
-                token_obj.token = uuid4()
-                token_obj.refresh_token = uuid4()
-                token_obj.generated_at = timezone.now()
-
                 token_obj.save()
-                return JsonResponse({
-                    "message": "success",
-                    "user_id": user.user_id,
-                    "status": status.HTTP_202_ACCEPTED,
-                    "token": token_obj.token,
-                    "refresh_token": token_obj.refresh_token,
-                    "generated_at": token_obj.generated_at,
-                    "ttl": token_obj.time_to_live
-                })
+                if token_obj.pk:
+                    return JsonResponse({
+                        "message": "success",
+                        "user_id": user.user_id,
+                        "status": status.HTTP_202_ACCEPTED,
+                        "token": token_obj.token,
+                        "refresh_token": token_obj.refresh_token,
+                        "generated_at": token_obj.generated_at,
+                        "ttl": token_obj.time_to_live
+                    })
+                else:
+                    return JsonResponse({
+                        "message": "Token Rejected",
+                        "status": status.HTTP_409_CONFLICT,
+                    })
         else:
             return JsonResponse({
                 "message": "Username, Password did not match!",

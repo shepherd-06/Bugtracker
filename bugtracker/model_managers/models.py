@@ -33,24 +33,26 @@ class UserToken(models.Model):
     refresh_token = models.UUIDField(unique=True, blank=True)
     generated_at = models.DateTimeField(blank=True)
     updated_at = models.DateTimeField(blank=True)
+    created_at = models.DateTimeField(blank=True, verbose_name="First entry time")
     time_to_live = models.IntegerField(default=864000)
 
     def __str__(self):
         return "For {} || Generated At: {}".format(self.authorized_user, self.generated_at)
 
     def save(self, *args, **kwargs):
-        self.generated_at = timezone.now()
-        self.updated_at = timezone.now()
-        self.refresh_token = uuid4()
-        self.token = uuid4()
-        self._id = uuid4()
-        print("Super save method?")
+        if self._id is None:
+            self.generated_at = timezone.now()
+            self.updated_at = timezone.now()
+            self.created_at = timezone.now()
+            self.refresh_token = uuid4()
+            self.token = uuid4()
+            self._id = uuid4()
+        else:
+            self.generated_at = timezone.now()
+            self.updated_at = timezone.now()
+            self.refresh_token = uuid4()
+            self.token = uuid4()
         super().save(*args, **kwargs)  # Call the "real" save() method.
-
-    def _do_update(self, *args, **kwargs):
-        # Some Business Logic
-        self.updated_at = timezone.now()
-        super()._do_update(*args, **kwargs)
 
 
 class Projects(models.Model):

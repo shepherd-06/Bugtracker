@@ -28,12 +28,13 @@ def get_user_object(user_id):
     except ValidationError:
         # Token Invalid
         return None
+    except ValueError:
+        return None
 
 
 def get_user_token(user):
     try:
         token_obj = UserToken.objects.get(authorized_user=user)
-        print(token_obj)
         return token_obj
     except UserToken.DoesNotExist:
         # User Token does not exist
