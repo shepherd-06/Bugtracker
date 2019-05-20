@@ -20,13 +20,6 @@ class UserTokenSerializer(serializers.ModelSerializer):
         model = UserToken
         fields = "__all__"
 
-    def create(self, validated_data):
-        validated_data['_id'] = uuid4()
-        validated_data['token'] = uuid4()
-        validated_data['refresh_token'] = uuid4()
-        validated_data['generated_at'] = timezone.now()
-        return UserToken(**validated_data)
-
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
     user_email = serializers.EmailField()

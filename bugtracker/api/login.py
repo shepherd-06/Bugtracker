@@ -8,6 +8,7 @@ from uuid import uuid4
 
 from bugtracker.model_managers.models import User, UserToken
 from bugtracker.model_managers.serializer import UserTokenSerializer
+from bugtracker.utility import get_user_token
 
 
 class Login(APIView):
@@ -22,18 +23,6 @@ class Login(APIView):
             return None
         except ValidationError:
             # Token Invalid
-            return None
-
-    @staticmethod
-    def get_user_token(user_id):
-        try:
-            token_obj = UserToken.objects.get(authorized_user=user_id)
-            return token_obj
-        except UserToken.DoesNotExist:
-            # User Token does not exist
-            return None
-        except ValidationError:
-            # User Token does not exist
             return None
 
     def post(self, request):
@@ -53,7 +42,7 @@ class Login(APIView):
                 "status": status.HTTP_401_UNAUTHORIZED
             })
         if check_password(data['password'], user.password):
-            token_obj = self.get_user_token(user.user_id)
+            token_obj = get_user_token(user)
             if token_obj is None:
                 # Create new access token
                 payload = {
@@ -62,10 +51,12 @@ class Login(APIView):
                 token_serializer = UserTokenSerializer(data=payload)
                 if token_serializer.is_valid():
                     token = token_serializer.save()
+                    print(token_serializer.validated_data)
 
                     return JsonResponse({
                         "message": "success",
                         "status": status.HTTP_202_ACCEPTED,
+                        "user_id": user.user_id,
                         "token": token.token,
                         "refresh_token": token.refresh_token,
                         "generated_at": token.generated_at,
@@ -81,6 +72,7 @@ class Login(APIView):
                     })
             else:
                 # change the previous access token
+                print("Token obj is not None")
                 token_obj.token = uuid4()
                 token_obj.refresh_token = uuid4()
                 token_obj.generated_at = timezone.now()
@@ -88,6 +80,7 @@ class Login(APIView):
                 token_obj.save()
                 return JsonResponse({
                     "message": "success",
+                    "user_id": user.user_id,
                     "status": status.HTTP_202_ACCEPTED,
                     "token": token_obj.token,
                     "refresh_token": token_obj.refresh_token,

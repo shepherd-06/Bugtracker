@@ -40,9 +40,11 @@ class UserToken(models.Model):
 
     def save(self, *args, **kwargs):
         self.generated_at = timezone.now()
+        self.updated_at = timezone.now()
         self.refresh_token = uuid4()
         self.token = uuid4()
         self._id = uuid4()
+        print("Super save method?")
         super().save(*args, **kwargs)  # Call the "real" save() method.
 
     def _do_update(self, *args, **kwargs):

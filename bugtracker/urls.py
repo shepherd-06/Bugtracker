@@ -5,6 +5,7 @@ from bugtracker.api.errors import Error
 from bugtracker.api.login import Login
 from bugtracker.api.logout import Logout
 from bugtracker.api.registration import UserRegistration
+from bugtracker.api.token_renew import UserTokenRenew
 
 urlpatterns = [
     path('', TemplateView.as_view(template_name='home.html'), name='home'),
@@ -12,4 +13,5 @@ urlpatterns = [
     path('register/', UserRegistration.as_view(), name='user_registration'),
     path('login/', Login.as_view(), name='user_login'),
     path('logout/', Logout.as_view(), name='user_logout'),
+    path('user_renew/', UserTokenRenew.as_view(), name='user_token_renew'),
 ]
