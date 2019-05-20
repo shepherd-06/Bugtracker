@@ -42,3 +42,17 @@ def get_user_token(user):
     except ValidationError:
         # User Token does not exist
         return None
+
+
+def get_token_object_by_token(user_token):
+    try:
+        token_obj = UserToken.objects.get(token=uuid.UUID(user_token))
+        return token_obj
+    except UserToken.DoesNotExist:
+        # User Token does not exist
+        return None
+    except ValidationError:
+        # User Token does not exist
+        return None
+    except ValueError:
+        return None

@@ -71,9 +71,10 @@ class Projects(models.Model):
         verbose_name_plural = "Projects"
 
     def save(self, *args, **kwargs):
-        self.registered_at = timezone.now()
-        self.project_id = uuid4()
-        self._id = uuid4()
+        if self._id is None:
+            self._id = uuid4()
+            self.registered_at = timezone.now()
+            self.project_id = uuid4()
         super().save(*args, **kwargs)  # Call the "real" save() method.
 
 
@@ -93,11 +94,6 @@ class ProjectUpdate(models.Model):
     def save(self, *args, **kwargs):
         self.updated_at = timezone.now()
         super().save(*args, **kwargs)  # Call the "real" save() method.
-
-    def _do_update(self, *args, **kwargs):
-        # Some Business Logic
-        self.updated_at = timezone.now()
-        super()._do_update(*args, **kwargs)
 
 
 class ProjectToken(models.Model):
