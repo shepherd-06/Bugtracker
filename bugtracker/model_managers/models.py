@@ -1,6 +1,7 @@
 from uuid import uuid4
 
 from django.contrib.auth.base_user import AbstractBaseUser
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils import timezone
 
@@ -75,6 +76,11 @@ class Projects(models.Model):
             self._id = uuid4()
             self.registered_at = timezone.now()
             self.project_id = uuid4()
+        if len(self.project_name) > 30 or len(self.project_name) == 0:
+            raise ValidationError("Project name field is mandatory. Length of Project name cannot be more than 30 "
+                                  "characters")
+        if self.project_description is not None and len(self.project_description) > 500:
+            raise ValidationError("Project description can be null, but cannot exceed 500 characters, if given")
         super().save(*args, **kwargs)  # Call the "real" save() method.
 
 

@@ -21,6 +21,18 @@ class UserTokenSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
+class ProjectSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Projects
+        fields = "__all__"
+
+
+class ProjectUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProjectUpdate
+        fields = "__all__"
+
+
 class UserRegistrationSerializer(serializers.ModelSerializer):
     user_email = serializers.EmailField()
 
