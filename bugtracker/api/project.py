@@ -4,7 +4,7 @@ from rest_framework import status
 from rest_framework.views import APIView
 
 from bugtracker.model_managers.serializer import ProjectSerializer, ProjectUpdateSerializer, Projects
-from bugtracker.utility import get_token_object_by_token
+from bugtracker.utility import get_token_object_by_token, token_invalid
 
 
 class Project(APIView):
@@ -99,3 +99,23 @@ class Project(APIView):
                 "message": "{}".format(error),
                 "status": status.HTTP_401_UNAUTHORIZED
             })
+
+    def get(self, request):
+        token = request.GET.get('token', None)
+        if token is None:
+            return JsonResponse(token_invalid)
+
+        token_obj = get_token_object_by_token(token)
+        if token_obj is None:
+            return JsonResponse({
+                "message": "Invalid User!",
+                "status": status.HTTP_401_UNAUTHORIZED
+            })
+        user_object = token_obj.authorized_user
+        all_projects = Projects.objects.filter(registered_by=user_object.user_id).all()
+
+        return JsonResponse({
+            "total": len(list(all_projects)),
+            "projects" : list(all_projects),
+            "status": status.HTTP_200_OK
+        })
