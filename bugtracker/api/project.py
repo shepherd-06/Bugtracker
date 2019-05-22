@@ -17,6 +17,7 @@ class Project(APIView):
     Project will have registered_by field. I can get that from user_token
     Project will have project_name and description from the user_input.
     """
+
     def post(self, request):
         """
         mandatory field: user_token, project_name, organization_id
@@ -120,6 +121,7 @@ class Project(APIView):
                 "message": "{}".format(error),
                 "status": status.HTTP_401_UNAUTHORIZED
             })
+
     # --------------------------------------------------------
     # --------------------------------------------------------
     # --------------------------------------------------------
