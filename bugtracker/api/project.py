@@ -1,6 +1,3 @@
-import json
-
-from django.core import serializers
 from django.core.exceptions import ValidationError
 from django.http import JsonResponse
 from rest_framework import status
@@ -8,7 +5,7 @@ from rest_framework.views import APIView
 
 from bugtracker.model_managers.serializer import ProjectSerializer, ProjectUpdateSerializer, Projects, ProjectUpdate
 from bugtracker.utility import get_token_object_by_token, token_invalid, get_usr_to_org_by_user_id_and_org_id, \
-    get_org_object, get_all_org_user_is_part_off
+    get_org_object, get_all_org_user_is_part_off, get_project_from_project_id
 
 
 class Project(APIView):
@@ -176,3 +173,51 @@ class Project(APIView):
             "projects": final_projects,
             "status": status.HTTP_200_OK
         })
+
+    # --------------------------------------------------------
+    # --------------------------------------------------------
+    # --------------------------------------------------------
+    # --------------------------------------------------------
+    # --------------------------------------------------------
+    # --------------------------------------------------------
+    # --------------------------------------------------------
+    # --------------------------------------------------------
+    # --------------------------------------------------------
+    def put(self, request):
+        """
+        updates a particular project. required field is token and project_id
+        :param request:
+        :return:
+        """
+        data = request.data
+
+        if 'token' not in data or 'project_id' not in data:
+            return JsonResponse({
+                "message": "Missing parameters! token, project_id are required",
+                "status": status.HTTP_400_BAD_REQUEST
+            })
+        token_obj = get_token_object_by_token(data['token'])
+        if token_obj is None:
+            return JsonResponse({
+                "message": "Invalid User!",
+                "status": status.HTTP_401_UNAUTHORIZED
+            })
+        user_object = token_obj.authorized_user
+
+        # get the organization from the project and see user is allowed in this organization.
+        project_obj = get_project_from_project_id(data['project_id'])
+        if project_obj is None:
+            return JsonResponse({
+                "message": "Invalid!!",
+                "status": status.HTTP_400_BAD_REQUEST
+            })
+        organization = get_org_object(project_obj.organization)
+        user_to_org_obj = get_usr_to_org_by_user_id_and_org_id(str(user_object.user_id),
+                                                               str(organization.pk))
+        pass
+
+        """
+        First check user is part of old organization.
+        Second check user is part of the new organization, if there is a new organization.
+        Third, validate all other fields.
+        """
