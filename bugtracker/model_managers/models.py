@@ -27,6 +27,46 @@ class User(AbstractBaseUser):
         return "{} - {}".format(self.user_name, self.user_email)
 
 
+class Organisation(models.Model):
+    _id = models.UUIDField(unique=True, primary_key=True)
+    org_id = models.UUIDField(unique=True)
+    org_name = models.CharField(max_length=20, blank=False, null=False)
+    created_by = models.ForeignKey(User, on_delete=models.PROTECT)
+    created_at = models.DateTimeField(blank=True)
+    updated_at = models.DateTimeField(blank=True)
+
+    class Meta:
+        verbose_name_plural = "Organisation"
+
+    def __str__(self):
+        return "{}".format(self.org_name)
+
+    def save(self, *args, **kwargs):
+        if self._id is None:
+            self._id = uuid4()
+            self.created_at = timezone.now()
+            self.updated_at = timezone.now()
+        else:
+            self.updated_at = timezone.now()
+        super().save(*args, **kwargs)
+
+
+class UserToOrg(models.Model):
+    organization = models.ForeignKey(Organisation, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user_added = models.DateTimeField(blank=True)
+
+    class Meta:
+        verbose_name_plural = "UserToOrg"
+
+    def __str__(self):
+        return "{} --- {}".format(self.user, self.organization)
+
+    def save(self, *args, **kwargs):
+        self.user_added = timezone.now()
+        super().save(*args, **kwargs)
+
+
 class UserToken(models.Model):
     _id = models.UUIDField(primary_key=True, blank=True)
     authorized_user = models.ForeignKey(User, on_delete=models.CASCADE)
