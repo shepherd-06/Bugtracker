@@ -17,6 +17,7 @@ class User(AbstractBaseUser):
     updated_at = models.DateTimeField()
     is_admin = models.BooleanField(default=False)
     objects = MyUserManager()
+    USERNAME_FIELD = 'user_email'
 
     class Meta:
         verbose_name_plural = "User"

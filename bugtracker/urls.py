@@ -15,5 +15,6 @@ urlpatterns = [
     path('login/', Login.as_view(), name='user_login'),
     path('logout/', Logout.as_view(), name='user_logout'),
     path('user_renew/', UserTokenRenew.as_view(), name='user_token_renew'),
-    path('project/', Project.as_view(), name='project_crud'),
+    path('project/', Project.as_view(), name='project_cr'),
+    path('project/<str:pk>', Project.as_view(), name='project_update_delete'),
 ]

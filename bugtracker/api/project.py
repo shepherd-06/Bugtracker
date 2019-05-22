@@ -183,17 +183,28 @@ class Project(APIView):
     # --------------------------------------------------------
     # --------------------------------------------------------
     # --------------------------------------------------------
-    def put(self, request):
+    def put(self, request, pk):
         """
         updates a particular project. required field is token and project_id
+        changeable field: project_name, project_description, organization
         :param request:
         :return:
         """
         data = request.data
+        project_id = pk
 
-        if 'token' not in data or 'project_id' not in data:
+        print(data)
+
+        if 'token' not in data not in data:
             return JsonResponse({
-                "message": "Missing parameters! token, project_id are required",
+                "message": "Missing mandatory parameters! token is required",
+                "status": status.HTTP_400_BAD_REQUEST
+            })
+        if "project_name" not in data or "description" not in data or "organization" not in data:
+            # This condition has an error! Be Ware!
+            return JsonResponse({
+                "message": "Missing optional field. One of them must be present. "
+                           "Project_name, description or organization",
                 "status": status.HTTP_400_BAD_REQUEST
             })
         token_obj = get_token_object_by_token(data['token'])
@@ -205,7 +216,7 @@ class Project(APIView):
         user_object = token_obj.authorized_user
 
         # get the organization from the project and see user is allowed in this organization.
-        project_obj = get_project_from_project_id(data['project_id'])
+        project_obj = get_project_from_project_id(project_id)  # Need to change this project
         if project_obj is None:
             return JsonResponse({
                 "message": "Invalid!!",
@@ -214,10 +225,22 @@ class Project(APIView):
         organization = get_org_object(project_obj.organization)
         user_to_org_obj = get_usr_to_org_by_user_id_and_org_id(str(user_object.user_id),
                                                                str(organization.pk))
-        pass
+        if user_to_org_obj:
+            return JsonResponse({
+                "message": "Invalid! User is not part of this organization!",
+                "status": status.HTTP_401_UNAUTHORIZED
+            })
 
         """
         First check user is part of old organization.
         Second check user is part of the new organization, if there is a new organization.
         Third, validate all other fields.
         """
+        if "organization" in data:
+            new_organization = get_org_object(data["organization"])
+            user_to_org_obj = get_usr_to_org_by_user_id_and_org_id(str(user_object.user_id),
+                                                                   str(new_organization.pk))
+
+            if user_to_org_obj is not None:
+                # user is allowed to change the organization of this project
+                project_obj.organization = new_organization
