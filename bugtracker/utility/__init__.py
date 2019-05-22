@@ -76,6 +76,22 @@ def get_usr_to_org_by_user_id_and_org_id(user_id, org_id):
         return None
 
 
+def get_all_org_user_is_part_off(user_id: str):
+    """
+    this function will return UserToOrg mapping queryset object where user is part of that org
+    :param user_id:
+    :return:
+    """
+    try:
+        return UserToOrg.objects.filter(user=uuid.UUID(user_id))
+    except UserToOrg.DoesNotExist:
+        return None
+    except ValidationError:
+        return None
+    except ValueError:
+        return None
+
+
 def get_org_object(org_id: str):
     """
     returns organisation object from the org_id

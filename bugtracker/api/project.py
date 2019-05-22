@@ -6,9 +6,9 @@ from django.http import JsonResponse
 from rest_framework import status
 from rest_framework.views import APIView
 
-from bugtracker.model_managers.serializer import ProjectSerializer, ProjectUpdateSerializer, Projects
+from bugtracker.model_managers.serializer import ProjectSerializer, ProjectUpdateSerializer, Projects, ProjectUpdate
 from bugtracker.utility import get_token_object_by_token, token_invalid, get_usr_to_org_by_user_id_and_org_id, \
-    get_org_object
+    get_org_object, get_all_org_user_is_part_off
 
 
 class Project(APIView):
@@ -17,7 +17,6 @@ class Project(APIView):
     Project will have registered_by field. I can get that from user_token
     Project will have project_name and description from the user_input.
     """
-
     def post(self, request):
         """
         mandatory field: user_token, project_name, organization_id
@@ -121,7 +120,6 @@ class Project(APIView):
                 "message": "{}".format(error),
                 "status": status.HTTP_401_UNAUTHORIZED
             })
-
     # --------------------------------------------------------
     # --------------------------------------------------------
     # --------------------------------------------------------
@@ -131,7 +129,6 @@ class Project(APIView):
     # --------------------------------------------------------
     # --------------------------------------------------------
     # --------------------------------------------------------
-
     def get(self, request):
         token = request.GET.get('token', None)
         if token is None:
@@ -144,20 +141,36 @@ class Project(APIView):
                 "status": status.HTTP_401_UNAUTHORIZED
             })
         user_object = token_obj.authorized_user
-        all_projects_queryset = Projects.objects.all().filter(registered_by=user_object.user_id)
+        # get all organization this user is a member off.
+        user_to_org_object = get_all_org_user_is_part_off(str(user_object.pk))
+        final_projects = list()
 
-        for data in all_projects_queryset:
-            "---------------------------"
-            "do magic here"
-            "---------------------------"
-            print(data.project_id)
+        for entry in user_to_org_object:
+            # a single entry is a organization user is part off
+            all_projects_queryset = Projects.objects.all().filter(organization=entry.organization)
 
-        all_projects = serializers.serialize('json', list(all_projects_queryset),
-                                             fields=('project_id', 'project_name', "project_description",
-                                                     "registered_by", "registered_at", "organization"))
+            for project_entry in all_projects_queryset:
+                # get project updated information from project_entry value
+                project_updated_queryset = ProjectUpdate.objects.all().filter(project=project_entry.pk)
+                project_updated_info = list()
+                for single_project_update_entry in project_updated_queryset:
+                    project_updated_info.append({
+                        "updated_by": single_project_update_entry.updated_by.user_email,
+                        "updated_at": single_project_update_entry.updated_at
+                    })
+
+                final_projects.append({
+                    "project_id": project_entry.project_id,
+                    "project_name": project_entry.project_name,
+                    "project_description": project_entry.project_description,
+                    "registered_by": project_entry.registered_by.user_email,
+                    "registered_at": project_entry.registered_at,
+                    "organization": project_entry.organization.org_name,
+                    "updates": project_updated_info,
+                })
 
         return JsonResponse({
-            "total": len(json.loads(all_projects)),
-            "projects": json.loads(all_projects),
+            "total": len(final_projects),
+            "projects": final_projects,
             "status": status.HTTP_200_OK
         })
