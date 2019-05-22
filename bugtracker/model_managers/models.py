@@ -28,8 +28,8 @@ class User(AbstractBaseUser):
 
 
 class Organisation(models.Model):
-    _id = models.UUIDField(unique=True, primary_key=True)
-    org_id = models.UUIDField(unique=True)
+    _id = models.UUIDField(primary_key=True, blank=True)
+    org_id = models.UUIDField(unique=True, blank=True)
     org_name = models.CharField(max_length=20, blank=False, null=False)
     created_by = models.ForeignKey(User, on_delete=models.PROTECT)
     created_at = models.DateTimeField(blank=True)
@@ -44,6 +44,7 @@ class Organisation(models.Model):
     def save(self, *args, **kwargs):
         if self._id is None:
             self._id = uuid4()
+            self.org_id = uuid4()
             self.created_at = timezone.now()
             self.updated_at = timezone.now()
         else:
@@ -57,7 +58,7 @@ class UserToOrg(models.Model):
     user_added = models.DateTimeField(blank=True)
 
     class Meta:
-        verbose_name_plural = "UserToOrg"
+        verbose_name_plural = "User & Org connecting Table"
 
     def __str__(self):
         return "{} --- {}".format(self.user, self.organization)
@@ -76,6 +77,9 @@ class UserToken(models.Model):
     updated_at = models.DateTimeField(blank=True)
     created_at = models.DateTimeField(blank=True, verbose_name="First entry time")
     time_to_live = models.IntegerField(default=864000)
+
+    class Meta:
+        verbose_name_plural = "User Access Token management"
 
     def __str__(self):
         return "For {} || Generated At: {}".format(self.authorized_user, self.generated_at)
@@ -104,12 +108,13 @@ class Projects(models.Model):
                                            default=None)
     registered_by = models.ForeignKey(User, on_delete=models.PROTECT)
     registered_at = models.DateTimeField(blank=True)
+    organization = models.ForeignKey(Organisation, on_delete=models.PROTECT)
 
     def __str__(self):
         return self.project_name
 
     class Meta:
-        verbose_name_plural = "Projects"
+        verbose_name_plural = "All Project name"
 
     def save(self, *args, **kwargs):
         if self._id is None:
@@ -135,7 +140,7 @@ class ProjectUpdate(models.Model):
         return title
 
     class Meta:
-        verbose_name_plural = "ProjectUpdate"
+        verbose_name_plural = "Project & User connecting Table"
 
     def save(self, *args, **kwargs):
         self.updated_at = timezone.now()
@@ -155,7 +160,7 @@ class ProjectToken(models.Model):
         return "For {} || Generated At: {}".format(self.project, self.generated_at)
 
     class Meta:
-        verbose_name_plural = "ProjectToken"
+        verbose_name_plural = "Project Access Token"
 
     def save(self, *args, **kwargs):
         self._id = uuid4()
@@ -185,7 +190,7 @@ class Errors(models.Model):
 
     class Meta:
         ordering = ["logged_at"]
-        verbose_name_plural = "Errors"
+        verbose_name_plural = "All Error logs"
 
     def __str__(self):
         return self.error_name
@@ -212,7 +217,7 @@ class ErrorStatus(models.Model):
         return "Error name: {}, resolved_by: {}".format(self.error.error_name, self.resolved_by.user_email)
 
     class Meta:
-        verbose_name_plural = "ErrorStatus"
+        verbose_name_plural = "Error User connecting Table"
 
     def save(self, *args, **kwargs):
         self.resolved_at = timezone.now()
@@ -233,7 +238,7 @@ class Logs(models.Model):
         return self.log_title
 
     class Meta:
-        verbose_name_plural = "Logs"
+        verbose_name_plural = "All debug logs"
 
     def save(self, *args, **kwargs):
         self._id = uuid4()
