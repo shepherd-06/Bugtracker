@@ -193,14 +193,12 @@ class Project(APIView):
         data = request.data
         project_id = pk
 
-        print(data)
-
-        if 'token' not in data not in data:
+        if 'token' not in data:
             return JsonResponse({
                 "message": "Missing mandatory parameters! token is required",
                 "status": status.HTTP_400_BAD_REQUEST
             })
-        if "project_name" not in data or "description" not in data or "organization" not in data:
+        if "project_name" not in data and "description" not in data and "organization" not in data:
             # This condition has an error! Be Ware!
             return JsonResponse({
                 "message": "Missing optional field. One of them must be present. "
@@ -222,10 +220,18 @@ class Project(APIView):
                 "message": "Invalid!!",
                 "status": status.HTTP_400_BAD_REQUEST
             })
-        organization = get_org_object(project_obj.organization)
+        # print("--------------------------")
+        # print(project_obj)
+        # print("--------------------------")
+        organization = get_org_object(str(project_obj.organization.org_id))
+        if organization is None:
+            return JsonResponse({
+                "message": "Invalid! Organization is not found!",
+                "status": status.HTTP_400_BAD_REQUEST
+            })
         user_to_org_obj = get_usr_to_org_by_user_id_and_org_id(str(user_object.user_id),
-                                                               str(organization.pk))
-        if user_to_org_obj:
+                                                               str(organization.org_id))
+        if user_to_org_obj is None or user_to_org_obj.count() == 0:
             return JsonResponse({
                 "message": "Invalid! User is not part of this organization!",
                 "status": status.HTTP_401_UNAUTHORIZED
@@ -237,10 +243,92 @@ class Project(APIView):
         Third, validate all other fields.
         """
         if "organization" in data:
-            new_organization = get_org_object(data["organization"])
+            new_organization = get_org_object(str(data["organization"]))
+            if new_organization is None:
+                return JsonResponse({
+                    "message": "Invalid! Organization is not found!",
+                    "status": status.HTTP_400_BAD_REQUEST
+                })
             user_to_org_obj = get_usr_to_org_by_user_id_and_org_id(str(user_object.user_id),
-                                                                   str(new_organization.pk))
-
+                                                                   str(new_organization.org_id))
             if user_to_org_obj is not None:
                 # user is allowed to change the organization of this project
-                project_obj.organization = new_organization
+                if user_to_org_obj.count() != 0:
+                    project_obj.organization = new_organization
+                else:
+                    return JsonResponse({
+                        "message": "Invalid! User is not part of this organization!",
+                        "status": status.HTTP_401_UNAUTHORIZED
+                    })
+
+        project_name = data["project_name"] if "project_name" in data else None
+        description = data["description"] if "description" in data else None
+
+        if project_name is not None:
+            if 0 < len(project_name) <= 30:
+                project_obj.project_name = project_name
+            else:
+                return JsonResponse({
+                    "message": "Invalid! Project name must be between 1 to 30 characters long.",
+                    "status": status.HTTP_400_BAD_REQUEST
+                })
+
+        if description is not None:
+            if len(description) <= 500:
+                project_obj.project_description = description
+            else:
+                return JsonResponse({
+                    "message": "Invalid! Project description must be less than 500 characters!",
+                    "status": status.HTTP_400_BAD_REQUEST
+                })
+
+        project_obj.save()
+        if project_obj.pk:
+            project_update_payload = {
+                "project": project_obj.pk,
+                "updated_by": user_object.pk
+            }
+            project_update_status = ProjectUpdateSerializer(data=project_update_payload)
+
+            if project_update_status.is_valid():
+                project_update = project_update_status.save()
+
+                project_updated_queryset = ProjectUpdate.objects.all().filter(project=project_obj.pk)
+                project_updated_info = list()
+                for single_project_update_entry in project_updated_queryset:
+                    project_updated_info.append({
+                        "updated_by": single_project_update_entry.updated_by.user_email,
+                        "updated_at": single_project_update_entry.updated_at
+                    })
+
+                if project_update.pk:
+                    return JsonResponse({
+                        "message": "Successfully updated!",
+                        "status": status.HTTP_202_ACCEPTED,
+                        "project_id": project_obj.project_id,
+                        "project_name": project_obj.project_name,
+                        "project_description": project_obj.project_description,
+                        "registered_by": project_obj.registered_by.user_email,
+                        "registered_at": project_obj.registered_at,
+                        "organization": project_obj.organization.org_name,
+                        "updates": project_updated_info,
+                    })
+                else:
+                    # Error
+                    return JsonResponse({
+                        "message": "Invalid! unable to save project update information",
+                        "status": status.HTTP_409_CONFLICT
+                    })
+            else:
+                # Error
+                return JsonResponse({
+                    "message": "Invalid! project update serializer validation failed",
+                    "error": str(project_update_status.errors),
+                    "status": status.HTTP_409_CONFLICT
+                })
+        else:
+            # Error
+            return JsonResponse({
+                "message": "Invalid! project [update] failed validation",
+                "status": status.HTTP_409_CONFLICT
+            })
