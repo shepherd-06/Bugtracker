@@ -3,6 +3,7 @@ from django.http import JsonResponse
 from rest_framework import status
 from rest_framework.views import APIView
 
+from bugtracker.model_managers.models import ProjectToken
 from bugtracker.model_managers.serializer import ProjectSerializer, ProjectUpdateSerializer, Projects, ProjectUpdate
 from bugtracker.utility import get_token_object_by_token, token_invalid, get_usr_to_org_by_user_id_and_org_id, \
     get_org_object, get_all_org_user_is_part_off, get_project_from_project_id
@@ -30,13 +31,21 @@ class Project(APIView):
                 "message": "Missing parameters! token, project_name and organization_id are required",
                 "status": status.HTTP_400_BAD_REQUEST
             })
+
         token_obj = get_token_object_by_token(data['token'])
         if token_obj is None:
             return JsonResponse({
                 "message": "Invalid User!",
                 "status": status.HTTP_401_UNAUTHORIZED
             })
+
         user_object = token_obj.authorized_user
+        if not user_object.is_admin:
+            return JsonResponse({
+                "message": "Unauthorized! Only an admin can perform this operation!",
+                "status": status.HTTP_401_UNAUTHORIZED
+            })
+
         org_object = get_org_object(data["organization_id"])
         if org_object is None:
             return JsonResponse({
@@ -150,7 +159,7 @@ class Project(APIView):
 
             for project_entry in all_projects_queryset:
                 # get project updated information from project_entry value
-                project_updated_queryset = ProjectUpdate.objects.all().filter(project=project_entry.pk)
+                project_updated_queryset = ProjectUpdate.objects.filter(project=project_entry.pk)
                 project_updated_info = list()
                 for single_project_update_entry in project_updated_queryset:
                     project_updated_info.append({
@@ -212,6 +221,11 @@ class Project(APIView):
                 "status": status.HTTP_401_UNAUTHORIZED
             })
         user_object = token_obj.authorized_user
+        if not user_object.is_admin:
+            return JsonResponse({
+                "message": "Unauthorized! Only an admin can perform this operation!",
+                "status": status.HTTP_401_UNAUTHORIZED
+            })
 
         # get the organization from the project and see user is allowed in this organization.
         project_obj = get_project_from_project_id(project_id)  # Need to change this project
@@ -220,9 +234,6 @@ class Project(APIView):
                 "message": "Invalid!!",
                 "status": status.HTTP_400_BAD_REQUEST
             })
-        # print("--------------------------")
-        # print(project_obj)
-        # print("--------------------------")
         organization = get_org_object(str(project_obj.organization.org_id))
         if organization is None:
             return JsonResponse({
@@ -230,7 +241,7 @@ class Project(APIView):
                 "status": status.HTTP_400_BAD_REQUEST
             })
         user_to_org_obj = get_usr_to_org_by_user_id_and_org_id(str(user_object.user_id),
-                                                               str(organization.org_id))
+                                                               str(organization.pk))
         if user_to_org_obj is None or user_to_org_obj.count() == 0:
             return JsonResponse({
                 "message": "Invalid! User is not part of this organization!",
@@ -250,7 +261,7 @@ class Project(APIView):
                     "status": status.HTTP_400_BAD_REQUEST
                 })
             user_to_org_obj = get_usr_to_org_by_user_id_and_org_id(str(user_object.user_id),
-                                                                   str(new_organization.org_id))
+                                                                   str(new_organization.pk))
             if user_to_org_obj is not None:
                 # user is allowed to change the organization of this project
                 if user_to_org_obj.count() != 0:
@@ -332,3 +343,76 @@ class Project(APIView):
                 "message": "Invalid! project [update] failed validation",
                 "status": status.HTTP_409_CONFLICT
             })
+
+    # --------------------------------------------------------
+    # --------------------------------------------------------
+    # --------------------------------------------------------
+    # --------------------------------------------------------
+    # --------------------------------------------------------
+    # --------------------------------------------------------
+    # --------------------------------------------------------
+    # --------------------------------------------------------
+    # --------------------------------------------------------
+    def delete(self, request, pk):
+        project_id = pk
+        data = request.data
+
+        if 'token' not in data:
+            return JsonResponse({
+                "message": "Missing mandatory parameters! token is required",
+                "status": status.HTTP_401_UNAUTHORIZED
+            })
+
+        token_obj = get_token_object_by_token(data['token'])
+        if token_obj is None:
+            return JsonResponse({
+                "message": "Invalid User!",
+                "status": status.HTTP_401_UNAUTHORIZED
+            })
+        user_object = token_obj.authorized_user
+        if not user_object.is_admin:
+            return JsonResponse({
+                "message": "Unauthorized! Only an admin can perform this operation!",
+                "status": status.HTTP_401_UNAUTHORIZED
+            })
+
+        # get the organization from the project and see user is allowed in this organization.
+        project_obj = get_project_from_project_id(project_id)  # Need to change this project
+        if project_obj is None:
+            return JsonResponse({
+                "message": "Invalid! This project does not exist!",
+                "status": status.HTTP_400_BAD_REQUEST
+            })
+
+        organization = get_org_object(str(project_obj.organization.org_id))
+        if organization is None:
+            return JsonResponse({
+                "message": "Invalid! Organization is not found!",
+                "status": status.HTTP_400_BAD_REQUEST
+            })
+
+        user_to_org_obj = get_usr_to_org_by_user_id_and_org_id(str(user_object.user_id),
+                                                               str(organization.pk))
+        if user_to_org_obj is None or user_to_org_obj.count() == 0:
+            return JsonResponse({
+                "message": "Invalid! User is not part of this organization!",
+                "status": status.HTTP_401_UNAUTHORIZED
+            })
+
+        project_updated_queryset = ProjectUpdate.objects.filter(project=project_obj.pk).delete()
+        project_token_status = ProjectToken.objects.filter(project=project_obj.pk).delete()
+        state = project_obj.delete()
+
+        if project_updated_queryset is None or project_token_status is None or state is None:
+            return JsonResponse({
+                "message": "An error occurred while deleting your project.",
+                "status": status.HTTP_205_RESET_CONTENT
+            })
+
+        return JsonResponse({
+            "project_status": "Project: {} deleted".format(project_obj.project_name),
+            "project_updated_status": "Removed",
+            "project_token_status": "Project token for: {} has been removed".format( project_obj.project_name),
+            "message": "Project deleted",
+            "status": status.HTTP_202_ACCEPTED
+        })

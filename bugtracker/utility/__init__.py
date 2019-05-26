@@ -61,8 +61,8 @@ def get_token_object_by_token(user_token):
 def get_usr_to_org_by_user_id_and_org_id(user_id, org_primary_key):
     """
     returns UserToOrg mapping object with user_id and org_primary_key
+    :param org_primary_key: Primary key of organization table.
     :param user_id: current user_id
-    :param org_id: current org_id
     :return: UserToOrg or None
     """
     try:
