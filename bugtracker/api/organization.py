@@ -167,7 +167,7 @@ class Org(APIView):
     # --------------------------------------------------------
     # --------------------------------------------------------
     # --------------------------------------------------------
-    def get(self, request, pk = None):
+    def get(self, request, pk=None):
         token = request.GET.get('token', None)
         if token is None:
             return JsonResponse(token_invalid)
@@ -208,5 +208,5 @@ class Org(APIView):
                 "updated_at": org_obj.updated_at,
                 "total_members": UserToOrg.objects.filter(organization=org_obj.pk).count(),
                 "status": status.HTTP_200_OK,
-                }
+            }
             )

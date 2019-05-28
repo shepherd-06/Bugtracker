@@ -48,7 +48,10 @@ error_occurred = {
     "status": status.HTTP_500_INTERNAL_SERVER_ERROR
 }
 
-
+project_not_found = {
+    "message": "Invalid! Project not found",
+    "status": status.HTTP_400_BAD_REQUEST
+}
 
 
 def get_user_object(user_id):
