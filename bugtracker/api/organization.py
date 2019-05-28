@@ -4,7 +4,7 @@ from rest_framework import status
 from rest_framework.exceptions import ValidationError
 from rest_framework.views import APIView
 
-from bugtracker.model_managers.models import UserToOrg, Projects
+from bugtracker.model_managers.models import UserToOrg, Projects, Organisation
 from bugtracker.model_managers.serializer import OrgSerializer
 from bugtracker.utility import authorization_token_check, unauthorized_access, get_org_object, organization_not_found, \
     error_occurred, token_invalid, get_token_object_by_token, invalid_user
@@ -167,11 +167,46 @@ class Org(APIView):
     # --------------------------------------------------------
     # --------------------------------------------------------
     # --------------------------------------------------------
-    # def get(self, request):
-    #     token = request.GET.get('token', None)
-    #     if token is None:
-    #         return JsonResponse(token_invalid)
-    #
-    #     token_obj = get_token_object_by_token(token)
-    #     if token_obj is None:
-    #         return JsonResponse(invalid_user)
+    def get(self, request, pk = None):
+        token = request.GET.get('token', None)
+        if token is None:
+            return JsonResponse(token_invalid)
+
+        token_obj = get_token_object_by_token(token)
+        if token_obj is None:
+            return JsonResponse(invalid_user)
+
+        if pk is None:
+            all_orgs = Organisation.objects.all()
+            payload = list()
+
+            for orgs in all_orgs:
+                total_members = UserToOrg.objects.filter(organization=orgs.pk).count()
+                payload.append({
+                    'org_id': orgs.org_id,
+                    "org_name": orgs.org_name,
+                    "created_by": orgs.created_by.user_email,
+                    "created_at": orgs.created_at,
+                    "updated_at": orgs.updated_at,
+                    "total_members": total_members,
+                })
+
+            return JsonResponse({
+                "payload": payload,
+                "status": status.HTTP_200_OK,
+            })
+        else:
+            org_obj = get_org_object(pk)
+            if org_obj is None:
+                return JsonResponse(organization_not_found)
+
+            return JsonResponse({
+                'org_id': org_obj.org_id,
+                "org_name": org_obj.org_name,
+                "created_by": org_obj.created_by.user_email,
+                "created_at": org_obj.created_at,
+                "updated_at": org_obj.updated_at,
+                "total_members": UserToOrg.objects.filter(organization=org_obj.pk).count(),
+                "status": status.HTTP_200_OK,
+                }
+            )

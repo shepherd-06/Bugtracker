@@ -19,5 +19,5 @@ urlpatterns = [
     path('project/', Project.as_view(), name='project_cr'),
     path('project/<str:pk>', Project.as_view(), name='project_update_delete'),
     path('org/', Org.as_view(), name='organization'),
-    path('org/<str:pk>', Org.as_view(), name='organization_update_delete'),
+    path('org/<str:pk>/', Org.as_view(), name='organization_update_delete'),
 ]
