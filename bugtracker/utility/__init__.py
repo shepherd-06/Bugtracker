@@ -1,6 +1,7 @@
 import uuid
 
 from django.core.exceptions import ValidationError
+from django.http import JsonResponse
 from rest_framework import status
 
 from bugtracker.model_managers.models import UserToken, User, UserToOrg, Organisation, Projects
@@ -16,6 +17,38 @@ token_invalid = {
     'status_code': -101,
     'status': status.HTTP_401_UNAUTHORIZED
 }
+
+unauthorized_access = {
+    "message": "Unauthorized! Only an admin can perform this operation!",
+    "status": status.HTTP_401_UNAUTHORIZED
+}
+
+missing_token_parameter = {
+    "message": "Missing mandatory parameters! token is required",
+    "status": status.HTTP_401_UNAUTHORIZED
+}
+
+invalid_user = {
+    "message": "Invalid User!",
+    "status": status.HTTP_401_UNAUTHORIZED
+}
+
+organization_not_found = {
+    "message": "Invalid! Organization is not found!",
+    "status": status.HTTP_400_BAD_REQUEST
+}
+
+user_not_part_of_org = {
+    "message": "Invalid! User is not part of this organization!",
+    "status": status.HTTP_401_UNAUTHORIZED
+}
+
+error_occurred = {
+    "message": "An error occurred!",
+    "status": status.HTTP_500_INTERNAL_SERVER_ERROR
+}
+
+
 
 
 def get_user_object(user_id):
@@ -122,3 +155,19 @@ def get_project_from_project_id(project_id: str):
         return None
     except ValueError:
         return None
+
+
+def authorization_token_check(data: dict):
+    """
+    checks the validity of auth token of any request. Returns either JSON response for invalid token
+    or User model object
+    :param data: incoming request
+    :return:
+    """
+    if 'token' not in data:
+        return JsonResponse(missing_token_parameter)
+
+    token_obj = get_token_object_by_token(data['token'])
+    if token_obj is None:
+        return JsonResponse(invalid_user)
+    return token_obj

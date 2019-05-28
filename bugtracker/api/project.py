@@ -6,7 +6,8 @@ from rest_framework.views import APIView
 from bugtracker.model_managers.models import ProjectToken
 from bugtracker.model_managers.serializer import ProjectSerializer, ProjectUpdateSerializer, Projects, ProjectUpdate
 from bugtracker.utility import get_token_object_by_token, token_invalid, get_usr_to_org_by_user_id_and_org_id, \
-    get_org_object, get_all_org_user_is_part_off, get_project_from_project_id
+    get_org_object, get_all_org_user_is_part_off, get_project_from_project_id, unauthorized_access, \
+    missing_token_parameter, invalid_user, organization_not_found, user_not_part_of_org
 
 
 class Project(APIView):
@@ -358,23 +359,14 @@ class Project(APIView):
         data = request.data
 
         if 'token' not in data:
-            return JsonResponse({
-                "message": "Missing mandatory parameters! token is required",
-                "status": status.HTTP_401_UNAUTHORIZED
-            })
+            return JsonResponse(missing_token_parameter)
 
         token_obj = get_token_object_by_token(data['token'])
         if token_obj is None:
-            return JsonResponse({
-                "message": "Invalid User!",
-                "status": status.HTTP_401_UNAUTHORIZED
-            })
+            return JsonResponse(invalid_user)
         user_object = token_obj.authorized_user
         if not user_object.is_admin:
-            return JsonResponse({
-                "message": "Unauthorized! Only an admin can perform this operation!",
-                "status": status.HTTP_401_UNAUTHORIZED
-            })
+            return JsonResponse(unauthorized_access)
 
         # get the organization from the project and see user is allowed in this organization.
         project_obj = get_project_from_project_id(project_id)  # Need to change this project
@@ -386,18 +378,12 @@ class Project(APIView):
 
         organization = get_org_object(str(project_obj.organization.org_id))
         if organization is None:
-            return JsonResponse({
-                "message": "Invalid! Organization is not found!",
-                "status": status.HTTP_400_BAD_REQUEST
-            })
+            return JsonResponse(organization_not_found)
 
         user_to_org_obj = get_usr_to_org_by_user_id_and_org_id(str(user_object.user_id),
                                                                str(organization.pk))
         if user_to_org_obj is None or user_to_org_obj.count() == 0:
-            return JsonResponse({
-                "message": "Invalid! User is not part of this organization!",
-                "status": status.HTTP_401_UNAUTHORIZED
-            })
+            return JsonResponse(user_not_part_of_org)
 
         project_updated_queryset = ProjectUpdate.objects.filter(project=project_obj.pk).delete()
         project_token_status = ProjectToken.objects.filter(project=project_obj.pk).delete()

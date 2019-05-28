@@ -33,6 +33,12 @@ class ProjectUpdateSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
+class OrgSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Organisation
+        fields = "__all__"
+
+
 class UserRegistrationSerializer(serializers.ModelSerializer):
     user_email = serializers.EmailField()
 

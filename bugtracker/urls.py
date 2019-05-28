@@ -4,6 +4,7 @@ from django.views.generic import TemplateView
 from bugtracker.api.errors import Error
 from bugtracker.api.login import Login
 from bugtracker.api.logout import Logout
+from bugtracker.api.organization import Org
 from bugtracker.api.project import Project
 from bugtracker.api.registration import UserRegistration
 from bugtracker.api.token_renew import UserTokenRenew
@@ -17,4 +18,6 @@ urlpatterns = [
     path('user_renew/', UserTokenRenew.as_view(), name='user_token_renew'),
     path('project/', Project.as_view(), name='project_cr'),
     path('project/<str:pk>', Project.as_view(), name='project_update_delete'),
+    path('org/', Org.as_view(), name='organization'),
+    path('org/<str:pk>', Org.as_view(), name='organization_update_delete'),
 ]
