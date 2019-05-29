@@ -3,10 +3,10 @@ from rest_framework import serializers
 from bugtracker.model_managers.models import *
 
 
-class TokenSerializer(serializers.ModelSerializer):
+class ProjectTokenSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProjectToken
-        fields = ('project', 'token', 'refresh_token', 'time_to_live')
+        fields = "__all__"
 
 
 class ErrorSerializer(serializers.ModelSerializer):

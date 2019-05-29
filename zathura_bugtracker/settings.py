@@ -125,4 +125,6 @@ STATIC_URL = '/static/'
 LOGIN_REDIRECT_URL = 'home'  # Login Redirect Uri
 LOGOUT_REDIRECT_URL = 'home'  # Logout Redirection Uri
 
+APPEND_SLASH = False
+
 # AUTH_USER_MODEL = 'bugtracker.User'

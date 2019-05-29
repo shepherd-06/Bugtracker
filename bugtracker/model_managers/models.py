@@ -150,7 +150,7 @@ class ProjectUpdate(models.Model):
 
 class ProjectToken(models.Model):
     _id = models.UUIDField(primary_key=True, blank=True)
-    project = models.ForeignKey(Projects, on_delete=models.CASCADE)
+    project = models.OneToOneField(Projects, on_delete=models.CASCADE, unique=True)
     token = models.UUIDField(unique=True, blank=True)
     refresh_token = models.UUIDField(unique=True, blank=True)
     generated_at = models.DateTimeField(blank=True)
@@ -164,17 +164,16 @@ class ProjectToken(models.Model):
         verbose_name_plural = "Project Access Token"
 
     def save(self, *args, **kwargs):
-        self._id = uuid4()
+        print(**kwargs)
+        print(*args)
+        if self._id is None:
+            self._id = uuid4()
+            self.generated_at = timezone.now()
+
         self.token = uuid4()
         self.refresh_token = uuid4()
-        self.generated_at = timezone.now()
         self.updated_at = timezone.now()
         super().save(*args, **kwargs)  # Call the "real" save() method.
-
-    def _do_update(self, *args, **kwargs):
-        # Some Business Logic
-        self.updated_at = timezone.now()
-        super()._do_update(*args, **kwargs)
 
 
 class Errors(models.Model):

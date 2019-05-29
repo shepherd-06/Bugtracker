@@ -19,7 +19,7 @@ token_invalid = {
 }
 
 unauthorized_access = {
-    "message": "Unauthorized! Only an admin can perform this operation!",
+    "message": "Unauthorized! Only an admin or an user with permission can perform this operation!",
     "status": status.HTTP_401_UNAUTHORIZED
 }
 
@@ -102,8 +102,8 @@ def get_usr_to_org_by_user_id_and_org_id(user_id, org_primary_key):
     :return: UserToOrg or None
     """
     try:
-        return UserToOrg.objects.filter(organization=uuid.UUID(org_primary_key),
-                                        user=uuid.UUID(user_id))
+        return UserToOrg.objects.filter(organization=uuid.UUID(str(org_primary_key)),
+                                        user=uuid.UUID(str(user_id)))
     except UserToOrg.DoesNotExist:
         return None
     except ValidationError:
@@ -119,7 +119,7 @@ def get_all_org_user_is_part_off(user_id: str):
     :return:
     """
     try:
-        return UserToOrg.objects.filter(user=uuid.UUID(user_id))
+        return UserToOrg.objects.filter(user=uuid.UUID(str(user_id)))
     except UserToOrg.DoesNotExist:
         return None
     except ValidationError:
