@@ -9,6 +9,7 @@ from bugtracker.api.project import Project
 from bugtracker.api.project_token import ProjectTokenCRUD
 from bugtracker.api.registration import UserRegistration
 from bugtracker.api.token_renew import UserTokenRenew
+from bugtracker.api.user_creation_by_admin import UserCreation
 
 urlpatterns = [
     path('', TemplateView.as_view(template_name='home.html'), name='home'),
@@ -23,4 +24,6 @@ urlpatterns = [
     path('org/<str:pk>/', Org.as_view(), name='organization_update_delete'),
     path('project_token_renew/', ProjectTokenCRUD.as_view()),
     path('project_token_renew/<str:project_token>/', ProjectTokenCRUD.as_view()),
+    path('user_creation/', UserCreation.as_view()),
+    path('user_creation/<str:user_email>/', UserCreation.as_view()),
 ]
