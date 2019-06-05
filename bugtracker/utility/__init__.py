@@ -4,7 +4,7 @@ from django.core.exceptions import ValidationError
 from django.http import JsonResponse
 from rest_framework import status
 
-from bugtracker.model_managers.models import UserToken, User, UserToOrg, Organisation, Projects
+from bugtracker.model_managers.models import UserToken, User, UserToOrg, Organisation, Projects, ProjectToken
 
 token_expired = {
     'message': 'token_expired',
@@ -53,6 +53,11 @@ project_not_found = {
     "status": status.HTTP_400_BAD_REQUEST
 }
 
+error_not_found = {
+    "message": "Invalid. This particular error entry does not exist.",
+    "status": status.HTTP_404_NOT_FOUND
+}
+
 
 def get_user_object(user_id):
     try:
@@ -82,9 +87,22 @@ def get_user_token(user):
 
 def get_token_object_by_token(user_token):
     try:
-        token_obj = UserToken.objects.get(token=uuid.UUID(user_token))
+        token_obj = UserToken.objects.get(token=uuid.UUID(str(user_token)))
         return token_obj
     except UserToken.DoesNotExist:
+        # User Token does not exist
+        return None
+    except ValidationError:
+        # User Token does not exist
+        return None
+    except ValueError:
+        return None
+
+
+def get_project_token_object_by_token(project_token):
+    try:
+        return ProjectToken.objects.get(token=uuid.UUID(str(project_token)))
+    except ProjectToken.DoesNotExist:
         # User Token does not exist
         return None
     except ValidationError:

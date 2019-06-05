@@ -196,15 +196,11 @@ class Errors(models.Model):
         return self.error_name
 
     def save(self, *args, **kwargs):
-        self._id = uuid4()
-        self.logged_at = timezone.now()
+        if self._id is None:
+            self._id = uuid4()
+            self.logged_at = timezone.now()
         self.updated_at = timezone.now()
         super().save(*args, **kwargs)  # Call the "real" save() method.
-
-    def _do_update(self, *args, **kwargs):
-        # Some Business Logic
-        self.updated_at = timezone.now()
-        super()._do_update(*args, **kwargs)
 
 
 class ErrorStatus(models.Model):
@@ -220,7 +216,8 @@ class ErrorStatus(models.Model):
         verbose_name_plural = "Error User connecting Table"
 
     def save(self, *args, **kwargs):
-        self.resolved_at = timezone.now()
+        if self.pk is None:
+            self.resolved_at = timezone.now()
         self.updated_at = timezone.now()
         super().save(*args, **kwargs)  # Call the "real" save() method.
 
