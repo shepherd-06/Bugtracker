@@ -15,6 +15,12 @@ class ErrorSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
+class ErrorStatusSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ErrorStatus
+        fields = "__all__"
+
+
 class UserTokenSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserToken

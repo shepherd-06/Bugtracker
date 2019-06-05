@@ -5,9 +5,10 @@ from rest_framework import status
 from rest_framework.views import APIView
 
 from bugtracker.model_managers.models import Errors, ErrorStatus
-from bugtracker.model_managers.serializer import ErrorSerializer
+from bugtracker.model_managers.serializer import ErrorSerializer, ErrorStatusSerializer
 from bugtracker.utility import get_token_object_by_token, get_project_token_object_by_token, token_invalid, \
-    error_occurred, invalid_user, error_not_found, get_project_from_project_id
+    error_occurred, invalid_user, error_not_found, get_project_from_project_id, missing_token_parameter, \
+    unauthorized_access, get_error_object_from_error_id
 
 
 class ErrorLog(APIView):
@@ -108,7 +109,6 @@ class ErrorLog(APIView):
         token_obj = get_token_object_by_token(token)
         if token_obj is None:
             return JsonResponse(invalid_user)
-        user_object = token_obj.authorized_user
 
         if error_pk is not None:
             # get a single error_obj and return it.
@@ -126,6 +126,7 @@ class ErrorLog(APIView):
                     })
 
                 return JsonResponse({
+                    "error_id": error_object.pk,
                     "error_name": error_object.error_name,
                     "description": error_object.error_description,
                     "origin": error_object.point_of_origin,
@@ -156,6 +157,7 @@ class ErrorLog(APIView):
                         "updated_at": entry.updated_at,
                     })
                 payload.append({
+                    "error_id": single_error.pk,
                     "error_name": single_error.error_name,
                     "description": single_error.error_description,
                     "origin": single_error.point_of_origin,
@@ -170,3 +172,141 @@ class ErrorLog(APIView):
                 "status": status.HTTP_200_OK,
                 "errors": payload
             })
+
+    def put(self, request, error_pk):
+        """
+
+        :param request:
+        :param error_pk:
+        :return:
+        """
+        data = request.data
+
+        if 'token' not in data:
+            return JsonResponse(missing_token_parameter)
+
+        if "error_name" not in data \
+                and "description" not in data \
+                and "origin" not in data \
+                and "warning_level" not in data \
+                and "is_resolved" not in data \
+                and "reference_project" not in data:
+            # This condition has an error! Be Ware!
+            return JsonResponse({
+                "message": "Missing optional field. One of them must be present. "
+                           "error_name, description, origin, warning_level, is_resolved, reference_project",
+                "status": status.HTTP_400_BAD_REQUEST
+            })
+        token_obj = get_token_object_by_token(data['token'])
+        if token_obj is None:
+            return JsonResponse(invalid_user)
+
+        user_object = token_obj.authorized_user
+
+        if error_pk is None:
+            return JsonResponse(error_not_found)
+
+        error_object = get_error_object_from_error_id(error_pk)
+        if error_object is None:
+            return JsonResponse(error_not_found)
+
+        if "error_name" in data:
+            error_object.error_name = data["error_name"]
+
+        if "description" in data:
+            error_object.error_description = data["description"]
+
+        if "origin" in data:
+            error_object.point_of_origin = data["origin"]
+
+        if "warning_level" in data:
+            error_object.warning_level = data["warning_level"]
+
+        if "is_resolved" in data:
+            error_object.is_resolved = data["is_resolved"]
+
+        if "reference_project" in data:
+            error_object.reference_project = get_project_from_project_id(data['reference_project'])
+
+        # TODO: check what happens if I failed validation on error_name, description or origin field
+        error_object.save()
+
+        payload = {
+            "error": error_object,
+            "resolved_by": user_object,
+        }
+        error_status_serializer = ErrorStatusSerializer(data=payload)
+        if error_status_serializer.is_valid():
+            error_status_serializer.save()
+
+            error_updates = list()
+            # get the objects from ErrorStatus table
+
+            error_status_queryset = ErrorStatus.objects.filter(error=error_object.pk)
+            for entry in error_status_queryset:
+                error_updates.append({
+                    "resolved_by": entry.resolved_by,
+                    "resolved_at": entry.resolved_at,
+                    "updated_at": entry.updated_at,
+                })
+
+            return JsonResponse({
+                "error_id": error_object.pk,
+                "error_name": error_object.error_name,
+                "description": error_object.error_description,
+                "origin": error_object.point_of_origin,
+                "logged_at": error_object.logged_at,
+                "is_resolved": error_object.is_resolved,
+                "issued_by": error_object.issued_by,
+                "warning_level": error_object.warning_level,
+                "reference_project": error_object.reference_project,
+                "updates": error_updates,
+                "status": status.HTTP_200_OK
+            })
+        else:
+            return JsonResponse({
+                "message": "An error occurred. {}".format(error_status_serializer.errors),
+                "status": status.HTTP_406_NOT_ACCEPTABLE
+            })
+
+    def delete(self, request, error_pk):
+        """
+        TODO: enable multiple entry delete
+        only an admin can delete a error_entry
+        :param request:
+        :param error_pk: primary key of this particular error_object
+        :return:
+        """
+        data = request.data
+        if 'token' not in data:
+            return JsonResponse(missing_token_parameter)
+
+        token_obj = get_token_object_by_token(data['token'])
+        if token_obj is None:
+            return JsonResponse(invalid_user)
+        user_object = token_obj.authorized_user
+        if not user_object.is_admin:
+            return JsonResponse(unauthorized_access)
+
+        if error_pk is None:
+            return JsonResponse(error_not_found)
+
+        error_object = get_error_object_from_error_id(error_pk)
+        if error_object is None:
+            return JsonResponse(error_not_found)
+
+        # Remove all the entry from ErrorStatus table
+        all_error_status = ErrorStatus.objects.filter(error=error_object.pk)
+        for entry in all_error_status:
+            entry.delete()
+
+        # now delete the actual entry.
+        error_object.delete()
+
+        if get_error_object_from_error_id(error_pk) is None:
+            return JsonResponse({
+                "message": "successfully deleted error",
+                "status": status.HTTP_202_ACCEPTED
+            })
+        else:
+            return JsonResponse(error_occurred)

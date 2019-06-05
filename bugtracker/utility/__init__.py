@@ -4,7 +4,7 @@ from django.core.exceptions import ValidationError
 from django.http import JsonResponse
 from rest_framework import status
 
-from bugtracker.model_managers.models import UserToken, User, UserToOrg, Organisation, Projects, ProjectToken
+from bugtracker.model_managers.models import UserToken, User, UserToOrg, Organisation, Projects, ProjectToken, Errors
 
 token_expired = {
     'message': 'token_expired',
@@ -192,3 +192,17 @@ def authorization_token_check(data: dict):
     if token_obj is None:
         return JsonResponse(invalid_user)
     return token_obj
+
+
+def get_error_object_from_error_id(error_id: str):
+    """
+    returns error_object from error_id
+    :param error_id: primary key of Errors tables
+    :return: Errors Object
+    """
+    try:
+        return Errors.objects.get(_id=uuid.UUID(error_id))
+    except Errors.DoesNotExist:
+        return None
+    except ValueError:
+        return None
