@@ -69,3 +69,9 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         if User.objects.filter(user_email=value).exists():
             raise serializers.ValidationError('Email already in use, please use a different email address.')
         return value
+
+
+class InvitationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Invitation
+        fields = "__all__"

@@ -243,7 +243,21 @@ class Logs(models.Model):
         self.updated_at = timezone.now()
         super().save(*args, **kwargs)  # Call the "real" save() method.
 
-    def _do_update(self, *args, **kwargs):
-        # Some Business Logic
-        self.updated_at = timezone.now()
-        super()._do_update(*args, **kwargs)
+
+class Invitation(models.Model):
+    user_email = models.EmailField(unique=True)
+    invited_at = models.DateTimeField(blank=True)
+    invited_by = models.ForeignKey(User, on_delete=models.PROTECT)
+    is_used = models.BooleanField(blank=True)
+
+    def __str__(self):
+        return "User: {} | Invited by {}".format(self.user_email, self.invited_by.user_email)
+
+    class Meta:
+        verbose_name_plural = "Invitation"
+
+    def save(self, *args, **kwargs):
+        if self.pk is None:
+            self.invited_at = timezone.now()
+            self.is_used = False
+        super().save(*args, **kwargs)  # Call the "real" save() method.
