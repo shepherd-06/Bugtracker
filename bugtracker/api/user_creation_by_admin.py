@@ -81,31 +81,31 @@ class UserCreation(APIView):
         else:
             return JsonResponse(unauthorized_access)
 
-    # def delete(self, request, user_email):
-    #     data = request.data
-    #     token_obj = authorization_token_check(data)
-    #     if type(token_obj) == JsonResponse:
-    #         return token_obj
-    #
-    #     user_obj = token_obj.authorized_user
-    #
-    #     if not user_obj.is_admin:
-    #         return JsonResponse(unauthorized_access)
-    #
-    #     invitation_obj = Invitation.objects.get(user_email=user_email)
-    #
-    #     if invitation_obj is None:
-    #         return JsonResponse({
-    #             "message": "{} does not exist".format(user_email),
-    #             "status": status.HTTP_400_BAD_REQUEST
-    #         })
-    #     else:
-    #         invitation_obj.delete()
-    #
-    #         if Invitation.objects.filter(user_email=user_email).count() != 0:
-    #             return JsonResponse(error_occurred)
-    #         else:
-    #             return JsonResponse({
-    #                 "message": "Invitation for {} has been deleted".format(user_email),
-    #                 "status": status.HTTP_202_ACCEPTED
-    #             })
+    def delete(self, request, user_email):
+        data = request.data
+        token_obj = authorization_token_check(data)
+        if type(token_obj) == JsonResponse:
+            return token_obj
+
+        user_obj = token_obj.authorized_user
+
+        if not user_obj.is_admin:
+            return JsonResponse(unauthorized_access)
+
+        invitation_obj = Invitation.objects.get(user_email=user_email)
+
+        if invitation_obj is None:
+            return JsonResponse({
+                "message": "{} does not exist".format(user_email),
+                "status": status.HTTP_400_BAD_REQUEST
+            })
+        else:
+            invitation_obj.delete()
+
+            if Invitation.objects.filter(user_email=user_email).count() != 0:
+                return JsonResponse(error_occurred)
+            else:
+                return JsonResponse({
+                    "message": "Invitation for {} has been deleted".format(user_email),
+                    "status": status.HTTP_202_ACCEPTED
+                })

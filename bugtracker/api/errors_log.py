@@ -31,7 +31,7 @@ class ErrorLog(APIView):
         """
         data = request.data
 
-        if 'token' not in data or 'project_token' not in data:
+        if 'token' not in data and 'project_token' not in data:
             # un-authorized
             return JsonResponse(
                 {
@@ -54,18 +54,19 @@ class ErrorLog(APIView):
 
         payload = dict()
         if 'token' in data:
-            payload['issued_by'] = authorization_data.authorized_user
+            payload['issued_by'] = authorization_data.authorized_user.pk
+            if 'project_token' in data:
+                # get the reference project object from the database using the UUID of the project
+                project_token_obj = get_project_token_object_by_token(data['project_token'])
+                if project_token_obj is not None:
+                    payload['reference_project'] = project_token_obj.project.pk
         else:
-            payload['reference_project'] = authorization_data.project
+            payload['reference_project'] = authorization_data.project.pk
 
         payload['error_name'] = data['error_name']
         payload['error_description'] = data['description']
         payload['error_description'] = data['description']
         payload['point_of_origin'] = data['origin']
-
-        if 'reference_project' in data:
-            # get the reference project object from the database using the UUID of the project
-            payload['reference_project'] = get_project_from_project_id(data['reference_project'])
 
         if 'warning_level' in data:
             payload['warning_level'] = data['warning_level']
@@ -82,8 +83,8 @@ class ErrorLog(APIView):
                     "description": error_log_obj.error_description,
                     "origin": error_log_obj.point_of_origin,
                     "logged_at": error_log_obj.logged_at,
-                    "issued_by": error_log_obj.issued_by,
-                    "reference_project": error_log_obj.reference_project,
+                    "issued_by": error_log_obj.issued_by.user_email if error_log_obj.issued_by is not None else None,
+                    "reference_project": error_log_obj.reference_project.project_name,
                     "warning_level": error_log_obj.warning_level,
                 })
             else:
@@ -120,7 +121,7 @@ class ErrorLog(APIView):
                 error_status_queryset = ErrorStatus.objects.filter(error=error_object.pk)
                 for entry in error_status_queryset:
                     error_updates.append({
-                        "resolved_by": entry.resolved_by,
+                        "resolved_by": entry.resolved_by.user_email,
                         "resolved_at": entry.resolved_at,
                         "updated_at": entry.updated_at,
                     })
@@ -132,9 +133,9 @@ class ErrorLog(APIView):
                     "origin": error_object.point_of_origin,
                     "logged_at": error_object.logged_at,
                     "is_resolved": error_object.is_resolved,
-                    "issued_by": error_object.issued_by,
+                    "issued_by": error_object.issued_by.user_email if error_object.issued_by is not None else None,
                     "warning_level": error_object.warning_level,
-                    "reference_project": error_object.reference_project,
+                    "reference_project": error_object.reference_project.project_name if error_object.reference_project is not None else None,
                     "updates": error_updates,
                     "status": status.HTTP_200_OK
                 })
@@ -152,7 +153,7 @@ class ErrorLog(APIView):
                 error_status_queryset = ErrorStatus.objects.filter(error=single_error.pk)
                 for entry in error_status_queryset:
                     error_updates.append({
-                        "resolved_by": entry.resolved_by,
+                        "resolved_by": entry.resolved_by.user_email,
                         "resolved_at": entry.resolved_at,
                         "updated_at": entry.updated_at,
                     })
@@ -163,9 +164,9 @@ class ErrorLog(APIView):
                     "origin": single_error.point_of_origin,
                     "logged_at": single_error.logged_at,
                     "is_resolved": single_error.is_resolved,
-                    "issued_by": single_error.issued_by,
+                    "issued_by": single_error.issued_by.user_email if single_error.issued_by is not None else None,
                     "warning_level": single_error.warning_level,
-                    "reference_project": single_error.reference_project,
+                    "reference_project": single_error.reference_project.project_name if single_error.reference_project is not None else None,
                     "updates": error_updates
                 })
             return JsonResponse({
@@ -232,8 +233,8 @@ class ErrorLog(APIView):
         error_object.save()
 
         payload = {
-            "error": error_object,
-            "resolved_by": user_object,
+            "error": error_object.pk,
+            "resolved_by": user_object.pk,
         }
         error_status_serializer = ErrorStatusSerializer(data=payload)
         if error_status_serializer.is_valid():
@@ -245,7 +246,7 @@ class ErrorLog(APIView):
             error_status_queryset = ErrorStatus.objects.filter(error=error_object.pk)
             for entry in error_status_queryset:
                 error_updates.append({
-                    "resolved_by": entry.resolved_by,
+                    "resolved_by": entry.resolved_by.user_email,
                     "resolved_at": entry.resolved_at,
                     "updated_at": entry.updated_at,
                 })
@@ -257,9 +258,9 @@ class ErrorLog(APIView):
                 "origin": error_object.point_of_origin,
                 "logged_at": error_object.logged_at,
                 "is_resolved": error_object.is_resolved,
-                "issued_by": error_object.issued_by,
+                "issued_by": error_object.issued_by.user_email if error_object.issued_by is not None else None,
                 "warning_level": error_object.warning_level,
-                "reference_project": error_object.reference_project,
+                "reference_project": error_object.reference_project.project_name if error_object.reference_project is not None else None,
                 "updates": error_updates,
                 "status": status.HTTP_200_OK
             })
