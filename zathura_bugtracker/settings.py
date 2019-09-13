@@ -123,10 +123,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-LOGIN_REDIRECT_URL = 'home'  # Login Redirect Uri
-LOGOUT_REDIRECT_URL = 'home'  # Logout Redirection Uri
-
-APPEND_SLASH = False
+APPEND_SLASH = True
 
 AUTH_USER_MODEL = 'bugtracker.User'  # new
 

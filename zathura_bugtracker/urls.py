@@ -23,19 +23,13 @@ from rest_framework_swagger.views import get_swagger_view
 
 from zathura_bugtracker.settings import DEBUG
 
-schema_view = get_swagger_view(title='Zathura Bugtracker API')
 
 urlpatterns = [
     path('zathura/', include('bugtracker.urls')),
-    path('accounts/', include('django.contrib.auth.urls')),
-    path('', include('bugtracker.urls'), name='home'),
 ]
 
 if DEBUG:
     # Only add certain urls if it's in Debug mode.
     urlpatterns.append(
         path('admin/', admin.site.urls),
-    )
-    urlpatterns.append(
-        path("swagger/", schema_view),
     )

@@ -28,7 +28,7 @@ class Login(APIView):
     def post(self, request):
         data = request.data
         if 'email' not in data or 'password' not in data:
-            # error
+            # erroruser_name
             return JsonResponse({
                 "message": "Email/Password field is empty!",
                 "status": status.HTTP_400_BAD_REQUEST
