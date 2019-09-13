@@ -4,7 +4,7 @@ from django.core.exceptions import ValidationError
 from django.http import JsonResponse
 from rest_framework import status
 
-from bugtracker.model_managers.models import UserToken, User, UserToOrg, Organisation, Projects, ProjectToken, Errors
+from bugtracker.models import UserToken, User, UserToOrg, Organisation, Projects, ProjectToken, Errors
 
 token_expired = {
     'message': 'token_expired',

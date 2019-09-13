@@ -6,7 +6,7 @@ from rest_framework import status
 from rest_framework.views import APIView
 from uuid import uuid4
 
-from bugtracker.model_managers.models import User, UserToken
+from bugtracker.models import User, UserToken
 from bugtracker.model_managers.serializer import UserTokenSerializer
 from bugtracker.utility import get_user_token
 
@@ -16,7 +16,7 @@ class Login(APIView):
     @staticmethod
     def get_user_object(email):
         try:
-            user = User.objects.get(user_email=email)
+            user = User.objects.get(email=email)
             return user
         except User.DoesNotExist:
             # Token Invalid
@@ -35,6 +35,8 @@ class Login(APIView):
             })
 
         user = self.get_user_object(data['email'])
+        print(user.is_admin)
+        print(user.is_staff)
         if user is None:
             # error
             return JsonResponse({

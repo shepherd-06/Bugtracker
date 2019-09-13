@@ -4,7 +4,7 @@ from django.http import JsonResponse
 from rest_framework import status
 from rest_framework.views import APIView
 
-from bugtracker.model_managers.models import ProjectToken, Projects
+from bugtracker.models import ProjectToken, Projects
 from bugtracker.model_managers.serializer import ProjectTokenSerializer
 from bugtracker.utility import authorization_token_check, get_project_from_project_id, project_not_found, \
     get_usr_to_org_by_user_id_and_org_id, unauthorized_access, error_occurred, token_invalid, get_token_object_by_token, \

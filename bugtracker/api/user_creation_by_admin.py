@@ -2,7 +2,7 @@ from django.http import JsonResponse
 from rest_framework import status
 from rest_framework.views import APIView
 
-from bugtracker.model_managers.models import Invitation
+from bugtracker.models import Invitation
 from bugtracker.model_managers.serializer import InvitationSerializer
 from bugtracker.utility import authorization_token_check, unauthorized_access, token_invalid, get_token_object_by_token, \
     invalid_user, error_occurred

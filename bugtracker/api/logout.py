@@ -3,7 +3,7 @@ from django.http import JsonResponse
 from rest_framework import status
 from rest_framework.views import APIView
 
-from bugtracker.model_managers.models import UserToken
+from bugtracker.models import UserToken
 from bugtracker.utility import token_invalid
 
 

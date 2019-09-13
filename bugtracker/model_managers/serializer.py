@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from bugtracker.model_managers.models import *
+from bugtracker.models import *
 
 
 class ProjectTokenSerializer(serializers.ModelSerializer):

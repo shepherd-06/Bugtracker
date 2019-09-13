@@ -128,4 +128,8 @@ LOGOUT_REDIRECT_URL = 'home'  # Logout Redirection Uri
 
 APPEND_SLASH = False
 
-# AUTH_USER_MODEL = 'bugtracker.User'
+AUTH_USER_MODEL = 'bugtracker.User'  # new
+
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',  # default
+)

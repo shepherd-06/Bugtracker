@@ -4,7 +4,7 @@ from rest_framework import status
 from rest_framework.exceptions import ValidationError
 from rest_framework.views import APIView
 
-from bugtracker.model_managers.models import UserToOrg, Projects, Organisation
+from bugtracker.models import UserToOrg, Projects, Organisation
 from bugtracker.model_managers.serializer import OrgSerializer
 from bugtracker.utility import authorization_token_check, unauthorized_access, get_org_object, organization_not_found, \
     error_occurred, token_invalid, get_token_object_by_token, invalid_user

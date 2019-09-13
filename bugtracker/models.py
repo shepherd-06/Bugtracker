@@ -1,23 +1,26 @@
 from uuid import uuid4
 
-from django.contrib.auth.base_user import AbstractBaseUser
+from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils import timezone
-
+from uuid import uuid4
 # Create your models here.
 from bugtracker.model_managers.managers import MyUserManager
 
 
-class User(AbstractBaseUser):
-    user_id = models.UUIDField(unique=True, primary_key=True)
-    user_name = models.CharField(max_length=20, blank=False, null=False)
-    user_email = models.EmailField(unique=True)
-    created_at = models.DateTimeField()
-    updated_at = models.DateTimeField()
+class User(AbstractUser):
+    user_id = models.UUIDField(unique=True, primary_key=True, default=uuid4())
+    full_name = models.CharField(max_length=20, blank=False, null=False)
+    username = models.CharField(
+        unique=True, default=str(uuid4())[:12], max_length=12)
+    email = models.EmailField(unique=True)
+    updated_at = models.DateTimeField(default=timezone.now())
     is_admin = models.BooleanField(default=False)
-    objects = MyUserManager()
-    USERNAME_FIELD = 'user_email'
+    is_staff = models.BooleanField(default=False)
+
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ['c', 'username']
 
     class Meta:
         verbose_name_plural = "User"
@@ -25,7 +28,7 @@ class User(AbstractBaseUser):
         get_latest_by = ['created_at']
 
     def __str__(self):
-        return "{} - {}".format(self.user_name, self.user_email)
+        return "{} - {}".format(self.full_name, self.email)
 
 
 class Organisation(models.Model):
@@ -76,7 +79,8 @@ class UserToken(models.Model):
     refresh_token = models.UUIDField(unique=True, blank=True)
     generated_at = models.DateTimeField(blank=True)
     updated_at = models.DateTimeField(blank=True)
-    created_at = models.DateTimeField(blank=True, verbose_name="First entry time")
+    created_at = models.DateTimeField(
+        blank=True, verbose_name="First entry time")
     time_to_live = models.IntegerField(default=864000)
 
     class Meta:
@@ -126,7 +130,8 @@ class Projects(models.Model):
             raise ValidationError("Project name field is mandatory. Length of Project name cannot be more than 30 "
                                   "characters")
         if self.project_description is not None and len(self.project_description) > 500:
-            raise ValidationError("Project description can be null, but cannot exceed 500 characters, if given")
+            raise ValidationError(
+                "Project description can be null, but cannot exceed 500 characters, if given")
         super().save(*args, **kwargs)  # Call the "real" save() method.
 
 
@@ -150,7 +155,8 @@ class ProjectUpdate(models.Model):
 
 class ProjectToken(models.Model):
     _id = models.UUIDField(primary_key=True, blank=True)
-    project = models.OneToOneField(Projects, on_delete=models.CASCADE, unique=True)
+    project = models.OneToOneField(
+        Projects, on_delete=models.CASCADE, unique=True)
     token = models.UUIDField(unique=True, blank=True)
     refresh_token = models.UUIDField(unique=True, blank=True)
     generated_at = models.DateTimeField(blank=True)
@@ -184,9 +190,11 @@ class Errors(models.Model):
     logged_at = models.DateTimeField(blank=True)
     updated_at = models.DateTimeField(blank=True)
     is_resolved = models.BooleanField(default=False)
-    issued_by = models.ForeignKey(User, on_delete=models.PROTECT, blank=True, default=None, null=True)
+    issued_by = models.ForeignKey(
+        User, on_delete=models.PROTECT, blank=True, default=None, null=True)
     warning_level = models.IntegerField(default=-1, null=True, blank=True)
-    reference_project = models.ForeignKey(Projects, on_delete=models.PROTECT, default=None, null=True)
+    reference_project = models.ForeignKey(
+        Projects, on_delete=models.PROTECT, default=None, null=True)
 
     class Meta:
         ordering = ["logged_at"]
@@ -224,7 +232,8 @@ class ErrorStatus(models.Model):
 
 class Logs(models.Model):
     _id = models.UUIDField(primary_key=True, blank=True)
-    log_title = models.CharField(max_length=30, null=True, blank=True, default=None)
+    log_title = models.CharField(
+        max_length=30, null=True, blank=True, default=None)
     logs = models.TextField(max_length=1000, null=False)
     logged_at = models.DateTimeField(blank=True)
     updated_at = models.DateTimeField(blank=True)
