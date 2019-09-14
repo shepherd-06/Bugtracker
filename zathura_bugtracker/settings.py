@@ -39,7 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'bugtracker.apps.BugtrackerConfig',
     'ping_app.apps.PingAppConfig',
-    'rest_framework_swagger',
+    'rest_framework',
+    'guardian',
 ]
 
 MIDDLEWARE = [
@@ -129,4 +130,5 @@ AUTH_USER_MODEL = 'bugtracker.User'  # new
 
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',  # default
+    'guardian.backends.ObjectPermissionBackend',
 )

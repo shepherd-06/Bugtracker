@@ -26,6 +26,7 @@ class User(AbstractUser):
         verbose_name_plural = "User"
         # Latest by priority descending, order_date ascending.
         get_latest_by = ['created_at']
+        default_permissions = ('add', 'change', 'delete', 'view')
 
     def __str__(self):
         return "{} - {}".format(self.full_name, self.email)
@@ -41,6 +42,7 @@ class Organisation(models.Model):
 
     class Meta:
         verbose_name_plural = "Organisation"
+        default_permissions = ('add', 'change', 'delete', 'view')
 
     def __str__(self):
         return "{}".format(self.org_name)
@@ -120,6 +122,7 @@ class Projects(models.Model):
 
     class Meta:
         verbose_name_plural = "All Project name"
+        default_permissions = ('add', 'change', 'delete', 'view')
 
     def save(self, *args, **kwargs):
         if self._id is None:
@@ -147,6 +150,7 @@ class ProjectUpdate(models.Model):
 
     class Meta:
         verbose_name_plural = "Project & User connecting Table"
+        default_permissions = ('add', 'change', 'delete', 'view')
 
     def save(self, *args, **kwargs):
         self.updated_at = timezone.now()
@@ -168,6 +172,7 @@ class ProjectToken(models.Model):
 
     class Meta:
         verbose_name_plural = "Project Access Token"
+        default_permissions = ('add', 'change', 'delete', 'view')
 
     def save(self, *args, **kwargs):
         print(**kwargs)
