@@ -4,7 +4,8 @@ from django.core.exceptions import ValidationError
 from django.http import JsonResponse
 from rest_framework import status
 
-from bugtracker.models import UserToken, User, UserToOrg, Organisation, Projects, ProjectToken, Errors
+from bugtracker.models import (Errors, Organisation, Projects, ProjectToken,
+                               User, UserToken, UserToOrg)
 
 token_expired = {
     'message': 'token_expired',
@@ -91,11 +92,14 @@ def get_token_object_by_token(user_token):
         return token_obj
     except UserToken.DoesNotExist:
         # User Token does not exist
+        print("Token is a no go")
         return None
     except ValidationError:
         # User Token does not exist
+        print("Validation Error")
         return None
     except ValueError:
+        print("Value Error")
         return None
 
 
@@ -186,11 +190,11 @@ def authorization_token_check(data: dict):
     :return:
     """
     if 'token' not in data:
-        return JsonResponse(missing_token_parameter)
+        return JsonResponse(missing_token_parameter, status.HTTP_400_BAD_REQUEST)
 
     token_obj = get_token_object_by_token(data['token'])
     if token_obj is None:
-        return JsonResponse(invalid_user)
+        return JsonResponse(invalid_user, status=status.HTTP_401_UNAUTHORIZED)
     return token_obj
 
 

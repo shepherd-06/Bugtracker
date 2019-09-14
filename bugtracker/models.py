@@ -10,17 +10,16 @@ from bugtracker.model_managers.managers import MyUserManager
 
 
 class User(AbstractUser):
-    user_id = models.UUIDField(unique=True, primary_key=True, default=uuid4())
+    user_id = models.UUIDField(unique=True, primary_key=True)
     full_name = models.CharField(max_length=20, blank=False, null=False)
-    username = models.CharField(
-        unique=True, default=str(uuid4())[:12], max_length=12)
+    username = models.CharField(unique=True, max_length=12)
     email = models.EmailField(unique=True)
     updated_at = models.DateTimeField(default=timezone.now())
     is_admin = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['c', 'username']
+    REQUIRED_FIELDS = ['full_name', 'username']
 
     class Meta:
         verbose_name_plural = "User"
@@ -145,7 +144,7 @@ class ProjectUpdate(models.Model):
 
     def __str__(self):
         title = "Project name: {}, updated_by: {}".format(self.project.project_name,
-                                                          self.updated_by.user_email)
+                                                          self.updated_by.email)
         return title
 
     class Meta:
@@ -172,7 +171,6 @@ class ProjectToken(models.Model):
 
     class Meta:
         verbose_name_plural = "Project Access Token"
-        default_permissions = ('add', 'change', 'delete', 'view')
 
     def save(self, *args, **kwargs):
         print(**kwargs)

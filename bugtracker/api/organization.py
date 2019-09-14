@@ -4,10 +4,12 @@ from rest_framework import status
 from rest_framework.exceptions import ValidationError
 from rest_framework.views import APIView
 
-from bugtracker.models import UserToOrg, Projects, Organisation
 from bugtracker.model_managers.serializer import OrgSerializer
-from bugtracker.utility import authorization_token_check, unauthorized_access, get_org_object, organization_not_found, \
-    error_occurred, token_invalid, get_token_object_by_token, invalid_user
+from bugtracker.models import Organisation, Projects, UserToOrg
+from bugtracker.utility import (authorization_token_check, error_occurred,
+                                get_org_object, get_token_object_by_token,
+                                invalid_user, organization_not_found,
+                                token_invalid, unauthorized_access)
 
 
 class Org(APIView):
@@ -20,13 +22,13 @@ class Org(APIView):
 
         user_obj = token_obj.authorized_user
         if not user_obj.is_admin:
-            return JsonResponse(unauthorized_access)
+            return JsonResponse(unauthorized_access, status=status.HTTP_401_UNAUTHORIZED)
 
         if "org_name" not in data:
             return JsonResponse({
                 "message": "Missing mandatory parameter, {org_name}",
                 "status": status.HTTP_400_BAD_REQUEST
-            })
+            }, status=status.HTTP_400_BAD_REQUEST)
 
         payload = {
             "org_name": data["org_name"],
@@ -35,22 +37,30 @@ class Org(APIView):
 
         org_serializer = OrgSerializer(data=payload)
         if org_serializer.is_valid():
-            org_obj = org_serializer.save()
+            try:
+                org_obj = org_serializer.save()
 
-            return JsonResponse({
-                "message": "A new organization, [ {} ] has been created".format(org_obj.org_name),
-                "org_id": org_obj.org_id,
-                "org_name": org_obj.org_name,
-                "created_by": org_obj.created_by.user_email,
-                "created_at": org_obj.created_at,
-                "updated_at": org_obj.updated_at,
-                "status": status.HTTP_201_CREATED,
-            })
+                return JsonResponse({
+                    "message": "A new organization, [ {} ] has been created".format(org_obj.org_name),
+                    "org_id": org_obj.org_id,
+                    "org_name": org_obj.org_name,
+                    "created_by": org_obj.created_by.email,
+                    "created_at": org_obj.created_at,
+                    "updated_at": org_obj.updated_at,
+                    "status": status.HTTP_201_CREATED,
+                }, status=status.HTTP_201_CREATED)
+            except Exception: 
+                Organisation.objects.filter(org_id=org_obj.org_id).delete()
+                return JsonResponse({
+                    "message": "An error occurred! {}".format(org_serializer.errors),
+                    "status": status.HTTP_400_BAD_REQUEST
+                }, status=status.HTTP_400_BAD_REQUEST)
         else:
+            Organisation.objects.filter(org_id=org_obj.org_id).delete()
             return JsonResponse({
                 "message": "An error occurred! {}".format(org_serializer.errors),
                 "status": status.HTTP_406_NOT_ACCEPTABLE
-            })
+            }, status=status.HTTP_406_NOT_ACCEPTABLE)
 
     # --------------------------------------------------------
     # --------------------------------------------------------
@@ -131,7 +141,8 @@ class Org(APIView):
             return JsonResponse(organization_not_found)
 
         # see if there is any entry of this organization in project or error table
-        project_queryset = Projects.objects.filter(organization=organization.pk)
+        project_queryset = Projects.objects.filter(
+            organization=organization.pk)
         if project_queryset.count() > 0:
             # remove not possible
             return JsonResponse({
@@ -140,7 +151,8 @@ class Org(APIView):
             })
 
         # Delete all entry from User_To_Org entry
-        user_to_org_obj = UserToOrg.objects.filter(organization=organization.pk)
+        user_to_org_obj = UserToOrg.objects.filter(
+            organization=organization.pk)
         user_removed = 0
         for entry in user_to_org_obj:
             entry_delete = entry.delete()
@@ -181,7 +193,8 @@ class Org(APIView):
             payload = list()
 
             for orgs in all_orgs:
-                total_members = UserToOrg.objects.filter(organization=orgs.pk).count()
+                total_members = UserToOrg.objects.filter(
+                    organization=orgs.pk).count()
                 payload.append({
                     'org_id': orgs.org_id,
                     "org_name": orgs.org_name,

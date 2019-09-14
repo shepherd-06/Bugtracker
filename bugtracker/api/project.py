@@ -3,11 +3,18 @@ from django.http import JsonResponse
 from rest_framework import status
 from rest_framework.views import APIView
 
+from bugtracker.model_managers.serializer import (Projects, ProjectSerializer,
+                                                  ProjectUpdate,
+                                                  ProjectUpdateSerializer)
 from bugtracker.models import ProjectToken
-from bugtracker.model_managers.serializer import ProjectSerializer, ProjectUpdateSerializer, Projects, ProjectUpdate
-from bugtracker.utility import get_token_object_by_token, token_invalid, get_usr_to_org_by_user_id_and_org_id, \
-    get_org_object, get_all_org_user_is_part_off, get_project_from_project_id, unauthorized_access, \
-    missing_token_parameter, invalid_user, organization_not_found, user_not_part_of_org, project_not_found
+from bugtracker.utility import (get_all_org_user_is_part_off, get_org_object,
+                                get_project_from_project_id,
+                                get_token_object_by_token,
+                                get_usr_to_org_by_user_id_and_org_id,
+                                invalid_user, missing_token_parameter,
+                                organization_not_found, project_not_found,
+                                token_invalid, unauthorized_access,
+                                user_not_part_of_org)
 
 
 class Project(APIView):
@@ -50,7 +57,8 @@ class Project(APIView):
         if org_object is None:
             return JsonResponse(organization_not_found)
 
-        user_to_org_object = get_usr_to_org_by_user_id_and_org_id(str(user_object.user_id), str(org_object.pk))
+        user_to_org_object = get_usr_to_org_by_user_id_and_org_id(
+            str(user_object.user_id), str(org_object.pk))
         if user_to_org_object is None:
             return JsonResponse(user_not_part_of_org)
 
@@ -71,25 +79,31 @@ class Project(APIView):
                         "project": project._id,
                         "updated_by": user_object.user_id
                     }
-                    project_update_serializer = ProjectUpdateSerializer(data=payload)
+                    project_update_serializer = ProjectUpdateSerializer(
+                        data=payload)
                     if project_update_serializer.is_valid():
-                        project_update = project_update_serializer.save()
-                        if project_update.pk:
-                            # success
-                            return JsonResponse({
-                                "message": "successfully added a new project",
-                                "project_id": project.pk,
-                                "project_name": project.project_name,
-                                "description": project.project_description,
-                                "registered_at": project.registered_at,
-                                "registered_by": user_object.user_email,
-                                "organization": org_object.org_name,
-                                "updated_by": project_update.updated_by.user_email,
-                                "updated_at": project_update.updated_at,
-                                "status": status.HTTP_201_CREATED,
-                            })
-                        else:
-                            # Error
+                        try:
+                            project_update = project_update_serializer.save()
+                            if project_update.pk:
+                                # success
+                                return JsonResponse({
+                                    "message": "successfully added a new project",
+                                    "project_id": project.pk,
+                                    "project_name": project.project_name,
+                                    "description": project.project_description,
+                                    "registered_at": project.registered_at,
+                                    "registered_by": user_object.email,
+                                    "organization": org_object.org_name,
+                                    "updated_by": project_update.updated_by.email,
+                                    "updated_at": project_update.updated_at,
+                                    "status": status.HTTP_201_CREATED,
+                                })
+                            else:
+                                # Error
+                                Projects.objects.filter(
+                                    _id=project.pk).delete()
+                                return JsonResponse(self.failed_to_create_project)
+                        except Exception:
                             Projects.objects.filter(_id=project.pk).delete()
                             return JsonResponse(self.failed_to_create_project)
                     else:
@@ -124,20 +138,23 @@ class Project(APIView):
         user_object = token_obj.authorized_user
         # get all organization this user is a member off.
         if pk is None:
-            user_to_org_object = get_all_org_user_is_part_off(str(user_object.pk))
+            user_to_org_object = get_all_org_user_is_part_off(
+                str(user_object.pk))
             final_projects = list()
 
             for entry in user_to_org_object:
                 # a single entry is a organization user is part off
-                all_projects_queryset = Projects.objects.all().filter(organization=entry.organization)
+                all_projects_queryset = Projects.objects.all().filter(
+                    organization=entry.organization)
 
                 for project_entry in all_projects_queryset:
                     # get project updated information from project_entry value
-                    project_updated_queryset = ProjectUpdate.objects.filter(project=project_entry.pk)
+                    project_updated_queryset = ProjectUpdate.objects.filter(
+                        project=project_entry.pk)
                     project_updated_info = list()
                     for single_project_update_entry in project_updated_queryset:
                         project_updated_info.append({
-                            "updated_by": single_project_update_entry.updated_by.user_email,
+                            "updated_by": single_project_update_entry.updated_by.email,
                             "updated_at": single_project_update_entry.updated_at
                         })
 
@@ -145,7 +162,7 @@ class Project(APIView):
                         "project_id": project_entry.project_id,
                         "project_name": project_entry.project_name,
                         "project_description": project_entry.project_description,
-                        "registered_by": project_entry.registered_by.user_email,
+                        "registered_by": project_entry.registered_by.email,
                         "registered_at": project_entry.registered_at,
                         "organization": project_entry.organization.org_name,
                         "updates": project_updated_info,
@@ -163,18 +180,19 @@ class Project(APIView):
                 # Error Project no found
                 return JsonResponse(project_not_found)
 
-            project_updated_queryset = ProjectUpdate.objects.filter(project=project_obj.pk)
+            project_updated_queryset = ProjectUpdate.objects.filter(
+                project=project_obj.pk)
             project_updated_info = list()
             for single_project_update_entry in project_updated_queryset:
                 project_updated_info.append({
-                    "updated_by": single_project_update_entry.updated_by.user_email,
+                    "updated_by": single_project_update_entry.updated_by.email,
                     "updated_at": single_project_update_entry.updated_at
                 })
             return JsonResponse({
                 "project_id": project_obj.project_id,
                 "project_name": project_obj.project_name,
                 "project_description": project_obj.project_description,
-                "registered_by": project_obj.registered_by.user_email,
+                "registered_by": project_obj.registered_by.email,
                 "registered_at": project_obj.registered_at,
                 "organization": project_obj.organization.org_name,
                 "project_update_info": project_updated_info
@@ -216,7 +234,8 @@ class Project(APIView):
             return JsonResponse(unauthorized_access)
 
         # get the organization from the project and see user is allowed in this organization.
-        project_obj = get_project_from_project_id(project_id)  # Need to change this project
+        project_obj = get_project_from_project_id(
+            project_id)  # Need to change this project
         if project_obj is None:
             return JsonResponse(project_not_found)
 
@@ -273,7 +292,8 @@ class Project(APIView):
                 "project": project_obj.pk,
                 "updated_by": user_object.pk
             }
-            project_update_status = ProjectUpdateSerializer(data=project_update_payload)
+            project_update_status = ProjectUpdateSerializer(
+                data=project_update_payload)
 
             if project_update_status.is_valid():
                 project_update = project_update_status.save()
@@ -282,7 +302,7 @@ class Project(APIView):
                 project_updated_info = list()
                 for single_project_update_entry in project_updated_queryset:
                     project_updated_info.append({
-                        "updated_by": single_project_update_entry.updated_by.user_email,
+                        "updated_by": single_project_update_entry.updated_by.email,
                         "updated_at": single_project_update_entry.updated_at
                     })
 
@@ -293,7 +313,7 @@ class Project(APIView):
                         "project_id": project_obj.project_id,
                         "project_name": project_obj.project_name,
                         "project_description": project_obj.project_description,
-                        "registered_by": project_obj.registered_by.user_email,
+                        "registered_by": project_obj.registered_by.email,
                         "registered_at": project_obj.registered_at,
                         "organization": project_obj.organization.org_name,
                         "updates": project_updated_info,
@@ -342,7 +362,8 @@ class Project(APIView):
             return JsonResponse(unauthorized_access)
 
         # get the organization from the project and see user is allowed in this organization.
-        project_obj = get_project_from_project_id(project_id)  # Need to change this project
+        project_obj = get_project_from_project_id(
+            project_id)  # Need to change this project
         if project_obj is None:
             return JsonResponse(project_not_found)
 
@@ -355,8 +376,10 @@ class Project(APIView):
         if user_to_org_obj is None or user_to_org_obj.count() == 0:
             return JsonResponse(user_not_part_of_org)
 
-        project_updated_queryset = ProjectUpdate.objects.filter(project=project_obj.pk).delete()
-        project_token_status = ProjectToken.objects.filter(project=project_obj.pk).delete()
+        project_updated_queryset = ProjectUpdate.objects.filter(
+            project=project_obj.pk).delete()
+        project_token_status = ProjectToken.objects.filter(
+            project=project_obj.pk).delete()
         state = project_obj.delete()
 
         if project_updated_queryset is None or project_token_status is None or state is None:

@@ -4,11 +4,15 @@ from django.http import JsonResponse
 from rest_framework import status
 from rest_framework.views import APIView
 
-from bugtracker.models import ProjectToken, Projects
 from bugtracker.model_managers.serializer import ProjectTokenSerializer
-from bugtracker.utility import authorization_token_check, get_project_from_project_id, project_not_found, \
-    get_usr_to_org_by_user_id_and_org_id, unauthorized_access, error_occurred, token_invalid, get_token_object_by_token, \
-    invalid_user, get_all_org_user_is_part_off
+from bugtracker.models import Projects, ProjectToken
+from bugtracker.utility import (authorization_token_check, error_occurred,
+                                get_all_org_user_is_part_off,
+                                get_project_from_project_id,
+                                get_token_object_by_token,
+                                get_usr_to_org_by_user_id_and_org_id,
+                                invalid_user, project_not_found, token_invalid,
+                                unauthorized_access)
 
 
 class ProjectTokenCRUD(APIView):
@@ -97,8 +101,10 @@ class ProjectTokenCRUD(APIView):
 
         try:
             project_token_obj = ProjectToken.objects.get(project=project_obj.pk,
-                                                         token=uuid.UUID(project_token),
-                                                         refresh_token=uuid.UUID(data["refresh_token"])
+                                                         token=uuid.UUID(
+                                                             project_token),
+                                                         refresh_token=uuid.UUID(
+                                                             data["refresh_token"])
                                                          )
 
             if project_token_obj.pk:
@@ -221,7 +227,7 @@ class ProjectTokenCRUD(APIView):
             return JsonResponse({
                 "data": data,
                 "status": status.HTTP_200_OK
-            }) 
+            })
         else:
             # user is not admin
             # get organization user is part of
@@ -231,11 +237,13 @@ class ProjectTokenCRUD(APIView):
             for orgs in all_org_query_set:
 
                 # now get all the projects of this organization
-                all_projects = Projects.objects.filter(organization=orgs.organization.pk)
+                all_projects = Projects.objects.filter(
+                    organization=orgs.organization.pk)
 
                 for project in all_projects:
                     # now get the project_token of this project
-                    project_token_obj = ProjectToken.objects.get(project=project.pk)
+                    project_token_obj = ProjectToken.objects.get(
+                        project=project.pk)
                     data.append({
                         "project": project.project_name,
                         "project_description": project.project_description,

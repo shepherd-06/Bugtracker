@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
 from bugtracker.models import *
+from uuid import uuid4
 
 
 class ProjectTokenSerializer(serializers.ModelSerializer):
@@ -46,14 +47,14 @@ class OrgSerializer(serializers.ModelSerializer):
 
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
-    user_email = serializers.EmailField()
+    email = serializers.EmailField()
 
     class Meta:
         model = User
-        fields = ('user_email', 'user_name', 'password', 'is_admin')
+        fields = ('email', 'full_name', 'password', 'is_admin')
 
     def create(self, validated_data):
-        validated_data['created_at'] = timezone.now()
+        validated_data['username'] = str(uuid4())[:12]
         validated_data['user_id'] = uuid4()
         validated_data['updated_at'] = timezone.now()
         user = User.objects.create(**validated_data)
@@ -66,7 +67,7 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         # if not email_is_valid(value):
         #     raise serializers.ValidationError('Please use a different email address provider.')
 
-        if User.objects.filter(user_email=value).exists():
+        if User.objects.filter(email=value).exists():
             raise serializers.ValidationError('Email already in use, please use a different email address.')
         return value
 
