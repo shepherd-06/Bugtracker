@@ -1,5 +1,0 @@
-1) Create a superuser
-2) Only a superuser can create an organization
-3) Only a superuser can Create a Project under an organization
------------------------------------------------------------------
-4)
