@@ -4,4 +4,4 @@ from rest_framework.serializers import ModelSerializer
 class OrgSerializer(ModelSerializer):
     class Meta:
         model = Organization
-        fields = "__all__"
+        fields = ("org_id", "org_name", "created_by")
