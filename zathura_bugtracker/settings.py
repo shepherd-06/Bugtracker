@@ -37,8 +37,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'bugtracker.apps.BugtrackerConfig',
     'ping_app.apps.PingAppConfig',
+    'error_logger.apps.ErrorLoggerConfig',
+    'token_manager.apps.TokenManagerConfig',
+    'user.apps.UserConfig',
+    'projects.apps.ProjectsConfig',
+    'organization.apps.OrganizationConfig',
     'rest_framework',
     'guardian',
 ]
@@ -124,9 +128,20 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-APPEND_SLASH = True
+"""
+APPEND_SLASH
 
-AUTH_USER_MODEL = 'bugtracker.User'  # new
+Default: True
+
+When set to True, if the request URL does not match any of the patterns in the URLconf 
+and it doesn’t end in a slash, an HTTP redirect is issued to the same URL with a 
+slash appended. Note that the redirect may cause any data submitted in a POST
+request to be lost.
+"""
+
+APPEND_SLASH = False
+
+AUTH_USER_MODEL = 'user.CustomUser'  # new
 
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',  # default
