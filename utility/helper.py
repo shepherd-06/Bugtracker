@@ -31,3 +31,10 @@ def get_project_token_by_project_id(project):
         return ProjectToken.objects.get(project=project)
     except ProjectToken.DoesNotExist:
         return None
+    
+def get_project_token_object(project_token):
+    try:
+        return ProjectToken.objects.get(token=project_token)
+    except ProjectToken.DoesNotExist:
+        return None
+        

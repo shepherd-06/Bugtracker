@@ -12,7 +12,8 @@ class ErrorLog(models.Model):
     logged_on = models.DateTimeField(auto_now_add=True)
     updated_on = models.DateTimeField(auto_now=True)
     is_resolved = models.BooleanField(default=False)
-    resolved_by = models.ManyToManyField(CustomUser, related_name="resolver")
+    resolved_by = models.ManyToManyField(
+        CustomUser, related_name="resolver", blank=True)
     warning_level = models.IntegerField(default=0)
     reference_project = models.ForeignKey(
         Projects, on_delete=models.PROTECT, null=True, blank=True)

@@ -27,6 +27,7 @@ from rest_framework_simplejwt.views import (
 from organization.apis.org import Org
 from projects.apis.project import ProjectCRUD
 from token_manager.apis.token import ProjectToken
+from error_logger.apis.ErrorLog_Z import ErrorLogByPackage
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -35,6 +36,7 @@ urlpatterns = [
     path('org/create/', Org.as_view()),
     path('project/', ProjectCRUD.as_view()),
     path('project/token/', ProjectToken.as_view()),
+    path('project/error/log/', ErrorLogByPackage.as_view()),
     
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
