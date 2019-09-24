@@ -6,7 +6,6 @@ from uuid import uuid4
 class Projects(models.Model):
     project_id = models.CharField(unique=True, max_length=12)
     project_name = models.CharField(max_length=30)
-    modified_on = models.DateTimeField(auto_now=True)
     created_on = models.DateTimeField(auto_now_add=True)
     modified_on = models.DateTimeField(auto_now=True)
     organization = models.ForeignKey(Organization, on_delete=models.PROTECT)
