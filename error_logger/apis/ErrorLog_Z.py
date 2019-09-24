@@ -36,9 +36,14 @@ class ErrorLogByPackage(APIView):
                 "message": "Project token does not exist",
                 "status": False
             }, status=HTTP_401_UNAUTHORIZED)
-        data["reference_project"] = project_token_obj.project.pk
+        
+        payload = dict()
+        for key in data:
+            payload[key] = data[key]
+            
+        payload["reference_project"] = project_token_obj.project.pk
 
-        error_log_serializer = ErrorLoggerSerializer(data=data)
+        error_log_serializer = ErrorLoggerSerializer(data=payload)
         if error_log_serializer.is_valid():
             error_log_obj = error_log_serializer.save()
             project_token_obj.last_access = datetime.utcnow()
