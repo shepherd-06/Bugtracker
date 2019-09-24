@@ -28,7 +28,7 @@ SECRET_KEY = '&0gi$w@^ju1y^u8ahh3dgyqjs)!%u2u6uw299ij&k5nd4w$zv1'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True  # Never Go Live with Debug - True!
 
-ALLOWED_HOSTS = ['127.0.0.1']  # For Live -> Change this url.
+ALLOWED_HOSTS = ['127.0.0.1', 'shepherd06.com', 'bugtracker.shepherd06.com']
 
 # Application definition
 
