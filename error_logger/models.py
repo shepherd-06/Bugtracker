@@ -27,9 +27,8 @@ class ErrorLog(models.Model):
 
 
 class VerboseLog(models.Model):
-    log_title = models.CharField(
-        max_length=30, blank=True, null=True)
     log_description = models.TextField(max_length=1000, blank=True, null=True)
+    point_of_origin = models.CharField(max_length=100)
     logged_on = models.DateTimeField(auto_now_add=True)
     reference_project = models.ForeignKey(Projects, 
                                           on_delete=models.PROTECT,

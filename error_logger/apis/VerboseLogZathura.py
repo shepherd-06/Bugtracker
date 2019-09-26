@@ -14,7 +14,7 @@ from utility.helper import get_project_token_object
 
 class VerboseLogZathura(APIView):
 
-    required_fields = ("log_title",
+    required_fields = ("point_of_origin",
                        "log_description",
                        "project_token",)
 
@@ -48,7 +48,7 @@ class VerboseLogZathura(APIView):
             project_token_obj.save()
 
             return JsonResponse({
-                "message": "successfully logged error: {}".format(verbose_log_obj.log_title),
+                "message": "Debug logging is a massive success",
                 "status": True,
                 "logged_on": verbose_log_obj.logged_on,
                 "reference_project": verbose_log_obj.reference_project.project_name,
@@ -56,5 +56,5 @@ class VerboseLogZathura(APIView):
         else:
             return JsonResponse({
                 "status": False,
-                "message": ""
+                "message": "{}".format(verbose_serializer.errors),
             }, status=HTTP_500_INTERNAL_SERVER_ERROR)
