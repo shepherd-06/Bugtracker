@@ -23,19 +23,19 @@ class ErrorLog(models.Model):
         verbose_name_plural = "ErrorLog"
 
     def __str__(self):
-        return self.error_name
+        return "Error name: {} | Logged on: {}".format(self.error_name, self.logged_on)
 
 
 class VerboseLog(models.Model):
     log_description = models.TextField(max_length=1000, blank=True, null=True)
     point_of_origin = models.CharField(max_length=100)
     logged_on = models.DateTimeField(auto_now_add=True)
-    reference_project = models.ForeignKey(Projects, 
+    reference_project = models.ForeignKey(Projects,
                                           on_delete=models.PROTECT,
                                           blank=True, null=True)
 
     def __str__(self):
-        return self.log_title
+        return "Origin: {} | Logged on: {}".format(self.point_of_origin, self.logged_on)
 
     class Meta:
         verbose_name_plural = "VerboseLogs"
