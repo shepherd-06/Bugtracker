@@ -13,7 +13,7 @@ from utility.helper import get_project_token_object, get_project_object
 from datetime import datetime
 
 
-class ErrorLogByPackage(APIView):
+class ErrorLogZathura(APIView):
 
     required_fields = ("project_token", "error_name",
                        "error_description",
@@ -36,11 +36,11 @@ class ErrorLogByPackage(APIView):
                 "message": "Project token does not exist",
                 "status": False
             }, status=HTTP_401_UNAUTHORIZED)
-        
+
         payload = dict()
         for key in data:
             payload[key] = data[key]
-            
+
         payload["reference_project"] = project_token_obj.project.pk
 
         error_log_serializer = ErrorLoggerSerializer(data=payload)
@@ -55,7 +55,7 @@ class ErrorLogByPackage(APIView):
                 "logged_on": error_log_obj.logged_on,
                 "reference_project": error_log_obj.reference_project.project_name,
                 "warning_level": error_log_obj.warning_level,
-            })
+            }, status=HTTP_201_CREATED)
         else:
             return JsonResponse({
                 "message": "An error occurred! {}".format(error_log_serializer.errors),

@@ -29,9 +29,10 @@ class ErrorLog(models.Model):
 class VerboseLog(models.Model):
     log_title = models.CharField(
         max_length=30, blank=True, null=True)
-    log_description = models.TextField(max_length=1000, null=False)
+    log_description = models.TextField(max_length=1000, blank=True, null=True)
     logged_on = models.DateTimeField(auto_now_add=True)
-    reference_project = models.ForeignKey(Projects, on_delete=models.PROTECT,
+    reference_project = models.ForeignKey(Projects, 
+                                          on_delete=models.PROTECT,
                                           blank=True, null=True)
 
     def __str__(self):
