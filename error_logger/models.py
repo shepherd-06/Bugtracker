@@ -24,6 +24,11 @@ class ErrorLog(models.Model):
 
     def __str__(self):
         return "Error name: {} | Logged on: {}".format(self.error_name, self.logged_on)
+    
+    def get_project_name(self):
+        return self.reference_project.project_name
+
+    project_name = property(get_project_name)
 
 
 class VerboseLog(models.Model):
@@ -39,3 +44,8 @@ class VerboseLog(models.Model):
 
     class Meta:
         verbose_name_plural = "VerboseLogs"
+    
+    def get_project_name(self):
+        return self.reference_project.project_name
+
+    project_name = property(get_project_name)
