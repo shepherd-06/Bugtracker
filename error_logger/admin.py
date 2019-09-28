@@ -10,13 +10,13 @@ from django.db import models
 
 class ErrorLogAdmin(admin.ModelAdmin):
     formfield_overrides = {
-        models.CharField: {'widget': TextInput(attrs={'size': '20'})},
-        models.TextField: {'widget': Textarea(attrs={'rows': 4, 'cols': 40})},
+        models.CharField: {'widget': TextInput(attrs={'size': '10'})},
+        models.TextField: {'widget': Textarea(attrs={'rows': 3, 'cols': 30})},
     }
     search_fields = ['error_name', 'point_of_origin',
                      'resolved_by__email', 'reference_project__project_name']
     show_full_result_count = True
-    list_display = ("error_name", "error_description",
+    list_display = ("identifier", "error_name", "error_description",
                     "point_of_origin", "project_name", "is_resolved", "logged_on",)
     list_editable = ("is_resolved", )
     list_filter = ("point_of_origin", "logged_on", "is_resolved",
@@ -31,12 +31,12 @@ admin.site.register(ErrorLog, ErrorLogAdmin)
 
 class VerboseAdmin(admin.ModelAdmin):
     formfield_overrides = {
-        models.CharField: {'widget': TextInput(attrs={'size': '20'})},
-        models.TextField: {'widget': Textarea(attrs={'rows': 4, 'cols': 40})},
+        models.CharField: {'widget': TextInput(attrs={'size': '10'})},
+        models.TextField: {'widget': Textarea(attrs={'rows': 3, 'cols': 30})},
     }
     search_fields = ['point_of_origin', 'reference_project__project_name']
     show_full_result_count = True
-    list_display = ("project_name", "log_description",
+    list_display = ("identifier", "project_name", "log_description",
                     "point_of_origin", "logged_on")
     list_editable = ("log_description", )
     list_filter = ("point_of_origin", "logged_on",
