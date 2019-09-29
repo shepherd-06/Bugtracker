@@ -38,7 +38,6 @@ class VerboseAdmin(admin.ModelAdmin):
     show_full_result_count = True
     list_display = ("identifier", "project_name", "log_description",
                     "point_of_origin", "logged_on")
-    list_editable = ("log_description", )
     list_filter = ("point_of_origin", "logged_on",
                    "reference_project__project_name")
     list_display_links = None
