@@ -21,7 +21,6 @@ class ErrorLog(models.Model):
         Projects, on_delete=models.PROTECT, null=True, blank=True)
 
     class Meta:
-        ordering = ["logged_on"]
         verbose_name_plural = "errorLogs"
 
     def __str__(self):
