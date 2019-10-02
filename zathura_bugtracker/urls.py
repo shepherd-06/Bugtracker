@@ -30,8 +30,10 @@ from token_manager.apis.token import ProjectToken
 from error_logger.apis.ErrorLogZathura import ErrorLogZathura
 from error_logger.apis.VerboseLogZathura import VerboseLogZathura
 from ping_app.views import Ping
+from zathura_bugtracker.views import Index
 
 urlpatterns = [
+    path('', Index.as_view()),
     path('admin/', admin.site.urls),
     path('user/register/', UserRegistration.as_view()),
     path('user/login/', UserLogin.as_view()),
@@ -41,7 +43,7 @@ urlpatterns = [
     path('project/error/log/', ErrorLogZathura.as_view()),
     path('project/verbose/log/', VerboseLogZathura.as_view()),
     path('ping/add/', Ping.as_view()),
-    
+
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 ]
