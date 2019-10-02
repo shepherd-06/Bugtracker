@@ -12,8 +12,9 @@ from rest_framework_simplejwt.tokens import RefreshToken
 
 from user.models import CustomUser
 from user.serializer import UserSerializer
-from utility.helper import get_user_object
+from utility.helper import get_user_object, set_cookie
 from django.views import View
+from datetime import datetime, timedelta
 
 
 class UserRegistration(View):
@@ -50,12 +51,15 @@ class UserRegistration(View):
             })
 
 
-class UserLogin(APIView):
+class UserLogin(View):
 
     required_field = ('email', 'password')
 
     def post(self, request):
-        data = request.data
+        data = {
+            "email": request.POST["email"],
+            "password": request.POST["password"],
+        }
         for field in self.required_field:
             if field not in data:
                 return JsonResponse({
@@ -79,7 +83,7 @@ class UserLogin(APIView):
                 user.last_login = timezone.now()
                 user.save()
 
-                return JsonResponse({
+                response = JsonResponse({
                     "message": "success",
                     "status": True,
                     "username": user.username,
@@ -88,7 +92,11 @@ class UserLogin(APIView):
                     "status_code": HTTP_202_ACCEPTED,
                     "is_verified": user.pin_verified,
                     "is_staff": user.is_staff,
-                }, status=HTTP_202_ACCEPTED)
+                }, status=HTTP_201_CREATED)
+                expiry = datetime.utcnow() + timedelta(hours=5)
+                set_cookie(response, "access_token", str(refresh.access_token), expired_at=expiry)
+                set_cookie(response, "refresh_token", str(refresh))
+                return response
             else:
                 return JsonResponse({
                     "message": "Username, Password did not match!",

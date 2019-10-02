@@ -22,26 +22,24 @@
     <div class="row" style="text-align:center">
 
         <div class="col-6">
-            <form class="registration_form" style="display: none" method="POST" action="{% url 'register' %}">{% csrf_token %}
+            <form class="registration_form" style="display: none" method="POST" action="{% url 'register' %}">
+                {% csrf_token %}
                 <div class="form-group">
-                    <input type="text" class="form-control" name="first_name"  id="InputFirst" placeholder="First Name">
+                    <input type="text" class="form-control" name="first_name" id="InputFirst" placeholder="First Name">
                 </div>
                 <div class="form-group">
                     <input type="text" class="form-control" name="last_name" id="InputLast" placeholder="Last Name">
                 </div>
 
                 <div class="form-group">
-                    <input type="email" class="form-control"
-                     name="email"
-                     id="InputEmail" aria-describedby="emailHelp"
+                    <input type="email" class="form-control" name="email" id="InputEmail" aria-describedby="emailHelp"
                         placeholder="Enter email">
                     <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone
                         else.</small>
                 </div>
                 <div class="form-group">
-                    <input type="password"
-                    name="password"
-                     class="form-control" id="InputPassword" placeholder="Password">
+                    <input type="password" name="password" class="form-control" id="InputPassword"
+                        placeholder="Password">
                 </div>
                 <button type="submit" class="btn btn-primary btn-lg btn-block actions">
                     Registration</button>
@@ -54,14 +52,14 @@
         </div>
 
         <div class="col-6">
-
-            <form class="login_form" style="display: none">
+            <form class="login_form" style="display: none" method="POST" action="{% url 'login' %}">
                 {% csrf_token %}
                 <div class="form-group">
-                    <input type="email" class="form-control" id="InputEmail" placeholder="Enter email">
+                    <input type="email" name="email" class="form-control" id="InputEmail" placeholder="Enter email">
                 </div>
                 <div class="form-group">
-                    <input type="password" class="form-control" id="InputPassword" placeholder="Password">
+                    <input type="password" name="password" class="form-control" id="InputPassword"
+                        placeholder="Password">
                 </div>
                 <button type="submit" class="btn btn-success btn-lg btn-block actions">
                     Login</button>
