@@ -30,13 +30,13 @@ from token_manager.apis.token import ProjectToken
 from error_logger.apis.ErrorLogZathura import ErrorLogZathura
 from error_logger.apis.VerboseLogZathura import VerboseLogZathura
 from ping_app.views import Ping
-from zathura_bugtracker.views import Index
+# from zathura_bugtracker.views import Index
 from frontend.views import Index
 
 urlpatterns = [
     path('', Index.as_view()),
     path('admin/', admin.site.urls),
-    path('user/register/', UserRegistration.as_view()),
+    path('user/register/', UserRegistration.as_view(), name="register"),
     path('user/login/', UserLogin.as_view()),
     path('org/create/', Org.as_view()),
     path('project/', ProjectCRUD.as_view()),

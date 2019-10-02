@@ -13,15 +13,20 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from user.models import CustomUser
 from user.serializer import UserSerializer
 from utility.helper import get_user_object
+from django.views import View
 
 
-class UserRegistration(APIView):
+class UserRegistration(View):
 
-    @staticmethod
-    def post(request):
-        data = request.data
+    def post(self, request):
+        data = {
+            "email": request.POST["email"],
+            "password": request.POST["password"],
+            "first_name": request.POST["first_name"],
+            "last_name": request.POST["last_name"],
+        }
         data['username'] = str(uuid4())[:12]
-        serializer = UserSerializer(data=request.data)
+        serializer = UserSerializer(data=data)
 
         if serializer.is_valid():
             email = serializer.validated_data['email']

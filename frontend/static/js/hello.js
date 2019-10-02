@@ -9,8 +9,9 @@ function registration_form() {
     if (el.style.display == 'none') {
         el.style.display = 'block';
         register_btn.style.display = 'none';
-    } else {
-        alert("Registration API call here.");
+
+        console.log(window.location.hostname);
+        console.log(window.location.port);
     }
 }
 
