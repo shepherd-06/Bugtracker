@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'ping_app.apps.PingAppConfig',
+    'frontend.apps.FrontendConfig',
     'error_logger.apps.ErrorLoggerConfig',
     'token_manager.apps.TokenManagerConfig',
     'user.apps.UserConfig',
@@ -64,7 +65,6 @@ ROOT_URLCONF = 'zathura_bugtracker.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        # 'DIRS': [],
         'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -76,6 +76,13 @@ TEMPLATES = [
             ],
         },
     },
+    # {
+    #     'BACKEND': 'django.template.backends.jinja2.Jinja2',
+    #     'DIRS': [
+    #         os.path.join(BASE_DIR, 'templates'),
+    #     ],
+    #     'APP_DIRS': True,
+    # },
 ]
 
 WSGI_APPLICATION = 'zathura_bugtracker.wsgi.application'

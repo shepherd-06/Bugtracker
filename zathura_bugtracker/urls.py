@@ -31,6 +31,7 @@ from error_logger.apis.ErrorLogZathura import ErrorLogZathura
 from error_logger.apis.VerboseLogZathura import VerboseLogZathura
 from ping_app.views import Ping
 from zathura_bugtracker.views import Index
+from frontend.views import Index
 
 urlpatterns = [
     path('', Index.as_view()),
@@ -46,6 +47,11 @@ urlpatterns = [
 
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+
+    # ---------------------------------
+    # Front End
+    # ---------------------------------
+    path('frontend/', Index.as_view()),
 ]
 
 # urlpatterns = [

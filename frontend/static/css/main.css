@@ -1,0 +1,17 @@
+/* font-family: 'Pacifico', cursive;
+font-family: 'Monda', sans-serif;
+font-family: 'Slabo 27px', serif;
+font-family: 'Bitter', serif; */
+
+.headline {
+    font-family: 'Pacifico', cursive;
+}
+
+.messages {
+    font-family: 'Slabo 27px', serif;
+    font-size: 1.2em;
+}
+
+.actions {
+    font-family: 'Slabo 27px', serif;
+}

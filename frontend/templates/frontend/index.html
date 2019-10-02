@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Hello World{% endblock %}
+{% block content %}
+<div class="container">
+    <div style="text-align:center">
+        <h1 class="headline">
+            Hello World
+        </h1>
+    </div>
+    <hr>
+
+    <div style="text-align: center">
+        <p class="messages">
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Perspiciatis id vitae cupiditate, nihil exercitationem deleniti laborum possimus maiores illum minus mollitia amet molestias sed veniam tempore totam est non facere.
+        </p>
+    </div>
+
+    <hr>
+
+    <div class="row" style="text-align:center">
+
+        <div class="col-6">
+            <button type="button" class="btn btn-primary btn-lg btn-block actions">
+                Registration
+            </button>
+        </div>
+
+        <div class="col-6">
+            <button type="button" class="btn btn-success btn-lg btn-block actions">
+                Login
+            </button>
+        </div>
+    </div>
+</div>
+{% endblock %}
