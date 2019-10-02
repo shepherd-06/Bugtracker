@@ -14,6 +14,7 @@ class WebAdmin(admin.ModelAdmin):
     show_full_result_count = True
     list_display = ("url", "request_type", "verbose_status",
                     "status", "last_checked")
+    list_editable = ("request_type", )
     list_filter = ("request_type", "status")
     list_display_links = None
     list_per_page = 20

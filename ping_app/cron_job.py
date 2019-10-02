@@ -19,9 +19,7 @@ def jobs():
 
     for obj in all_objects:
         try:
-            if obj.request_type == "1":
-                response = requests.get(obj.url)
-            elif obj.request_type == "2":
+            if obj.request_type == "2":
                 response = requests.head(obj.url)
             # elif obj.request_type == "3":
             #     response = requests.post(obj.url)
@@ -31,6 +29,8 @@ def jobs():
                 response = requests.delete(obj.url)
             elif obj.request_type == "6":
                 response = requests.options(obj.url)
+            else:
+                response = requests.get(obj.url)
 
             status = response.status_code
             obj.status = status
