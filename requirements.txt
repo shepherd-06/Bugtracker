@@ -1,3 +1,4 @@
+APScheduler==3.6.1
 astroid==2.2.5
 autopep8==1.4.4
 certifi==2019.6.16
@@ -22,6 +23,7 @@ mccabe==0.6.1
 mypy==0.701
 mypy-extensions==0.4.1
 openapi-codec==1.3.2
+peewee==3.11.2
 psycopg2-binary==2.8.2
 pycodestyle==2.5.0
 pyfiglet==0.8.post1
@@ -35,6 +37,8 @@ six==1.12.0
 sqlparse==0.3.0
 typed-ast==1.3.5
 typing-extensions==3.7.2
+tzlocal==2.0.0
 uritemplate==3.0.0
 urllib3==1.25.3
 wrapt==1.11.2
+zathura==0.0.5.8b1
