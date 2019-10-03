@@ -122,9 +122,11 @@
                     eligendi
                     ullam beatae laudantium?
                 </p>
-                <form>
+                <form method="POST" action="{% url 'org_create' %}">
+                    {% csrf_token %}
                     <div class="form-group">
-                        <input type="text" class="form-control" id="input_org" placeholder="Organization name">
+                        <input type="text" class="form-control" id="input_org" 
+                        placeholder="Organization name" name="org_name">
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>

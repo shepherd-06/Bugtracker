@@ -1,39 +1,39 @@
 from uuid import uuid4
 
 from django.http import JsonResponse
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.status import (HTTP_200_OK, HTTP_201_CREATED,
                                    HTTP_202_ACCEPTED, HTTP_400_BAD_REQUEST,
                                    HTTP_401_UNAUTHORIZED, HTTP_403_FORBIDDEN,
                                    HTTP_406_NOT_ACCEPTABLE)
-from rest_framework.views import APIView
+from django.views import View
 
 from organization.models import Organization
 from organization.serializer import OrgSerializer
 from utility.helper import get_user_object
+from utility.token_manager import decode_token, protected
 
 
-class Org(APIView):
-    
+class Org(View):
+
     # TODO: take members email addresses in a list, as parameter.
     # TODO: get the user object via email address and add them as member.
     # TODO: Do same for admins later
-    
-    permission_classes = (IsAuthenticated,)
 
     required_parameters = ("org_name",)
 
+    @protected
     def post(self, request):
-        data = request.data
-        user = get_user_object(username=request.user.username)
-
+        payload = decode_token(request.COOKIES['access_token'])
+        user = get_user_object(username=payload["sub"])
         for field in self.required_parameters:
-            if field not in data:
+            if field not in request.POST:
                 return JsonResponse({
                     "message": "Missing mandatory parameter, {}".format(field),
                     "status": HTTP_400_BAD_REQUEST
                 }, status=HTTP_400_BAD_REQUEST)
-
+        data = {
+            "org_name": request.POST["org_name"],
+        }
         data["created_by"] = user.pk
         data["org_id"] = str(uuid4())[:12]
 
@@ -44,7 +44,7 @@ class Org(APIView):
                 org_obj.members.add(user)
                 org_obj.org_admins.add(user)
                 org_obj.save()
-                
+
                 return JsonResponse({
                     "message": "A new organization, [ {} ] has been created".format(org_obj.org_name),
                     "org_id": org_obj.org_id,

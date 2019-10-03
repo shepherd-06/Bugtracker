@@ -38,7 +38,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('user/register/', UserRegistration.as_view(), name="register"),
     path('user/login/', UserLogin.as_view(), name="login"),
-    path('org/create/', Org.as_view()),
+    path('org/create/', Org.as_view(), name="org_create"),
     path('project/', ProjectCRUD.as_view()),
     path('project/token/', ProjectToken.as_view()),
     path('project/error/log/', ErrorLogZathura.as_view()),
