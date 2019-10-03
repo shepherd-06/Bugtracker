@@ -64,21 +64,3 @@ class Org(View):
                 "message": "An error occurred! {}".format(org_serializer.errors),
                 "status": HTTP_406_NOT_ACCEPTABLE
             }, status=HTTP_406_NOT_ACCEPTABLE)
-
-    @protected
-    def get(self, request):
-        """
-        send the organizations user is part of. 
-        store those values in cookies.
-        """
-        payload = decode_token(request.COOKIES['access_token'])
-        user = get_user_object(username=payload["sub"])
-
-        orgs = Organization.objects.filter(members__pk=user.pk)
-        
-        for org in orgs:
-            print(org.org_name)
-            
-        return JsonResponse({
-            "hello": "world",
-        })
