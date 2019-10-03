@@ -1,7 +1,3 @@
-function test() {
-    alert("Hello World");
-}
-
 function registration_form() {
     el = document.querySelector('.registration_form');
     register_btn = document.querySelector('.registration_btn');
@@ -9,9 +5,6 @@ function registration_form() {
     if (el.style.display == 'none') {
         el.style.display = 'block';
         register_btn.style.display = 'none';
-
-        console.log(window.location.hostname);
-        console.log(window.location.port);
     }
 }
 
@@ -24,7 +17,14 @@ function login_form() {
     if (el.style.display == 'none') {
         el.style.display = 'block';
         login_btn.style.display = 'none';
-    } else {
-        alert("Send Login call to server. API is here.");
     }
+}
+
+
+function org_form() {
+    alert("Org form");
+}
+
+function project_form() {
+    alert("Project form");
 }
