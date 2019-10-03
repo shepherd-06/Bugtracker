@@ -1,20 +1,20 @@
+from datetime import datetime, timedelta
 from uuid import uuid4
 
 from django.contrib.auth.hashers import check_password
 from django.http import JsonResponse
 from django.utils import timezone
+from django.views import View
 from rest_framework.status import (HTTP_200_OK, HTTP_201_CREATED,
                                    HTTP_202_ACCEPTED, HTTP_400_BAD_REQUEST,
                                    HTTP_401_UNAUTHORIZED,
                                    HTTP_406_NOT_ACCEPTABLE)
 from rest_framework.views import APIView
-from rest_framework_simplejwt.tokens import RefreshToken
 
 from user.models import CustomUser
 from user.serializer import UserSerializer
 from utility.helper import get_user_object, set_cookie
-from django.views import View
-from datetime import datetime, timedelta
+from utility.token_manager import encode_access_token, encode_refresh_token
 
 
 class UserRegistration(View):
@@ -79,23 +79,27 @@ class UserLogin(View):
             }, status=HTTP_401_UNAUTHORIZED)
         else:
             if check_password(data['password'], user.password):
-                refresh = RefreshToken.for_user(user)
                 user.last_login = timezone.now()
                 user.save()
+
+                access_token = str(encode_access_token(user.username, "user"))
+                refresh_token = str(
+                    encode_refresh_token(user.username, "user"))
 
                 response = JsonResponse({
                     "message": "success",
                     "status": True,
                     "username": user.username,
-                    'refresh_token': str(refresh),
-                    'access_token': str(refresh.access_token),
+                    'refresh_token': refresh_token,
+                    'access_token': access_token,
                     "status_code": HTTP_202_ACCEPTED,
                     "is_verified": user.pin_verified,
                     "is_staff": user.is_staff,
                 }, status=HTTP_201_CREATED)
                 expiry = datetime.utcnow() + timedelta(hours=5)
-                set_cookie(response, "access_token", str(refresh.access_token), expired_at=expiry)
-                set_cookie(response, "refresh_token", str(refresh))
+                set_cookie(response, "access_token",
+                           access_token, expired_at=expiry)
+                set_cookie(response, "refresh_token", refresh_token)
                 return response
             else:
                 return JsonResponse({

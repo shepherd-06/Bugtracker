@@ -30,8 +30,8 @@ from token_manager.apis.token import ProjectToken
 from error_logger.apis.ErrorLogZathura import ErrorLogZathura
 from error_logger.apis.VerboseLogZathura import VerboseLogZathura
 from ping_app.views import Ping
-# from zathura_bugtracker.views import Index
-from frontend.views import Index
+from frontend._views.index import Index
+from frontend._views.dashboard import Dashboard
 
 urlpatterns = [
     path('', Index.as_view()),
@@ -52,6 +52,7 @@ urlpatterns = [
     # Front End
     # ---------------------------------
     path('frontend/', Index.as_view()),
+    path('frontend/dashboard/', Dashboard.as_view()),
 ]
 
 # urlpatterns = [
