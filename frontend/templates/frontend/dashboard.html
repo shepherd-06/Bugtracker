@@ -1,8 +1,18 @@
 {% extends "base_with_nav.html" %}
 {% block title %}Dashboard{% endblock %}
+
+{%block organizations %}
+{% if organizations %}
+{% for org in organizations %}
+<a class="dropdown-item" href="#">{{ org.org_name }}</a>
+{% endfor %}
+{% endif %}
+
+{% endblock %}
+
+
+
 {% block content %}
-
-
 <!-- # create an organization modal
 <!-- Modal -->
 

@@ -28,3 +28,8 @@ function org_form() {
 function project_form() {
     alert("Project form");
 }
+
+
+function set_storage(data) {
+    console.log(data);
+}
