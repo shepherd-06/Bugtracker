@@ -53,8 +53,9 @@ def protected(function):
             # TODO: logout here
             return None
         payload = decode_token(request.COOKIES['access_token'])
-        #TODO: might crash here.
         
+        if payload is None:
+            return None
         # Validate user and access token expiry
         for field in required:
             if field not in payload:

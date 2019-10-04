@@ -33,3 +33,30 @@ function project_form() {
 function set_storage(data) {
     console.log(data);
 }
+
+function set_local_storage_data(key, data) {
+    if (window.localStorage) {
+        // do stuff with localStorage
+        // no need to use window anymore
+        localStorage.setItem(key, JSON.stringify(data));
+    }
+}
+
+
+function get_local_storage_data(key) {
+    var data = [];
+    if (localStorage.getItem(key)) {
+        data = JSON.parse(localStorage.getItem(key));
+        console.log(data);
+    }
+    return data;
+}
+
+
+function get_org_from_localStorage(key) {
+    return get_local_storage_data(key);
+}
+
+function org_selected(org_name) {
+    alert(org_name)
+}

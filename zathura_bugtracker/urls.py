@@ -51,8 +51,8 @@ urlpatterns = [
     # ---------------------------------
     # Front End
     # ---------------------------------
-    path('frontend/', Index.as_view()),
-    path('frontend/dashboard/', Dashboard.as_view()),
+    path('frontend/', Index.as_view(), name="index"),
+    path('frontend/dashboard/', Dashboard.as_view(), name="dashboard"),
 ]
 
 # urlpatterns = [
