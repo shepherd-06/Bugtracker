@@ -57,6 +57,14 @@ function get_org_from_localStorage(key) {
     return get_local_storage_data(key);
 }
 
-function org_selected(org_name) {
-    alert(org_name)
+function org_selected(e) {
+    console.log(e);
+    // console.log(e.target.value);
+    var el = document.getElementById('nav_org');
+    el.addEventListener('click', function fElChange(elChangeEvt) {
+        // console.log(el.getAttribute("class"));
+        // alert(el.value);
+        var i = 0;
+    });
+        
 }

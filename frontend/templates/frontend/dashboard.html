@@ -7,7 +7,7 @@
     set_local_storage_data("orgs", {{ organizations| safe }});
 </script>
 {% for org in organizations %}
-<a class="dropdown-item" onclick="org_selected()">{{ org.org_name }}</a>
+<a class="dropdown-item" id="nav_org" onclick="org_selected('{{ org.org_name }}')">{{ org.org_name }}</a>
 {% endfor %}
 {% endif %}
 
