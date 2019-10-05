@@ -1,0 +1,107 @@
+{% extends "base_with_nav.html" %}
+{% block title %} {{ page_title }} {% endblock %}
+
+{%block organizations %}
+{% if organizations %}
+<script type="text/javascript">
+    set_local_storage_data("orgs", {{ organizations| safe }});
+</script>
+{% for org in organizations %}
+<a class="dropdown-item" id="nav_org" onclick="org_selected('{{ org.org_name }}')">{{ org.org_name }}</a>
+{% endfor %}
+<div class="dropdown-divider"></div>
+{% endif %}
+
+{% endblock %}
+
+{%block project_organizations %}
+{% if organizations %}
+<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+    {% for org in organizations %}
+    <option value="{{ org.org_id }}">{{ org.org_name }}</option>
+    {% endfor %}
+</div>
+{% else %}
+<p class="h4"> You need an organization to create a project. </p>
+{% endif %}
+{% endblock %}
+
+
+{%block projects %}
+{% if projects %}
+<script type="text/javascript">
+    set_local_storage_data("projects", {{ projects | safe }});
+</script>
+{% for project in projects %}
+<a class="dropdown-item" href=""> {{ project.project_name }}</a>
+{% endfor %}
+<div class="dropdown-divider"></div>
+{% endif %}
+{% endblock %}
+
+
+{% block content %}
+<!-- # create an organization modal
+<!-- Modal -->
+
+<div class="container">
+
+    <br>
+    <div class="row">
+        <div class="col-6">
+            <!-- Project details -->
+            {% if project_object %}
+            <p class="h4"> Project - {{project_object.project_name}}</p>
+            <p class="h6"> Organization - {{project_object.organization.org_name}}</p>
+            <!-- Apply local timezone here -->
+            <p class="h6"> Created on - {{project_object.created_on}}</p>
+            <hr>
+
+            <div class="row">
+                {% if project_token %}
+                <p> TODO: Project token ache </p>
+                {% else %}
+                <div class="col-8">
+                    <p class="h6">
+                        Project Token - <strong> not generated yet  </strong>
+                    </p>
+                </div>
+
+                <div class="col-4">
+                    <button type="button" class="btn btn-primary btn-sm">Generate</button>
+                </div>
+                {% endif %}
+            </div>
+
+
+            <hr>
+
+            <div class="row">
+                <div class="col-8">
+                    <small class="text-muted"> Last updated on: {{ project_object.modified_on}}</small>
+                </div>
+
+                <div class="col-4">
+                    <button type="button" class="btn btn-outline-info btn-sm">Update</button>
+                </div>
+            </div>
+
+            {% else %}
+            <p class="h1"> Project does not existo </p>
+            <!-- TODO: Load HTTP 404 not found page here -->
+            {% endif %}
+        </div>
+
+        <div class="col-6">
+            <!-- TODO: Other project details if needed -->
+
+
+        </div>
+
+
+    </div>
+</div>
+
+
+
+{% endblock %}

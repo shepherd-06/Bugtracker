@@ -45,7 +45,7 @@ def decode_token(token: str):
 
 def protected(function):
     @functools.wraps(function)
-    def wrapper(self, request):
+    def wrapper(self, request, *args, **kwargs):
         required = ('type', 'exp', 'sub', 'role')
         epoch = datetime.utcfromtimestamp(0)
         if 'access_token' not in request.COOKIES:
@@ -53,7 +53,7 @@ def protected(function):
             # TODO: logout here
             return None
         payload = decode_token(request.COOKIES['access_token'])
-        
+
         if payload is None:
             return None
         # Validate user and access token expiry
@@ -65,7 +65,7 @@ def protected(function):
         if payload['type'] != "access":
             # TODO: generate a logout here.
             return None
-        
+
         if payload['exp'] < (datetime.utcnow() - epoch).total_seconds():
             # TODO: token has expired. hit refresh here.
             return None
@@ -73,5 +73,5 @@ def protected(function):
         if get_user_object(username=payload["sub"]) is None:
             # TODO: USER does not exist (generate logout)
             return None
-        return function(self, request)
+        return function(self, request, *args, **kwargs)
     return wrapper

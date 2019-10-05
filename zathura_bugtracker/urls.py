@@ -32,6 +32,7 @@ from error_logger.apis.VerboseLogZathura import VerboseLogZathura
 from ping_app.views import Ping
 from frontend._views.index import Index
 from frontend._views.dashboard import Dashboard
+from frontend._views.project import Project
 
 urlpatterns = [
     path('', Index.as_view()),
@@ -53,6 +54,7 @@ urlpatterns = [
     # ---------------------------------
     path('frontend/', Index.as_view(), name="index"),
     path('frontend/dashboard/', Dashboard.as_view(), name="dashboard"),
+    path('frontend/project/<project_id>', Project.as_view(), name="project"),
 ]
 
 # urlpatterns = [
