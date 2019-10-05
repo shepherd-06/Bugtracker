@@ -123,8 +123,8 @@
                 <form method="POST" action="{% url 'org_create' %}">
                     {% csrf_token %}
                     <div class="form-group">
-                        <input type="text" class="form-control" id="input_org" 
-                        placeholder="Organization name" name="org_name">
+                        <input type="text" class="form-control" id="input_org" placeholder="Organization name"
+                            name="org_name">
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -163,7 +163,13 @@
                     <div class="form-group">
                         <input type="text" class="form-control" id="input_project" placeholder="project name">
                     </div>
-                    <p>Add a dropdown list of orgs in here.</p>
+                    <div class="dropdown">
+                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Organization
+                        </button>
+                        {% block project_organizations %}{% endblock %}
+                    </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                         <button type="submit" class="btn btn-primary">Add</button>

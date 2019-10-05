@@ -13,6 +13,19 @@
 
 {% endblock %}
 
+{%block project_organizations %}
+{% if organizations %}
+<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+    {% for org in organizations %}
+    <a class="dropdown-item" href="#">{{ org.org_name }}</a>
+    {% endfor %}                       
+</div>
+{% else %}
+<p class="h4"> You need an organization to create a project. </p> 
+{% endif %}
+
+{% endblock %}
+
 
 
 {% block content %}
