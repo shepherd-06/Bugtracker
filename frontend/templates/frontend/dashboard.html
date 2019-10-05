@@ -9,6 +9,7 @@
 {% for org in organizations %}
 <a class="dropdown-item" id="nav_org" onclick="org_selected('{{ org.org_name }}')">{{ org.org_name }}</a>
 {% endfor %}
+<div class="dropdown-divider"></div>
 {% endif %}
 
 {% endblock %}
@@ -17,15 +18,26 @@
 {% if organizations %}
 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
     {% for org in organizations %}
-    <a class="dropdown-item" href="#">{{ org.org_name }}</a>
-    {% endfor %}                       
+    <option value="{{ org.org_id }}">{{ org.org_name }}</option>
+    {% endfor %}
 </div>
 {% else %}
-<p class="h4"> You need an organization to create a project. </p> 
+<p class="h4"> You need an organization to create a project. </p>
 {% endif %}
-
 {% endblock %}
 
+
+{%block projects %}
+{% if projects %}
+<script type="text/javascript">
+    set_local_storage_data("projects", {{ projects | safe }});
+</script>
+{% for project in projects %}
+<a class="dropdown-item" href="#"> {{ project.project_name }}</a>
+{% endfor %}
+<div class="dropdown-divider"></div>
+{% endif %}
+{% endblock %}
 
 
 {% block content %}

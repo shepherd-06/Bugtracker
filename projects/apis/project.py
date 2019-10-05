@@ -2,6 +2,7 @@ from uuid import uuid4
 
 from django.http import JsonResponse
 from django.utils import timezone
+from django.views import View
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.status import (HTTP_200_OK, HTTP_201_CREATED,
                                    HTTP_202_ACCEPTED, HTTP_400_BAD_REQUEST,
@@ -11,17 +12,19 @@ from rest_framework.views import APIView
 
 from projects.serializer import ProjectSerializer
 from utility.helper import get_org_object, get_user_object
+from utility.token_manager import decode_token, protected
 
 
-class ProjectCRUD(APIView):
+class ProjectCRUD(View):
 
     failed_to_create_project = {
         "message": "Failed to create a new project",
         "status": False,
     }
 
-    permission_classes = (IsAuthenticated,)
-    
+    required_parameters = ("project_name", "organization_id",)
+
+    @protected
     def post(self, request):
         """
         mandatory field: user_token, project_name, organization_id
@@ -30,17 +33,22 @@ class ProjectCRUD(APIView):
         :param request: django request obj
         :return: JSONResponse
         """
-        data = request.data
-
-        if 'project_name' not in data or "organization_id" not in data:
-            return JsonResponse({
-                "message": "Missing parameters! project_name and organization_id are required",
-                "status": HTTP_400_BAD_REQUEST
-            })
-        
-        user = get_user_object(username=request.user.username)
+        payload = decode_token(request.COOKIES['access_token'])
+        user = get_user_object(username=payload["sub"])
         # TODO: check if user is an admin to create a project under this org.
 
+        for field in self.required_parameters:
+            if field not in request.POST:
+                return JsonResponse({
+                    "message": "Missing mandatory parameter, {}".format(field),
+                    "status": HTTP_400_BAD_REQUEST
+                }, status=HTTP_400_BAD_REQUEST)
+                
+        data = {
+            "project_name": request.POST["project_name"],
+            "organization_id": request.POST["organization_id"],
+        }
+        
         org_object = get_org_object(data["organization_id"])
         if org_object is None:
             return JsonResponse({

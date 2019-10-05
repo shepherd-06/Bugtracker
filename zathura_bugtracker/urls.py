@@ -39,7 +39,7 @@ urlpatterns = [
     path('user/register/', UserRegistration.as_view(), name="register"),
     path('user/login/', UserLogin.as_view(), name="login"),
     path('org/', Org.as_view(), name="org_create"),
-    path('project/', ProjectCRUD.as_view()),
+    path('project/', ProjectCRUD.as_view(), name="project_create"),
     path('project/token/', ProjectToken.as_view()),
     path('project/error/log/', ErrorLogZathura.as_view()),
     path('project/verbose/log/', VerboseLogZathura.as_view()),
