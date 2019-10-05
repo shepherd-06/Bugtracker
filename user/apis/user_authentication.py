@@ -2,7 +2,8 @@ from datetime import datetime, timedelta
 from uuid import uuid4
 
 from django.contrib.auth.hashers import check_password
-from django.http import JsonResponse
+from django.http import HttpResponseRedirect, JsonResponse
+from django.urls import reverse
 from django.utils import timezone
 from django.views import View
 from rest_framework.status import (HTTP_200_OK, HTTP_201_CREATED,
@@ -15,6 +16,7 @@ from user.models import CustomUser
 from user.serializer import UserSerializer
 from utility.helper import get_user_object, set_cookie
 from utility.token_manager import encode_access_token, encode_refresh_token
+
 
 # s
 class UserRegistration(View):
@@ -86,24 +88,23 @@ class UserLogin(View):
                 refresh_token = str(
                     encode_refresh_token(user.username, "user"))
 
-                response = JsonResponse({
-                    "message": "success",
-                    "status": True,
-                    "username": user.username,
-                    'refresh_token': refresh_token,
-                    'access_token': access_token,
-                    "status_code": HTTP_202_ACCEPTED,
-                    "is_verified": user.pin_verified,
-                    "is_staff": user.is_staff,
-                }, status=HTTP_201_CREATED)
+                response = HttpResponseRedirect(
+                    reverse("dashboard"))
                 expiry = datetime.utcnow() + timedelta(hours=5)
                 set_cookie(response, "access_token",
                            access_token, expired_at=expiry)
                 set_cookie(response, "refresh_token", refresh_token)
                 return response
             else:
-                return JsonResponse({
-                    "message": "Username, Password did not match!",
-                    "status": False,
-                    "status_code": HTTP_401_UNAUTHORIZED,
-                }, status=HTTP_401_UNAUTHORIZED)
+                # TODO: add error message here.
+                """
+                #{
+                #     "message": "Username, Password did not match!",
+                #     "status": False,
+                #     "status_code": HTTP_401_UNAUTHORIZED,
+                #}
+                """
+                return HttpResponseRedirect(
+                    reverse("index"),
+                )
+                # return JsonResponse(, status=HTTP_401_UNAUTHORIZED)
