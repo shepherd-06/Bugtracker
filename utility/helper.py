@@ -1,8 +1,10 @@
-from user.models import CustomUser
+from datetime import datetime, timedelta
+
+from error_logger.models import ErrorLog, VerboseLog
 from organization.models import Organization
 from projects.models import Projects
 from token_manager.models import ProjectToken
-from datetime import datetime, timedelta
+from user.models import CustomUser
 from zathura_bugtracker import settings
 
 
@@ -58,3 +60,19 @@ def set_cookie(response, key, value, days_expire=10, expired_at: datetime = None
         expires = datetime.strftime(expired_at,
                                     "%a, %d-%b-%Y %H:%M:%S GMT")
     response.set_cookie(key, value, max_age=max_age, expires=expires)
+
+
+def get_all_errors_from_a_project(project_id):
+    return ErrorLog.objects.filter(reference_project__project_id=project_id)
+
+
+def get_all_verbose_log_from_a_project(project_id):
+    return VerboseLog.objects.filter(reference_project__project_id=project_id)
+
+
+def get_error_count_of_a_project(project_id):
+    return ErrorLog.objects.filter(reference_project__project_id=project_id).count()
+
+
+def get_verbose_count_of_a_project(project_id):
+    return VerboseLog.objects.filter(reference_project__project_id=project_id).count()

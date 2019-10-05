@@ -1,11 +1,14 @@
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.views import View
-from utility.token_manager import decode_token, protected
-from utility.helper import get_user_object, set_cookie, get_project_object
+
 from organization.models import Organization
 from projects.models import Projects
 from token_manager.models import ProjectToken
+from utility.helper import (get_error_count_of_a_project, get_project_object,
+                            get_project_token_by_project_id, get_user_object,
+                            get_verbose_count_of_a_project, set_cookie)
+from utility.token_manager import decode_token, protected
 
 
 class Project(View):
@@ -43,10 +46,7 @@ class Project(View):
                     "org": org.org_id,
                 })
 
-        project_token = None
-        if project_object is not None:
-            project_token = ProjectToken.objects.filter(
-                project=project_object.pk)
+        project_token = get_project_token_by_project_id(project_object.pk)
 
         context = {
             "page_title": project_object.project_name,
@@ -55,6 +55,8 @@ class Project(View):
             "projects": project_payload,
             "project_object": project_object,
             "project_token": project_token,
+            "error_count": get_error_count_of_a_project(project_object.project_id),
+            "verbose_count": get_verbose_count_of_a_project(project_object.project_id),
         }
 
         response = render(request, 'frontend/project.html', context)

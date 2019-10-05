@@ -36,7 +36,7 @@
 
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav ml-auto navbar_texts">
-                <li class="nav-item active">
+                <li class="nav-item">
                     <a class="nav-link" href="#">Dashboard <span class="sr-only">(current)</span></a>
                 </li>
 
@@ -54,7 +54,7 @@
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                         <!-- Add organization after getting them from the database -->
                         {% block organizations %}{% endblock %}
-                        <button style="width: 100%;" type="button" class="btn btn-sm btn-outline-success"
+                        <button style="width: 100%;" type="button" class="btn btn-sm btn-outline-primary"
                             data-toggle="modal" data-target="#create_org">
                             Create an Organization
                         </button>
@@ -69,7 +69,7 @@
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                         <!-- Add projects here -->
                         {% block projects %}{% endblock %}
-                        <button style="width: 100%;" type="button" class="btn btn-sm btn-outline-success"
+                        <button style="width: 100%;" type="button" class="btn btn-sm btn-outline-primary"
                             data-toggle="modal" data-target="#create_project">
                             Add a New Project
                         </button>
@@ -91,7 +91,7 @@
 <footer class="container" style="text-align: center">
     <br>
     <br>
-    <br>
+    <hr>
     <p style="font-family: 'Bitter', serif;">With ❤️ from <a target="_blank" rel="noopener noreferrer"
             href="https://github.com/p1r-a-t3">p1r-a-t3</a>!
     </p>
