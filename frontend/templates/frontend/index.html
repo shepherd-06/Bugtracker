@@ -1,15 +1,11 @@
 {% extends "base.html" %}
-{% block title %}Hello World{% endblock %}
+{% block title %}Hello World - Bugtracker{% endblock %}
 {% block content %}
 <div class="container">
     <div style="text-align:center">
         <h1 class="headline">
-            Hello World
+            Bugtracker
         </h1>
-
-        {% if message %}
-        <p>{{message}}</p>
-        {% endif %}
     </div>
     <hr>
 
@@ -26,6 +22,21 @@
     <div class="row" style="text-align:center">
 
         <div class="col-6">
+            {% if status == "True" %}
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                {{ register_message }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            {% else %}
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                {{ register_message }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            {% endif %}
             <form class="registration_form" style="display: none" method="POST" action="{% url 'register' %}">
                 {% csrf_token %}
                 <div class="form-group">
@@ -56,6 +67,14 @@
         </div>
 
         <div class="col-6">
+            {% if login_message %}
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                {{ login_message }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            {% endif %}
             <form class="login_form" style="display: none" method="POST" action="{% url 'login' %}">
                 {% csrf_token %}
                 <div class="form-group">

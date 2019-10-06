@@ -32,25 +32,26 @@ class UserRegistration(View):
         serializer = UserSerializer(data=data)
 
         if serializer.is_valid():
-            email = serializer.validated_data['email']
             user_registered = serializer.save()
 
             if user_registered:
-                return JsonResponse({
-                    "message": "User created successfully",
-                    "email": email,
-                    "status": HTTP_201_CREATED
-                })
+                message = "User created successfully. Please login now"
+                return HttpResponseRedirect(
+                    reverse("index") +
+                    "?register_message={}&status={}".format(message, True),
+                )
             else:
-                return JsonResponse({
-                    "message": "User creation failed.",
-                    "status": HTTP_406_NOT_ACCEPTABLE
-                })
+                message = "User creation failed."
+                return HttpResponseRedirect(
+                    reverse("index") +
+                    "?register_message={}&status={}".format(message, False),
+                )
         else:
-            return JsonResponse({
-                "message": "User creation failed. {}".format(serializer.errors),
-                "status": HTTP_400_BAD_REQUEST
-            })
+            message = "User creation failed. {}".format(serializer.errors)
+            return HttpResponseRedirect(
+                reverse("index") +
+                "?register_message={}&status={}".format(message, False),
+            )
 
 
 class UserLogin(View):
@@ -64,21 +65,22 @@ class UserLogin(View):
         }
         for field in self.required_field:
             if field not in data:
-                return JsonResponse({
-                    "message": "Missing required field. {} is required".format(field),
-                    "status": False,
-                    "status_code": HTTP_400_BAD_REQUEST,
-                })
+                message = "Missing required field. {} is required".format(
+                    field)
+                return HttpResponseRedirect(
+                    reverse("index") +
+                    "?login_message={}&status={}".format(message, False),
+                )
 
         user = get_user_object(email=data['email'])
 
         if user is None:
             # error
-            return JsonResponse({
-                "message": "Username, Password did not match!",
-                "status": False,
-                "status_code": HTTP_401_UNAUTHORIZED,
-            }, status=HTTP_401_UNAUTHORIZED)
+            message = "Username, Password did not match!"
+            return HttpResponseRedirect(
+                reverse("index") +
+                "?login_message={}&status={}".format(message, False),
+            )
         else:
             if check_password(data['password'], user.password):
                 user.last_login = timezone.now()
@@ -96,15 +98,8 @@ class UserLogin(View):
                 set_cookie(response, "refresh_token", refresh_token)
                 return response
             else:
-                # TODO: add error message here.
-                """
-                #{
-                #     "message": "Username, Password did not match!",
-                #     "status": False,
-                #     "status_code": HTTP_401_UNAUTHORIZED,
-                #}
-                """
+                message = "Username, Password did not match!"
                 return HttpResponseRedirect(
-                    reverse("index"),
+                    reverse("index") +
+                    "?login_message={}&status={}".format(message, False),
                 )
-                # return JsonResponse(, status=HTTP_401_UNAUTHORIZED)
