@@ -28,7 +28,7 @@
 
 <body style="background: #f8f9fa">
     <nav class="navbar navbar-expand-lg sticky-top navbar-dark bg-dark">
-        <a class="navbar-brand headline" href="#">Bugtracker</a>
+        <a class="navbar-brand headline" href="{% url "dashboard" %}">Bugtracker</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
             aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -37,7 +37,7 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav ml-auto navbar_texts">
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Dashboard <span class="sr-only">(current)</span></a>
+                    <a class="nav-link" href="{% url "dashboard" %}">Dashboard <span class="sr-only">(current)</span></a>
                 </li>
 
                 <li class="nav-item">
