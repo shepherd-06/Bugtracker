@@ -49,14 +49,14 @@
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
                         data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Organization
+                        Team
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <!-- Add organization after getting them from the database -->
-                        {% block organizations %}{% endblock %}
+                        <!-- Add teams after getting them from the database -->
+                        {% block teams %}{% endblock %}
                         <button style="width: 100%;" type="button" class="btn btn-sm btn-outline-primary"
-                            data-toggle="modal" data-target="#create_org">
-                            Create an Organization
+                            data-toggle="modal" data-target="#create_team">
+                            Create a Team
                         </button>
                     </div>
                 </li>
@@ -99,16 +99,16 @@
 
 <!-- $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ -->
 <!-- $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ -->
-<!-- Create an organization -->
+<!-- Create an team -->
 <!-- $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ -->
 <!-- $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ -->
 
-<div class="modal fade" id="create_org" tabindex="-1" role="dialog" aria-labelledby="createOrgCenterTitle"
+<div class="modal fade" id="create_team" tabindex="-1" role="dialog" aria-labelledby="createTeamCenterTitle"
     aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="createOrgLongTitle">Create an Organization</h5>
+                <h5 class="modal-title" id="createTeamLongTitle">Create a Team</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -121,11 +121,11 @@
                     eligendi
                     ullam beatae laudantium?
                 </p>
-                <form method="POST" action="{% url 'org_create' %}">
+                <form method="POST" action="{% url 'team_create' %}">
                     {% csrf_token %}
                     <div class="form-group">
-                        <input type="text" class="form-control" id="input_org" placeholder="Organization name"
-                            name="org_name">
+                        <input type="text" class="form-control" id="input_tea " placeholder="Team name"
+                            name="team_name">
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -147,7 +147,7 @@
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="createOrgLongTitle">Add a New Project</h5>
+                <h5 class="modal-title" id="createTeamLongTitle">Add a New Project</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -167,9 +167,9 @@
                             placeholder="project name">
                     </div>
                     <div class="form-group">
-                        <label for="exampleFormControlSelect1">Organization</label>
-                        <select class="form-control" name="organization_id" id="exampleFormControlSelect1">
-                            {% block project_organizations %}{% endblock %}
+                        <label for="exampleFormControlSelect1">Team</label>
+                        <select class="form-control" name="team_id" id="exampleFormControlSelect1">
+                            {% block project_teams %}{% endblock %}
                         </select>
                     </div>
                     <div class="modal-footer">

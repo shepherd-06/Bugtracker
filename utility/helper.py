@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 
 from error_logger.models import ErrorLog, VerboseLog
-from organization.models import Organization
+from team.models import Team
 from projects.models import Projects
 from token_manager.models import ProjectToken
 from user.models import CustomUser
@@ -19,10 +19,10 @@ def get_user_object(email=None, username=None):
         return None
 
 
-def get_org_object(org_id):
+def get_team_object(team_id):
     try:
-        return Organization.objects.get(org_id=org_id)
-    except Organization.DoesNotExist:
+        return Team.objects.get(team_id=team_id)
+    except Team.DoesNotExist:
         return None
 
 

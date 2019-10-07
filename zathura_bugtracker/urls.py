@@ -24,7 +24,7 @@ from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
 )
-from organization.apis.org import Org
+from team.apis.team_manager import TeamManager
 from projects.apis.project import ProjectCRUD
 from token_manager.apis.token import ProjectToken
 from error_logger.apis.ErrorLogZathura import ErrorLogZathura
@@ -39,7 +39,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('user/register/', UserRegistration.as_view(), name="register"),
     path('user/login/', UserLogin.as_view(), name="login"),
-    path('org/', Org.as_view(), name="org_create"),
+    path('team/', TeamManager.as_view(), name="team_create"),
     path('project/', ProjectCRUD.as_view(), name="project_create"),
     path('project/token/', ProjectToken.as_view(),  name="project_token"),
     path('project/error/log/', ErrorLogZathura.as_view()),

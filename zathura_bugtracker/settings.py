@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'token_manager.apps.TokenManagerConfig',
     'user.apps.UserConfig',
     'projects.apps.ProjectsConfig',
+    'team.apps.TeamConfig',
     'organization.apps.OrganizationConfig',
     'rest_framework',
     'guardian',
