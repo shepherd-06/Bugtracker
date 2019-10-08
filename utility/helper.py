@@ -76,3 +76,29 @@ def get_error_count_of_a_project(project_id):
 
 def get_verbose_count_of_a_project(project_id):
     return VerboseLog.objects.filter(reference_project__project_id=project_id).count()
+
+
+def get_common_view_payload(user: CustomUser, page_title: str):
+    teams = Team.objects.filter(members__pk=user.pk)
+    team_payload = list()
+    project_payload = list()
+
+    for team in teams:
+        team_payload.append({
+            "team_id": team.team_id,
+            "team_name": team.team_name,
+        })
+        projects = Projects.objects.filter(team=team.pk)
+
+        for project in projects:
+            project_payload.append({
+                "project_id": project.project_id,
+                "project_name": project.project_name,
+                "team": team.team_id,
+            })
+    return {
+        "page_title": page_title,
+        "full_name": user.get_full_name,
+        "teams": team_payload,
+        "projects": project_payload
+    }

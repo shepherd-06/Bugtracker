@@ -7,57 +7,31 @@ from projects.models import Projects
 from token_manager.models import ProjectToken
 from utility.helper import (get_error_count_of_a_project, get_project_object,
                             get_project_token_by_project_id, get_user_object,
-                            get_verbose_count_of_a_project, set_cookie)
+                            get_verbose_count_of_a_project, set_cookie, get_common_view_payload)
 from utility.token_manager import decode_token, protected
 
 
-class Project(View):
+class ProjectView(View):
 
     @protected
-    def get(self, request, project_id):
+    def get(self, request, project_id: str):
         payload = decode_token(request.COOKIES['access_token'])
         user = get_user_object(username=payload["sub"])
         project = get_project_object(project_id)
-        if project_id is None:
+        if project is None:
             # TODO: handle error here.
             return JsonResponse({
                 "hello": "world",
             }, status=404)
 
-        teams = Team.objects.filter(members__pk=user.pk)
-
-        team_payload = list()
-        project_payload = list()
-        project_object = None
-
-        for team in teams:
-            team_payload.append({
-                "team_id": team.team_id,
-                "team_name": team.team_name,
-            })
-            projects = Projects.objects.filter(team=team.pk)
-
-            for project in projects:
-                if project.project_id == project_id:
-                    project_object = project
-                project_payload.append({
-                    "project_id": project.project_id,
-                    "project_name": project.project_name,
-                    "team": team.team_id,
-                })
-
-        project_token = get_project_token_by_project_id(project_object.pk)
-
-        context = {
-            "page_title": project_object.project_name,
-            "full_name": user.get_full_name,
-            "teams": team_payload,
-            "projects": project_payload,
-            "project_object": project_object,
-            "project_token": project_token,
-            "error_count": get_error_count_of_a_project(project_object.project_id),
-            "verbose_count": get_verbose_count_of_a_project(project_object.project_id),
-        }
+        project_token = get_project_token_by_project_id(project.pk)
+        
+        context = get_common_view_payload(user, project.project_name)
+        context["project_object"] = project
+        context["project_token"] = project_token
+        context["error_count"] = get_error_count_of_a_project(
+            project.project_id)
+        context["verbose_count"] = get_verbose_count_of_a_project(project.project_id)
 
         response = render(request, 'frontend/project.html', context)
         return response

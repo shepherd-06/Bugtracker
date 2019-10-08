@@ -31,11 +31,20 @@ from error_logger.apis.ErrorLogZathura import ErrorLogZathura
 from error_logger.apis.VerboseLogZathura import VerboseLogZathura
 from ping_app.views import Ping
 from frontend._views.index import Index
-from frontend._views.dashboard import Dashboard
-from frontend._views.project import Project
+from frontend._views.dashboard import DashboardView
+from frontend._views.project import ProjectView
+from frontend._views.team import TeamView
 
 urlpatterns = [
-    path('', Index.as_view()),
+    # ---------------------------------
+    # Front End
+    # ---------------------------------
+    path('', Index.as_view(), name="index"),
+    path('dashboard/', DashboardView.as_view(), name="dashboard"),
+    path('project/<project_id>/', ProjectView.as_view(), name="project"),
+    path('team/<team_id>/', TeamView.as_view(), name="team"),
+
+
     path('admin/', admin.site.urls),
     path('user/register/', UserRegistration.as_view(), name="register"),
     path('user/login/', UserLogin.as_view(), name="login"),
@@ -49,12 +58,6 @@ urlpatterns = [
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 
-    # ---------------------------------
-    # Front End
-    # ---------------------------------
-    path('frontend/', Index.as_view(), name="index"),
-    path('frontend/dashboard/', Dashboard.as_view(), name="dashboard"),
-    path('frontend/project/<project_id>', Project.as_view(), name="project"),
 ]
 
 # urlpatterns = [
