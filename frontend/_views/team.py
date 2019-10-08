@@ -22,5 +22,6 @@ class TeamView(View):
             }, status=404)
         
         context = get_common_view_payload(user, team.team_name)
+        context["current_team"] = team
         return render(request, 'frontend/team.html', context)
         

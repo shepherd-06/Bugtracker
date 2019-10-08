@@ -6,7 +6,45 @@
 <!-- Modal -->
 
 <div class="container">
+    <br>
+    <div class="row">
+        <div class="col-6">
+            {% if current_team %}
+            <p class="h4"> {{current_team.team_name}} </p>
+            <p class="h6"> Created by: {{ current_team.created_by.get_full_name }}</p>
+            <p class="h6"> Created on: {{ current_team.created_on }}</p>
+            <p class="h6"> Total Admins: </p>
+            <p class="h6"> Total Members: </p>
 
+            <hr>
+
+            <div class="row">
+                <div class="col-8">
+                    <small class="text-muted"> Last updated on: {{ current_team.modified_on}}</small>
+                </div>
+
+                <div class="col-4">
+                    <button type="button" class="btn btn-outline-info btn-sm">Update</button>
+                </div>
+            </div>
+
+            {% else %}
+            <p> Team information 404</p>
+            {% endif %}
+
+        </div>
+
+        <div class="col-6">
+            {% if current_team %}
+
+            <p class="h3">
+                Show Projects details here for all the projects (Micro details)
+            </p>
+            {% endif %}
+
+        </div>
+
+    </div>
 </div>
 
 {% endblock %}
