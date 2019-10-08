@@ -1,0 +1,68 @@
+{% extends "navbar.html" %}
+{% block title %} {{ page_title }} {% endblock %}
+
+<!-- ||||||||||||||||||||||||||||||| -->
+<!-- ||||||||||||||||||||||||||||||| -->
+<!-- |||||||||| Profile ||||||||||||-->
+<!-- ||||||||||||||||||||||||||||||| -->
+<!-- ||||||||||||||||||||||||||||||| -->
+
+{% block content %}
+
+<div class="container">
+    <br>
+
+    <div class="row">
+
+        <div class="col-6">
+            <div class="row">
+                <div class="col-8">
+                    <p class="h4 title_texts">
+                        {{user.get_full_name}}
+                    </p>
+                </div>
+
+                <div class="col-4" style="text-align: right">
+                    {% if user.is_approved %}
+
+                    <span class="badge badge-pill badge-dark body_paragraphs">
+                        approved
+                    </span>
+                    {% else %}
+                    <span class="badge badge-pill badge-warning body_paragraphs">
+                        pending
+                    </span>
+                    {% endif %}
+                </div>
+            </div>
+
+            <p class="h6 body_paragraphs">
+                Email: {{user.email}}
+            </p>
+
+            <p class="h6 body_paragraphs">
+                {% if user.mobile %}
+                Mobile: {{user.mobile}}
+                {% else %}
+                Mobile: not set
+                {% endif %}
+            </p>
+
+            <div class="row">
+                <div class="col-8">
+                    <p class="h6 body_paragraphs">
+                        Created on: {{ user.created_on }} <br>
+                        <small class="text-muted body_paragraphs">
+                            Last updated on: {{ user.modified_on}}
+                        </small>
+                    </p>
+                </div>
+                <div class="col-4" style="text-align: right">
+                    <button type="button" class="btn btn-outline-info btn-sm body_paragraphs">Update</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

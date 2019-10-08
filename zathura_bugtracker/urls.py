@@ -16,24 +16,24 @@ Including another URLconf
 
 # https://wsvincent.com/django-user-authentication-tutorial-login-and-logout/
 
-from django.contrib import admin
-from django.urls import path, include
 from django.conf.urls import url
-from user.apis.user_authentication import UserRegistration, UserLogin
-from rest_framework_simplejwt.views import (
-    TokenObtainPairView,
-    TokenRefreshView,
-)
-from team.apis.team_manager import TeamManager
-from projects.apis.project import ProjectCRUD
-from token_manager.apis.token import ProjectToken
+from django.contrib import admin
+from django.urls import include, path
+from rest_framework_simplejwt.views import (TokenObtainPairView,
+                                            TokenRefreshView)
+
 from error_logger.apis.ErrorLogZathura import ErrorLogZathura
 from error_logger.apis.VerboseLogZathura import VerboseLogZathura
-from ping_app.views import Ping
-from frontend._views.index import Index
 from frontend._views.dashboard import DashboardView
+from frontend._views.index import Index
+from frontend._views.profile import ProfileView
 from frontend._views.project import ProjectView
 from frontend._views.team import TeamView
+from ping_app.views import Ping
+from projects.apis.project import ProjectCRUD
+from team.apis.team_manager import TeamManager
+from token_manager.apis.token import ProjectToken
+from user.apis.user_authentication import UserLogin, UserRegistration
 
 urlpatterns = [
     # ---------------------------------
@@ -43,6 +43,7 @@ urlpatterns = [
     path('dashboard/', DashboardView.as_view(), name="dashboard"),
     path('project/<project_id>/', ProjectView.as_view(), name="project"),
     path('team/<team_id>/', TeamView.as_view(), name="team"),
+    path('profile/', ProfileView.as_view(), name="profile"),
 
 
     path('admin/', admin.site.urls),

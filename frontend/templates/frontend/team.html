@@ -10,23 +10,30 @@
     <div class="row">
         <div class="col-6">
             {% if current_team %}
-            <p class="h4 title_texts">
-                {{current_team.team_name}}
-                {% if is_admin %}
-                <span class="badge badge-pill badge-primary">
-                    Admin
-                </span>
-                {% else %}
-                <span class="badge badge-pill  badge-info">Member</span>
-                {% endif %}
-            </p>
+            <div class="row">
+                <div class="col-8">
+                    <p class="h4 title_texts">
+                        {{current_team.team_name}}
+                    </p>
+                </div>
+
+                <div class="col-4" style="text-align: right">
+                    {% if is_admin %}
+                    <span class="badge badge-pill badge-dark">
+                        admin
+                    </span>
+                    {% else %}
+                    <span class="badge badge-pill  badge-secondary text-muted">member</span>
+                    {% endif %}
+                </div>
+            </div>
             <p class="h6 body_paragraphs"> Created by:
                 {{ current_team.created_by.get_full_name }}
                 <em>
                     ( {{ current_team.created_by.email }} )
                 </em>
             </p>
-            
+
             <div class="row">
                 <div class="col-8">
                     <p class="h6 body_paragraphs">
@@ -36,15 +43,13 @@
                         </small>
                     </p>
                 </div>
-                {% if is_admin %}
-                <div class="col-4" style="text-align: center">
+                <div class="col-4" style="text-align: right">
+                    {% if is_admin %}
                     <button type="button" class="btn btn-outline-info btn-sm body_paragraphs">Update</button>
-                </div>
-                {% else %}
-                <div class="col-4">
+                    {% else %}
                     <button type="button" class="btn btn-outline-info btn-sm body_paragraphs disable">Update</button>
+                    {% endif %}
                 </div>
-                {% endif %}
             </div>
 
             {% else %}
