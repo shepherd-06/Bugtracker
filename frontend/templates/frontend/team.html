@@ -10,21 +10,21 @@
     <div class="row">
         <div class="col-6">
             {% if current_team %}
-            <p class="h4"> {{current_team.team_name}} </p>
-            <p class="h6"> Created by: {{ current_team.created_by.get_full_name }}</p>
-            <p class="h6"> Created on: {{ current_team.created_on }}</p>
-            <p class="h6"> Total Admins: </p>
-            <p class="h6"> Total Members: </p>
+            <p class="h4 title_texts"> {{current_team.team_name}} </p>
+            <p class="h6 body_paragraphs"> Created by: {{ current_team.created_by.get_full_name }}</p>
+            <p class="h6 body_paragraphs"> Created on: {{ current_team.created_on }}</p>
+            <p class="h6 body_paragraphs"> Total Admins: </p>
+            <p class="h6 body_paragraphs"> Total Members: </p>
 
             <hr>
 
             <div class="row">
                 <div class="col-8">
-                    <small class="text-muted"> Last updated on: {{ current_team.modified_on}}</small>
+                    <small class="text-muted body_paragraphs"> Last updated on: {{ current_team.modified_on}}</small>
                 </div>
 
                 <div class="col-4">
-                    <button type="button" class="btn btn-outline-info btn-sm">Update</button>
+                    <button type="button" class="btn btn-outline-info btn-sm body_paragraphs">Update</button>
                 </div>
             </div>
 

@@ -12,6 +12,14 @@ font-family: 'Bitter', serif; */
     font-size: 1.2em;
 }
 
+.title_texts {
+    font-family: 'Bitter', serif;
+}
+
+.body_paragraphs {
+    font-family: 'Slabo 27px', serif;
+}
+
 .actions {
     font-family: 'Slabo 27px', serif;
 }
