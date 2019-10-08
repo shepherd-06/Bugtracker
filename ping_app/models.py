@@ -5,10 +5,7 @@ from user.models import CustomUser
 HTTP_METHODS = (
     ("1", "GET"),
     ("2", "HEAD"),
-    ("3", "POST"),
-    ("4", "PUT"),
-    ("5", "DELETE"),
-    ("6", "OPTIONS")
+    ("3", "OPTIONS")
 )
 
 

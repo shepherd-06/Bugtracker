@@ -4,6 +4,7 @@ from django.views import View
 
 from projects.models import Projects
 from team.models import Team
+from ping_app.models import WebStatus
 from utility.helper import get_common_view_payload, get_user_object, set_cookie
 from utility.token_manager import decode_token, protected
 
@@ -16,6 +17,9 @@ class DashboardView(View):
     def get(self, request):
         payload = decode_token(request.COOKIES['access_token'])
         user = get_user_object(username=payload["sub"])
+        web_status = WebStatus.objects.all()
+                
         context = get_common_view_payload(user, "Dashboard")
+        context["server_status"] = web_status
         response = render(request, 'frontend/dashboard.html', context)
         return response

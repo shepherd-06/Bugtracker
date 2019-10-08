@@ -7,7 +7,36 @@
 <!-- Modal -->
 
 <div class="container">
+    <br>
+    <div class="row">
+        <div class="col-6">
+            <p class="h3 title_texts">
+                Server Status
+            </p>
 
+            {% if server_status %}
+            <div class="list-group">
+                {% for server in server_status %}
+                <ul class="list-group">
+                    <li class="list-group-item">
+                        <div class="row">
+                            <div class="col-5">
+                                {{server.url}}
+                            </div>
+
+                            <div class="col-4">
+                                {{server.last_checked}}
+                            </div>
+
+                        </div>
+
+                    </li>
+                </ul>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+    </div>
 
 </div>
 
