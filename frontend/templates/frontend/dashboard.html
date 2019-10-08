@@ -9,30 +9,37 @@
 <div class="container">
     <br>
     <div class="row">
-        <div class="col-6">
+        <div class="col-8">
             <p class="h3 title_texts">
                 Server Status
             </p>
 
+            <!-- TODO: Add a form to add website here -->
             {% if server_status %}
-            <div class="list-group">
-                {% for server in server_status %}
-                <ul class="list-group">
-                    <li class="list-group-item">
-                        <div class="row">
-                            <div class="col-5">
-                                {{server.url}}
-                            </div>
+            <div class="table-responsive table-striped">
+                <table class="table">
+                    <thead class="thead-dark" style="text-align: center">
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">URL</th>
+                            <th scope="col">Last Checked</th>
+                            <th scope="col">HTTP Status</th>
+                            <th scope="col">Request Type</th>
+                        </tr>
+                    </thead>
 
-                            <div class="col-4">
-                                {{server.last_checked}}
-                            </div>
-
-                        </div>
-
-                    </li>
-                </ul>
-                {% endfor %}
+                    <tbody>
+                        {% for server in server_status %}
+                        <tr style="text-align: center">
+                            <th scope="row">1</th>
+                            <td> {{server.url}} </td>
+                            <td> {{server.last_checked}}</td>
+                            <td> {{server.status}}</td>
+                            <td> {{server.request_type}}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
             </div>
             {% endif %}
         </div>
