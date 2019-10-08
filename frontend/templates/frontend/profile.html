@@ -62,6 +62,39 @@
                 </div>
             </div>
         </div>
+
+        <!-- User in what what teams -->
+        <div class="col-6">
+            {% if team_payload %}
+            <p class="h6 title_texts">
+                Teams
+                <span class="badge badge-pill badge-dark">{{ total_team }}</span>
+            </p>
+
+            <div class="list-group">
+                {% for team in team_payload %}
+                <a href="{% url "team" team.team_id %}" class="list-group-item list-group-item-action">
+                    <div class="row">
+                        <div class="col-8">
+                            {{ team.team_name }}
+                        </div>
+                        <div class="col-4" style="text-align: right">
+                            <span class="badge badge-pill badge-dark">
+                                {% if team.admin %}
+                                admin
+                                {% else %}
+                                member
+                                {% endif %}
+                            </span>
+                        </div>
+                    </div>
+                </a>
+                {% endfor %}
+            </div>
+
+            {% endif %}
+
+        </div>
     </div>
 </div>
 
