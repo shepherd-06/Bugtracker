@@ -32,7 +32,10 @@ class CustomUser(AbstractUser):
 
     @property
     def get_full_name(self):
-        return super().get_full_name()
+        full_name = super().get_full_name()
+        if len(full_name) == 0:
+            return self.email
+        return full_name
 
     def get_all_permissions(self, obj=None):
         return super().get_all_permissions(obj=obj)
