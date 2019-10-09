@@ -30,12 +30,14 @@
                 </button>
             </div>
             {% else %}
+            {% if register_message %}
             <div class="alert alert-danger alert-dismissible fade show" role="alert">
                 {{ register_message }}
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
+            {% endif %}
             {% endif %}
             <form class="registration_form" style="display: none" method="POST" action="{% url 'register' %}">
                 {% csrf_token %}
@@ -68,6 +70,9 @@
 
         <div class="col-6">
             {% if login_message %}
+            <!-- <script type="text/javascript">
+                org_selected("Hello World");
+            </script> -->
             <div class="alert alert-danger alert-dismissible fade show" role="alert">
                 {{ login_message }}
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
