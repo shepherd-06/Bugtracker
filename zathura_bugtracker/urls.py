@@ -29,7 +29,7 @@ from frontend._views.index import Index
 from frontend._views.profile import ProfileView
 from frontend._views.project import ProjectView
 from frontend._views.team import TeamView
-from ping_app.views import Ping
+from ping_app.apis.ping import Ping
 from projects.apis.project import ProjectCRUD
 from team.apis.team_manager import TeamManager
 from token_manager.apis.token import ProjectToken
@@ -54,7 +54,7 @@ urlpatterns = [
     path('project/token/', ProjectToken.as_view(),  name="project_token"),
     path('project/error/log/', ErrorLogZathura.as_view()),
     path('project/verbose/log/', VerboseLogZathura.as_view()),
-    path('ping/add/', Ping.as_view()),
+    path('ping/add/', Ping.as_view(), name="ping_create"),
 
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
