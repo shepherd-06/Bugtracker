@@ -36,12 +36,16 @@
 
             <div class="row">
                 <div class="col-8">
-                    <p class="h6 body_paragraphs">
-                        Created on: {{ current_team.created_on }} <br>
-                        <small class="text-muted body_paragraphs">
-                            Last updated on: {{ current_team.modified_on}}
-                        </small>
+                    <p class="h6 body_paragraphs" id="team_created">
+                        <script type="text/javascript">
+                            localize_time("team_created", "Created on: ", {{ current_team.created_on | safe }});
+                        </script>
                     </p>
+                    <small class="text-muted body_paragraphs" id="team_updated">
+                        <script type="text/javascript">
+                            localize_time("team_updated", "Last updated on: ", {{ current_team.created_on | safe }});
+                        </script>
+                    </small>
                 </div>
                 <div class="col-4" style="text-align: right">
                     {% if is_admin %}

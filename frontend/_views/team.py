@@ -1,11 +1,14 @@
+from datetime import datetime
+
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.views import View
 
-from team.models import Team
 from projects.models import Projects
+from team.models import Team
 from token_manager.models import ProjectToken
-from utility.helper import get_team_object, get_user_object, get_common_view_payload
+from utility.helper import (get_common_view_payload, get_team_object,
+                            get_user_object)
 from utility.token_manager import decode_token, protected
 
 
@@ -21,6 +24,9 @@ class TeamView(View):
             return JsonResponse({
                 "hello": "world",
             }, status=404)
+            
+        team.created_on = datetime.timestamp(team.created_on) * 1000
+        team.modified_on = datetime.timestamp(team.modified_on) * 1000
 
         is_member = True if Team.objects.filter(members__pk=user.pk) else False
         is_admin = True if Team.objects.filter(

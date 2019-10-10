@@ -19,12 +19,20 @@
 
             {% if project_token %}
             <p class="h6 body_paragraphs"> Project Token: <strong>{{ project_token.token }}</strong> </p>
-            <p class="h6 body_paragraphs"> Generated On: {{ project_token.generated_on }} </p>
-            <p class="h6 body_paragraphs"> Updated On: {{  project_token.updated_on }} </p>
+            <p class="h6 body_paragraphs" id="token_generated">
+                <script type="text/javascript">
+                    localize_time("token_generated", "Generated On: ", {{ project_token.generated_on | safe }});
+                </script>
+            </p>
+            <p class="h6 body_paragraphs" id="token_updated">
+                <script type="text/javascript">
+                    localize_time("token_updated", "Updated On: ", {{ project_token.updated_on | safe }});
+                </script>
+            </p>
             <p class="h6 body_paragraphs"> Last Access: {{project_token.last_access }} </p>
             <p class="h6 body_paragraphs"> Active: {{ project_token.is_active }}</p>
-            <button style="opacity: 0.93"  type="button" class="btn btn-danger btn-sm body_paragraphs" data-toggle="modal"
-                data-target="#create_project_token">
+            <button style="opacity: 0.93" type="button" class="btn btn-danger btn-sm body_paragraphs"
+                data-toggle="modal" data-target="#create_project_token">
                 Generate A New Token
             </button>
             {% else %}
@@ -46,13 +54,18 @@
             <hr>
             <div class="row">
                 <div class="col-8">
-                    <p class="h6 body_paragraphs">
-                        Created on: {{project_object.created_on}} <br>
-                        <small class="text-muted body_paragraphs">
-                            Last updated on: {{ project_object.modified_on}}
-                        </small>
-
+                    <p class="h6 body_paragraphs" id="project_created">
+                        <script type="text/javascript">
+                            localize_time("project_created", "Created on: ", {{ project_object.created_on | safe }});
+                        </script>
                     </p>
+
+                    <small class="text-muted body_paragraphs" id="project_updated">
+                        <script type="text/javascript">
+                            localize_time("project_updated", "Last updated on: ", {{ project_object.modified_on | safe }});
+                        </script>
+                    </small>
+
                 </div>
                 <div class="col-4" style="text-align: right">
                     <button type="button" class="btn btn-outline-info btn-sm body_paragraphs">Update</button>

@@ -16,15 +16,9 @@ class ProfileView(View):
         payload = decode_token(request.COOKIES['access_token'])
         user = get_user_object(username=payload["sub"])
         
-        print("----------------------------------")
-        print(user.created_on)
-        print(datetime.timestamp(user.created_on))
-        print("----------------------------------")
+        user.created_on = datetime.timestamp(user.created_on) * 1000
+        user.modified_on = datetime.timestamp(user.modified_on) * 1000
         
-        user.created_on = datetime.timestamp(user.created_on)
-        user.modified_on = datetime.timestamp(user.modified_on)
-        
-
         teams = Team.objects.filter(members__pk=user.pk)
         team_payload = list()
         for team in teams:

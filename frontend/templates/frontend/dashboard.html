@@ -69,8 +69,10 @@
                         {% for server in server_status %}
                         <tr style="text-align: center">
                             <th scope="row">{{ server.index }}</th>
-                            <td> {{server.url}} </td>
-                            <td> {{server.last_checked}}</td>
+                            <td style="text-align: left"> {{server.url}} </td>
+                            <td id="server_check">
+                                {{server.last_checked}}
+                            </td>
                             <td> {{server.status}}</td>
                             <td> {{server.request_type}}</td>
                         </tr>

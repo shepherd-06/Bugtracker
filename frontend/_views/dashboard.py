@@ -2,6 +2,8 @@ from django.http import JsonResponse
 from django.shortcuts import render
 from django.views import View
 
+from datetime import datetime
+
 from projects.models import Projects
 from team.models import Team
 from ping_app.models import WebStatus
