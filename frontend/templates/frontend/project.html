@@ -14,8 +14,7 @@
             {% if project_object %}
             <p class="h4 title_texts"> Project - {{project_object.project_name}}</p>
             <p class="h6 body_paragraphs"> Team - {{project_object.team.team_name}}</p>
-            <!-- Apply local timezone here -->
-            <p class="h6 body_paragraphs"> Created on - {{project_object.created_on}}</p>
+
             <hr>
 
             {% if project_token %}
@@ -24,7 +23,8 @@
             <p class="h6 body_paragraphs"> Updated On: {{  project_token.updated_on }} </p>
             <p class="h6 body_paragraphs"> Last Access: {{project_token.last_access }} </p>
             <p class="h6 body_paragraphs"> Active: {{ project_token.is_active }}</p>
-            <button type="button" class="btn btn-danger btn-sm body_paragraphs" data-toggle="modal" data-target="#create_project_token">
+            <button style="opacity: 0.93"  type="button" class="btn btn-danger btn-sm body_paragraphs" data-toggle="modal"
+                data-target="#create_project_token">
                 Generate A New Token
             </button>
             {% else %}
@@ -43,15 +43,17 @@
                 </div>
             </div>
             {% endif %}
-
-
             <hr>
-
             <div class="row">
                 <div class="col-8">
-                    <small class="text-muted body_paragraphs"> Last updated on: {{ project_object.modified_on}}</small>
-                </div>
+                    <p class="h6 body_paragraphs">
+                        Created on: {{project_object.created_on}} <br>
+                        <small class="text-muted body_paragraphs">
+                            Last updated on: {{ project_object.modified_on}}
+                        </small>
 
+                    </p>
+                </div>
                 <div class="col-4" style="text-align: right">
                     <button type="button" class="btn btn-outline-info btn-sm body_paragraphs">Update</button>
                 </div>
@@ -65,8 +67,8 @@
 
         <div class="col-6">
             <!-- TODO: Other project details if needed -->
-            <p class="h5 body_paragraphs">Total Error Count : {{error_count}}</p>
-            <p class="h5 body_paragraphs">Total Verbose Log Count : {{verbose_count}}</p>
+            <p class="h5 body_paragraphs">Total Error : {{error_count}}</p>
+            <p class="h5 body_paragraphs">Total Verbose Log : {{verbose_count}}</p>
 
         </div>
 
@@ -91,21 +93,23 @@
                 </button>
             </div>
             <div class="modal-body">
-                <p class="card-text body_paragraphs">Lorem ipsum dolor sit amet consectetur adipisicing elit. Aliquid, at, in quos
+                <p class="card-text body_paragraphs">Lorem ipsum dolor sit amet consectetur adipisicing elit. Aliquid,
+                    at, in quos
                     cupiditate vero aut
                     consequuntur, natus qui delectus nesciunt harum eveniet. Repudiandae velit consequuntur,
                     officiis
                     eligendi
                     ullam beatae laudantium?
                 </p>
-                <form method="POST" action="{% url 'project_token' %}">
+                <form method="POST" action="{% url 'token_generate' %}">
                     {% csrf_token %}
                     <div class="form-group">
                         <input type="hidden" name="project_id" class="form-control" id="input_project_id"
                             value="{{ project_object.project_id }}">
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary body_paragraphs" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-secondary body_paragraphs"
+                            data-dismiss="modal">Close</button>
                         <button type="submit" class="btn btn-primary body_paragraphs">Generate</button>
                     </div>
                 </form>

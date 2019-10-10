@@ -2,18 +2,15 @@ from uuid import uuid4
 
 from django.http import JsonResponse
 from django.views import View
-from django.utils import timezone
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.status import (HTTP_200_OK, HTTP_201_CREATED,
                                    HTTP_202_ACCEPTED, HTTP_400_BAD_REQUEST,
                                    HTTP_401_UNAUTHORIZED,
                                    HTTP_406_NOT_ACCEPTABLE)
-from rest_framework.views import APIView
-from utility.token_manager import protected, decode_token
 
 from token_manager.serializer import TokenSerializer
-from utility.helper import get_user_object, get_project_object, get_project_token_by_project_id
-from uuid import uuid4
+from utility.helper import (get_project_object,
+                            get_project_token_by_project_id, get_user_object)
+from utility.token_manager import decode_token, protected
 
 
 class ProjectToken(View):

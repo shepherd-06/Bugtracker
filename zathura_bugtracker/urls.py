@@ -51,9 +51,9 @@ urlpatterns = [
     path('user/login/', UserLogin.as_view(), name="login"),
     path('team/', TeamManager.as_view(), name="team_create"),
     path('project/', ProjectCRUD.as_view(), name="project_create"),
-    path('project/token/', ProjectToken.as_view(),  name="project_token"),
-    path('project/error/log/', ErrorLogZathura.as_view()),
-    path('project/verbose/log/', VerboseLogZathura.as_view()),
+    path('token/generate/', ProjectToken.as_view(),  name="token_generate"),
+    path('log/error/', ErrorLogZathura.as_view()),
+    path('log/verbose/', VerboseLogZathura.as_view()),
     path('ping/add/', Ping.as_view(), name="ping_create"),
 
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),

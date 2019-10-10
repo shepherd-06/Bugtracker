@@ -25,11 +25,11 @@
                 <div class="col-4" style="text-align: right">
                     {% if user.is_approved %}
 
-                    <span class="badge badge-pill badge-dark body_paragraphs">
+                    <span style="opacity: 0.9" class="badge badge-pill badge-dark body_paragraphs">
                         approved
                     </span>
                     {% else %}
-                    <span class="badge badge-pill badge-warning body_paragraphs">
+                    <span style="opacity: 0.9" class="badge badge-pill badge-warning body_paragraphs">
                         pending
                     </span>
                     {% endif %}
@@ -51,7 +51,7 @@
             <div class="row">
                 <div class="col-8">
                     <p class="h6 body_paragraphs">
-                        Created on: {{ user.created_on }} <br>
+                        Account created on: {{ user.created_on }} <br>
                         <small class="text-muted body_paragraphs">
                             Last updated on: {{ user.modified_on}}
                         </small>
@@ -68,7 +68,7 @@
             {% if team_payload %}
             <p class="h6 title_texts">
                 Teams
-                <span class="badge badge-pill badge-dark">{{ total_team }}</span>
+                <span style="opacity: 0.9" class="badge badge-pill badge-dark">{{ total_team }}</span>
             </p>
 
             <div class="list-group">
@@ -79,7 +79,7 @@
                             {{ team.team_name }}
                         </div>
                         <div class="col-4" style="text-align: right">
-                            <span class="badge badge-pill badge-dark">
+                            <span style="opacity: 0.9" class="badge badge-pill badge-dark">
                                 {% if team.admin %}
                                 admin
                                 {% else %}

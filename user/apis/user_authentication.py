@@ -18,7 +18,6 @@ from utility.helper import get_user_object, set_cookie
 from utility.token_manager import encode_access_token, encode_refresh_token
 
 
-# s
 class UserRegistration(View):
 
     def post(self, request):
