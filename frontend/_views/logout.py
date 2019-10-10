@@ -12,7 +12,7 @@ class LogoutView(View):
     def get(self, request):
         payload = decode_token(request.COOKIES['access_token'])
         user = get_user_object(username=payload["sub"])
-        
+
         response = HttpResponseRedirect(reverse('index'))
         response.delete_cookie('refresh_token')
         response.delete_cookie('access_token')
