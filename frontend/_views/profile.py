@@ -2,6 +2,7 @@ from django.db.models import Q
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.views import View
+from datetime import datetime
 
 from team.models import Team
 from utility.helper import get_user_object, get_common_view_payload
@@ -14,6 +15,15 @@ class ProfileView(View):
     def get(self, request):
         payload = decode_token(request.COOKIES['access_token'])
         user = get_user_object(username=payload["sub"])
+        
+        print("----------------------------------")
+        print(user.created_on)
+        print(datetime.timestamp(user.created_on))
+        print("----------------------------------")
+        
+        user.created_on = datetime.timestamp(user.created_on)
+        user.modified_on = datetime.timestamp(user.modified_on)
+        
 
         teams = Team.objects.filter(members__pk=user.pk)
         team_payload = list()

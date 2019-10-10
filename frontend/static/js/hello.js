@@ -21,19 +21,6 @@ function login_form() {
 }
 
 
-function org_form() {
-    alert("Org form");
-}
-
-function project_form() {
-    alert("Project form");
-}
-
-
-function set_storage(data) {
-    console.log(data);
-}
-
 function set_local_storage_data(key, data) {
     if (window.localStorage) {
         // do stuff with localStorage
@@ -57,7 +44,8 @@ function get_org_from_localStorage(key) {
     return get_local_storage_data(key);
 }
 
-function org_selected(org_name) {
-    alert(org_name);
-    // DO org related work here.
+function localize_time(id, text, date) {
+    date = new Date(date);
+    date = date.toLocaleString();
+    document.getElementById(id).innerHTML = text + date;
 }
