@@ -26,6 +26,7 @@ from error_logger.apis.ErrorLogZathura import ErrorLogZathura
 from error_logger.apis.VerboseLogZathura import VerboseLogZathura
 from frontend._views.dashboard import DashboardView
 from frontend._views.index import Index
+from frontend._views.logout import LogoutView
 from frontend._views.profile import ProfileView
 from frontend._views.project import ProjectView
 from frontend._views.team import TeamView
@@ -44,6 +45,7 @@ urlpatterns = [
     path('project/<project_id>/', ProjectView.as_view(), name="project"),
     path('team/<team_id>/', TeamView.as_view(), name="team"),
     path('profile/', ProfileView.as_view(), name="profile"),
+    path('logout/', LogoutView.as_view(), name="logout"),
 
 
     path('admin/', admin.site.urls),
