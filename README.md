@@ -1,8 +1,8 @@
-## Zathura Bugtracker - v0.0.1-Alpha
+## Bugtracker - v0.0.1 - Pre Alpha
 This is a bugtracker, it depends on Zathura (https://github.com/p1r-a-t3/zathura), a logger that I wrote few montnhs back. Zathura is still in beta version.
 
 #### Purpose
-Final project would be a docker container ready to up and running anywhere you want. Zathura will send the error logs from your apps, or you can write the api if you want. 
+Final project would be a docker container ready to up and running anywhere you want. Zathura will send the error logs from your apps, or you can write the api if you want. I wrote it to clean up my django skill + I really wanted one of these for my work projects. It's hard to go through logs on production server all the time. 
 
 #### How to setup this project: [Development purpose]
 
