@@ -9,6 +9,88 @@
 
 {% block content %}
 <div class="container">
+    <br>
+
+    <!-- |||||||||||||||||||||||| -->
+    <!-- |||||||||||||||||||||||| -->
+    <!-- Search box -->
+    <!-- |||||||||||||||||||||||| -->
+    <!-- |||||||||||||||||||||||| -->
+    <div class="row">
+        <div class="col-8">
+            <div class="input-group input-group-sm mb-3">
+                <input type="text" class="form-control"
+                    placeholder="search by name, origin, resolver or project name"
+                    aria-label="search by name, origin, resolver or project name" aria-describedby="basic-addon2">
+                <div class="input-group-append">
+                    <button class="btn btn-dark" type="button">Search</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-2">
+            <!-- Empty div for spacing -->
+        </div>
+    </div>
+
+    <!-- |||||||||||||||||||||||||||| -->
+    <!-- |||||||||||||||||||||||||||| -->
+    <!-- Show error logs here -->
+    <!-- |||||||||||||||||||||||||||| -->
+    <!-- |||||||||||||||||||||||||||| -->
+    <div class="table-responsive table-striped table-sm">
+        <table class="table" style="font-size: 0.5em;">
+            <thead class="thead-dark" style="text-align: center">
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">User</th>
+                    <th scope="col">Error Name</th>
+                    <th scope="col">Description</th>
+                    <th scope="col">Origin</th>
+                    <th scope="col">Project</th>
+                    <th scope="col">Logged on</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Resolved By</th>
+                    <th scope="col">Last Updated</th>
+                </tr>
+            </thead>
+
+            {% if error_logs %}
+            <tbody>
+                {% for error_log in error_logs %}
+                <tr style="text-align: center">
+                    <th scope="row"> {{ forloop.counter }} </th>
+                    <td> {{ error_log.identifier }} </td>
+                    <td> {{ error_log.error_name }} </td>
+                    <td> {{ error_log.error_description }} </td>
+                    <td> {{ error_log.point_of_origin }} </td>
+                    <td> {{ error_log.reference_project.project_name }} </td>
+                    <td> {{ error_log.logged_on }} UTC </td>
+                    <td> 
+                        {% if not error_log.is_resolved %}
+                        pending
+                        {% else %}
+                        <strong>resolved</strong>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if error_log.resolved_by is none %}
+                        None
+                        {% else %}
+                        {{ error_log.resolved_by }} 
+                        {% endif %}
+                    </td>
+                    <td> {{ error_log.updated_on }} UTC </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+            {% else %}
+            <p class="h6 body_texts">
+                No error logs to show
+            </p>
+            {% endif %}
+        </table>
+    </div>
 
 </div>
 

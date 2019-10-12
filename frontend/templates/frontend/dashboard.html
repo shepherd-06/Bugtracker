@@ -53,8 +53,8 @@
             <!-- ||||||||||||||||||||||||||||| -->
 
             {% if server_status %}
-            <div class="table-responsive table-striped">
-                <table class="table">
+            <div class="table-responsive table-striped table-sm">
+                <table class="table" style="font-size: 0.5em;">
                     <thead class="thead-dark" style="text-align: center">
                         <tr>
                             <th scope="col">#</th>
@@ -67,6 +67,7 @@
 
                     <tbody>
                         {% for server in server_status %}
+                        {% if server.status >= 200 and server.status < 300 %}
                         <tr style="text-align: center">
                             <th scope="row">{{ server.index }}</th>
                             <td style="text-align: left"> {{server.url}} </td>
@@ -76,6 +77,17 @@
                             <td> {{server.status}}</td>
                             <td> {{server.request_type}}</td>
                         </tr>
+                        {% else %}
+                        <tr class="table-warning" style="text-align: center;">
+                            <th scope="row">{{ server.index }}</th>
+                            <td style="text-align: left"> {{server.url}} </td>
+                            <td id="server_check">
+                                {{server.last_checked}} UTC
+                            </td>
+                            <td> {{server.status}}</td>
+                            <td> {{server.request_type}}</td>
+                        </tr>
+                        {% endif %}
                         {% endfor %}
                     </tbody>
                 </table>
