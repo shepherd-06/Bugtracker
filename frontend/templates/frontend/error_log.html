@@ -19,8 +19,7 @@
     <div class="row">
         <div class="col-8">
             <div class="input-group input-group-sm mb-3">
-                <input type="text" class="form-control"
-                    placeholder="search by name, origin, resolver or project name"
+                <input type="text" class="form-control" placeholder="search by name, origin, resolver or project name"
                     aria-label="search by name, origin, resolver or project name" aria-describedby="basic-addon2">
                 <div class="input-group-append">
                     <button class="btn btn-dark" type="button">Search</button>
@@ -28,8 +27,11 @@
             </div>
         </div>
 
-        <div class="col-2">
+        <div class="col-4" style="text-align: right;">
             <!-- Empty div for spacing -->
+            <p class="h6 title_texts"> 
+                {{ current }} out of {{ total_logs }} 
+                errors are showing</p>
         </div>
     </div>
 
@@ -66,7 +68,7 @@
                     <td> {{ error_log.point_of_origin }} </td>
                     <td> {{ error_log.reference_project.project_name }} </td>
                     <td> {{ error_log.logged_on }} UTC </td>
-                    <td> 
+                    <td>
                         {% if not error_log.is_resolved %}
                         pending
                         {% else %}
@@ -77,7 +79,7 @@
                         {% if error_log.resolved_by is none %}
                         None
                         {% else %}
-                        {{ error_log.resolved_by }} 
+                        {{ error_log.resolved_by }}
                         {% endif %}
                     </td>
                     <td> {{ error_log.updated_on }} UTC </td>

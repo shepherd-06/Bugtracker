@@ -18,4 +18,7 @@ class ErrorLogView(View):
         
         context = get_common_view_payload(user, "Error Log")
         context["error_logs"] = error_logs
+        context["total_logs"] = ErrorLog.objects.all().count()
+        context["current"] = len(error_logs)
+        
         return render(request, 'frontend/error_log.html', context)
