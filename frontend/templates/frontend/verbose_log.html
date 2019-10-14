@@ -1,0 +1,81 @@
+{% extends "navbar.html" %}
+{% block title %} {{ page_title }} {% endblock %}
+
+<!-- ||||||||||||||||||||||||||||||| -->
+<!-- ||||||||||||||||||||||||||||||| -->
+<!-- |||||||| Verbose Log ||||||||||-->
+<!-- ||||||||||||||||||||||||||||||| -->
+<!-- ||||||||||||||||||||||||||||||| -->
+
+{% block content %}
+<div class="container">
+    <br>
+
+    <!-- |||||||||||||||||||||||| -->
+    <!-- |||||||||||||||||||||||| -->
+    <!-- Search box -->
+    <!-- |||||||||||||||||||||||| -->
+    <!-- |||||||||||||||||||||||| -->
+    <div class="row">
+        <div class="col-8">
+            <div class="input-group input-group-sm mb-3">
+                <input type="text" class="form-control"
+                 placeholder="search by origin or project name"
+                    aria-label="search by origin or project name"
+                     aria-describedby="basic-addon2">
+                <div class="input-group-append">
+                    <button class="btn btn-dark" type="button">Search</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-4" style="text-align: right;">
+            <!-- Empty div for spacing -->
+            <p class="h6 title_texts" style="padding: 0.5em;"> 
+                {{ current }} out of {{ total_logs }} 
+                logs are showing</p>
+        </div>
+    </div>
+
+    <!-- |||||||||||||||||||||||||||| -->
+    <!-- |||||||||||||||||||||||||||| -->
+    <!-- Show error logs here -->
+    <!-- |||||||||||||||||||||||||||| -->
+    <!-- |||||||||||||||||||||||||||| -->
+    <div class="table-responsive table-striped table-sm">
+        <table class="table" style="font-size: 0.5em;">
+            <thead class="thead-dark" style="text-align: center">
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">User</th>
+                    <th scope="col">Project Name</th>
+                    <th scope="col">Description</th>
+                    <th scope="col">Origin</th>
+                    <th scope="col">Logged on</th>
+                </tr>
+            </thead>
+
+            {% if verbose_logs %}
+            <tbody>
+                {% for verbose_log in verbose_logs %}
+                <tr style="text-align: center">
+                    <th scope="row"> {{ forloop.counter }} </th>
+                    <td> {{ verbose_log.identifier }} </td>
+                    <td> {{ verbose_log.reference_project.project_name }} </td>
+                    <td> {{ verbose_log.log_description }} </td>
+                    <td> {{ verbose_log.point_of_origin }} </td>
+                    <td> {{ error_log.logged_on }} UTC </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+            {% else %}
+            <p class="h6 body_texts">
+                No Verbose Logs to show
+            </p>
+            {% endif %}
+        </table>
+    </div>
+
+</div>
+
+{% endblock %}
