@@ -3,7 +3,7 @@
 
 <!-- ||||||||||||||||||||||||||||||| -->
 <!-- ||||||||||||||||||||||||||||||| -->
-<!-- ||||||||| Error Log |||||||||||-->
+<!-- |||||||| Verbose Log ||||||||||-->
 <!-- ||||||||||||||||||||||||||||||| -->
 <!-- ||||||||||||||||||||||||||||||| -->
 
@@ -19,8 +19,15 @@
     <div class="row">
         <div class="col-8">
             <div class="input-group input-group-sm mb-3">
-                <input type="text" class="form-control" placeholder="search by name, origin, resolver or project name"
-                    aria-label="search by name, origin, resolver or project name" aria-describedby="basic-addon2">
+                {% if page_title == "Verbose Log" %}
+                <input type="text" class="form-control" 
+                placeholder="search by origin or project name"
+                    aria-describedby="basic-addon2">
+                {% else %}
+                <input type="text" class="form-control" 
+                placeholder="search by name, origin, resolver or project name"
+                    aria-describedby="basic-addon2">
+                {% endif %}
                 <div class="input-group-append">
                     <button class="btn btn-dark" type="button">Search</button>
                 </div>
@@ -29,36 +36,43 @@
 
         <div class="col-4" style="text-align: right;">
             <!-- Empty div for spacing -->
-            <p class="h6 title_texts" style="padding: 0.5em;"> 
-                {{ current }} out of {{ total_logs }} 
-                errors are showing</p>
+            <p class="h6 title_texts" style="padding: 0.5em;">
+                {% if total_logs > 0 %}
+                {{ current }} out of {{ total_logs }}
+                logs are showing</p>
+            {% endif %}
         </div>
     </div>
 
     <!-- |||||||||||||||||||||||||||| -->
     <!-- |||||||||||||||||||||||||||| -->
-    <!-- Show error logs here -->
+    <!-- Show logs here -->
     <!-- |||||||||||||||||||||||||||| -->
     <!-- |||||||||||||||||||||||||||| -->
+    {% if total_logs > 0 %}
     <div class="table-responsive table-striped table-sm">
         <table class="table" style="font-size: 0.5em;">
             <thead class="thead-dark" style="text-align: center">
                 <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">User</th>
-                    <th scope="col">Error Name</th>
-                    <th scope="col">Description</th>
-                    <th scope="col">Origin</th>
-                    <th scope="col">Project</th>
-                    <th scope="col">Logged on</th>
-                    <th scope="col">Status</th>
-                    <th scope="col">Resolved By</th>
-                    <th scope="col">Last Updated</th>
+                    {%for title in titles %}
+                    <th scope="col"> {{ title }} </th>
+                    {% endfor %}
                 </tr>
             </thead>
 
-            {% if error_logs %}
             <tbody>
+                {% if verbose_logs %}
+                {% for verbose_log in verbose_logs %}
+                <tr style="text-align: center">
+                    <th scope="row"> {{ forloop.counter }} </th>
+                    <td> {{ verbose_log.identifier }} </td>
+                    <td> {{ verbose_log.reference_project.project_name }} </td>
+                    <td> {{ verbose_log.log_description }} </td>
+                    <td> {{ verbose_log.point_of_origin }} </td>
+                    <td> {{ error_log.logged_on }} UTC </td>
+                </tr>
+                {% endfor %}
+                {% elif error_logs %}
                 {% for error_log in error_logs %}
                 <tr style="text-align: center">
                     <th scope="row"> {{ forloop.counter }} </th>
@@ -85,14 +99,17 @@
                     <td> {{ error_log.updated_on }} UTC </td>
                 </tr>
                 {% endfor %}
+                {% endif %}
             </tbody>
-            {% else %}
-            <p class="h6 body_texts">
-                No error logs to show
-            </p>
-            {% endif %}
         </table>
     </div>
+    {% else %}
+
+    <p class="h3 title_texts" style="text-align: center">
+        <br>
+        You don't have any logs.<br>Did you add the correct project access token on your project?
+    </p>
+    {% endif %}
 
 </div>
 

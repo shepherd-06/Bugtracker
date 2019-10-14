@@ -15,10 +15,22 @@ class ErrorLogView(View):
         payload = decode_token(request.COOKIES['access_token'])
         user = get_user_object(username=payload["sub"])
         error_logs = ErrorLog.objects.all()
-        
+
         context = get_common_view_payload(user, "Error Log")
         context["error_logs"] = error_logs
         context["total_logs"] = ErrorLog.objects.all().count()
         context["current"] = len(error_logs)
-        
-        return render(request, 'frontend/error_log.html', context)
+        context["titles"] = [
+                                    "#",
+                                    "User",
+                                    "Error Name",
+                                    "Description",
+                                    "Origin",
+                                    "Project",
+                                    "Logged on",
+                                    "Status",
+                                    "Resolved by",
+                                    "Last Updated",
+                                ]
+
+        return render(request, 'frontend/log.html', context)

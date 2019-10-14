@@ -9,16 +9,18 @@ from utility.helper import get_user_object, get_common_view_payload
 
 
 class VerboseView(View):
-    
+
     @protected
     def get(self, request):
         payload = decode_token(request.COOKIES['access_token'])
         user = get_user_object(username=payload["sub"])
         verbose_logs = VerboseLog.objects.all()
-        
-        context = get_common_view_payload(user, "Error Log")
+
+        context = get_common_view_payload(user, "Verbose Log")
         context["verbose_logs"] = verbose_logs
         context["total_logs"] = VerboseLog.objects.all().count()
         context["current"] = len(verbose_logs)
+        context["verbose_titles"] = ["#", "User",
+                                     "Project Name", "Description", "Origin", "Logged on"]
         
-        return render(request, 'frontend/verbose_log.html', context)
+        return render(request, 'frontend/log.html', context)
