@@ -31,6 +31,7 @@ from frontend._views.profile import ProfileView
 from frontend._views.project import ProjectView
 from frontend._views.team import TeamView
 from frontend._views.error_log import ErrorLogView
+from frontend._views.verbose import VerboseView
 from ping_app.apis.ping import Ping
 from projects.apis.project import ProjectCRUD
 from team.apis.team_manager import TeamManager
@@ -48,6 +49,7 @@ urlpatterns = [
     path('profile/', ProfileView.as_view(), name="profile"),
     path('logout/', LogoutView.as_view(), name="logout"),
     path('errors/', ErrorLogView.as_view(), name="error_log"),
+    path('logs/', VerboseView.as_view(), name="verbose_log"),
 
 
     path('admin/', admin.site.urls),
