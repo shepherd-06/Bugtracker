@@ -14,6 +14,7 @@ class Index(APIView):
         if request.COOKIES.get("access_token") is not None:
             payload = decode_token(request.COOKIES.get("access_token"))
             print("Index e")
+            print(payload)
             if isinstance(payload, dict) and 'sub' in payload:
                 user = get_user_object(username=payload["sub"])
                 if user is not None:

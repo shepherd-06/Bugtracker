@@ -26,9 +26,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = config("SECRET_KEY", None)
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False  # Never Go Live with Debug - True!
+DEBUG = True  # Never Go Live with Debug - True!
 
-ALLOWED_HOSTS = ['bugtracker.shepherd06.com']
+ALLOWED_HOSTS = ['127.0.0.1']
 
 # Application definition
 
