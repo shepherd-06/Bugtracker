@@ -1,5 +1,5 @@
 from django.http import JsonResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views import View
 
 from datetime import datetime
@@ -23,8 +23,11 @@ class DashboardView(View):
 
     @protected
     def get(self, request):
+        print("##########################")
+        print("DASHBoard")
         payload = decode_token(request.COOKIES['access_token'])
         user = get_user_object(username=payload["sub"])
+        print("##########################")
 
         context = get_common_view_payload(user, "Dashboard")
         if "ping_message" in request.GET:

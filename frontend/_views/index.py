@@ -13,11 +13,12 @@ class Index(APIView):
     def get(self, request):
         if request.COOKIES.get("access_token") is not None:
             payload = decode_token(request.COOKIES.get("access_token"))
-            user = get_user_object(username=payload["sub"])
-            
-            if user is not None:
-                # HTTP redirect
-                return HttpResponseRedirect(reverse("dashboard"))
+            print("Index e")
+            if isinstance(payload, dict) and 'sub' in payload:
+                user = get_user_object(username=payload["sub"])
+                if user is not None:
+                    # HTTP redirect
+                    return HttpResponseRedirect(reverse("dashboard"))
 
         context = dict()
         if "login_message" in request.GET:
