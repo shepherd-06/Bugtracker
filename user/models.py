@@ -12,9 +12,8 @@ class CustomUser(AbstractUser):
                               max_length=256, unique=True)
     mobile_no = models.CharField(
         max_length=20, blank=True, null=True, unique=True)
-    verification_code = models.CharField(max_length=8)
     timezone = models.CharField(max_length=10, blank=True, null=True)
-    pin_verified = models.BooleanField(default=False)
+    is_approved = models.BooleanField(default=False)
     modified_on = models.DateTimeField('date modified', auto_now=True)
     created_on = models.DateTimeField(auto_now_add=True)
 
@@ -32,7 +31,10 @@ class CustomUser(AbstractUser):
 
     @property
     def get_full_name(self):
-        return super().get_full_name()
+        full_name = super().get_full_name()
+        if len(full_name) == 0:
+            return self.email
+        return full_name
 
     def get_all_permissions(self, obj=None):
         return super().get_all_permissions(obj=obj)

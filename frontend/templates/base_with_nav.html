@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+
+<head>
+    <meta charset="UTF-8">
+    <title>
+        {% block title %}{% endblock %} - Bugtracker
+    </title>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
+
+    <!-- jQuery library -->
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+    <!-- Load Fonts Here -->
+    <link type="text/css" href="https://fonts.googleapis.com/css?family=Bitter|Monda|Pacifico|Slabo+27px&display=swap" rel="stylesheet">
+
+    <!-- Popper JS -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+
+    <!-- Latest compiled JavaScript -->
+    <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+    <script type="text/javascript" src="{% static 'js/hello.js' %}"> </script>
+</head>
+
+<body style="background-color: azure">
+    <nav class="navbar navbar-expand-sm sticky-top navbar-dark bg-dark">
+        <a class="navbar-brand headline" href="{% url "dashboard" %}">Bugtracker</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav ml-auto navbar_texts">
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url "dashboard" %}">Dashboard <span
+                            class="sr-only">(current)</span></a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url "profile" %}">
+                        {{ full_name }}
+                        <span class="sr-only">(current)</span></a>
+                </li>
+
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Team
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <!-- Add teams after getting them from the database -->
+                        {% block teams %}{% endblock %}
+                        <button style="width: 100%;" type="button" class="btn btn-sm btn-outline-primary"
+                            data-toggle="modal" data-target="#create_team">
+                            Create a Team
+                        </button>
+                    </div>
+                </li>
+
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Projects
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <!-- Add projects here -->
+                        {% block projects %}{% endblock %}
+                        <button style="width: 100%;" type="button" class="btn btn-sm btn-outline-primary"
+                            data-toggle="modal" data-target="#create_project">
+                            Add a New Project
+                        </button>
+                    </div>
+                </li>
+
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Logs
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <!-- Add logs here -->
+                        <a class="dropdown-item" href="{% url 'error_log' %}"> Error Log </a>
+                        <a class="dropdown-item" href="{% url 'verbose_log' %}"> Verbose Log </a>
+                    </div>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url "logout" %}">
+                        Logout
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    {% block content %}{% endblock %}
+
+</body>
+
+<footer class="container" style="text-align: center">
+    <br>
+    <br>
+    <hr>
+    <p style="font-family: 'Bitter', serif;">With ❤️ from <a target="_blank" rel="noopener noreferrer"
+            href="https://github.com/p1r-a-t3">p1r-a-t3</a>!
+    </p>
+</footer>
+
+<!-- $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ -->
+<!-- $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ -->
+<!-- Create an team -->
+<!-- $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ -->
+<!-- $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ -->
+
+<div class="modal fade" id="create_team" tabindex="-1" role="dialog" aria-labelledby="createTeamCenterTitle"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="createTeamLongTitle">Create a Team</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p class="card-text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Aliquid, at, in quos
+                    cupiditate vero aut
+                    consequuntur, natus qui delectus nesciunt harum eveniet. Repudiandae velit consequuntur,
+                    officiis
+                    eligendi
+                    ullam beatae laudantium?
+                </p>
+                <form method="POST" action="{% url 'team_create' %}">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <input type="text" class="form-control" id="input_tea " placeholder="Team name"
+                            name="team_name">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Create</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ -->
+<!-- $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ -->
+<!-- Create a project modal -->
+<!-- $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ -->
+<!-- $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ -->
+<div class="modal fade" id="create_project" tabindex="-1" role="dialog" aria-labelledby="createProjectCenterTitle"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="createTeamLongTitle">Add a New Project</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p class="card-text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Aliquid, at, in quos
+                    cupiditate vero aut
+                    consequuntur, natus qui delectus nesciunt harum eveniet. Repudiandae velit consequuntur,
+                    officiis
+                    eligendi
+                    ullam beatae laudantium?
+                </p>
+                <form method="POST" action="{% url 'project_create' %}">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <input type="text" name="project_name" class="form-control" id="input_project"
+                            placeholder="project name">
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleFormControlSelect1">Team</label>
+                        <select class="form-control" name="team_id" id="exampleFormControlSelect1">
+                            {% block project_teams %}{% endblock %}
+                        </select>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Add</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,145 @@
+{% extends "navbar.html" %}
+{% block title %} {{ page_title }} {% endblock %}
+
+{% block content %}
+<!-- # create an organization modal
+<!-- Modal -->
+
+<div class="container">
+    <br>
+    <div class="row">
+        <div class="col-6">
+            {% if current_team %}
+            <div class="row">
+                <div class="col-8">
+                    <p class="h4 title_texts">
+                        {{current_team.team_name}}
+                    </p>
+                </div>
+
+                <div class="col-4" style="text-align: right">
+                    {% if is_admin %}
+                    <span class="badge badge-pill badge-dark">
+                        admin
+                    </span>
+                    {% else %}
+                    <span class="badge badge-pill  badge-secondary">member</span>
+                    {% endif %}
+                </div>
+            </div>
+            <p class="h6 body_paragraphs"> Created by:
+                {{ current_team.created_by.get_full_name }}
+                <em>
+                    ( {{ current_team.created_by.email }} )
+                </em>
+            </p>
+
+            <div class="row">
+                <div class="col-8">
+                    <p class="h6 body_paragraphs" id="team_created">
+                        <script type="text/javascript">
+                            localize_time("team_created", "Created on: ", {{ current_team.created_on | safe }});
+                        </script>
+                    </p>
+                    <small class="text-muted body_paragraphs" id="team_updated">
+                        <script type="text/javascript">
+                            localize_time("team_updated", "Last updated on: ", {{ current_team.created_on | safe }});
+                        </script>
+                    </small>
+                </div>
+                <div class="col-4" style="text-align: right">
+                    {% if is_admin %}
+                    <button type="button" class="btn btn-outline-info btn-sm body_paragraphs">Update</button>
+                    {% else %}
+                    <button type="button" class="btn btn-outline-info btn-sm body_paragraphs disable">Update</button>
+                    {% endif %}
+                </div>
+            </div>
+
+            {% else %}
+            <p> Team information 404</p>
+            {% endif %}
+
+        </div>
+
+        <!-- Show projects here -->
+        <div class="col-6">
+            {% if projects %}
+            <p class="h6 title_texts">
+                Projects
+                <span class="badge badge-pill badge-dark">{{ total_projects }}</span>
+            </p>
+
+            <div class="list-group">
+                {% for project in projects %}
+                <a href="{% url "project" project.project_id %}" class="list-group-item list-group-item-action">
+                    {{ project.project_name }}
+                </a>
+                {% endfor %}
+            </div>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+    <hr>
+
+    <!-- |||||||||||||||||||||||||||||||||||||||||||| -->
+    <!-- |||||||||||||||||||||||||||||||||||||||||||| -->
+    <!-- |||||||||||||||||||||||||||||||||||||||||||| -->
+    <!-- |||||||||||||||||||||||||||||||||||||||||||| -->
+    <!-- |||||||||||||||||||||||||||||||||||||||||||| -->
+    <!-- |||||||||||||||||||||||||||||||||||||||||||| -->
+    <!-- |||||||||||||||||||||||||||||||||||||||||||| -->
+    <!-- |||||||||||||||||||||||||||||||||||||||||||| -->
+    <!-- |||||||||||||||||||||||||||||||||||||||||||| -->
+    <!-- |||||||||||||||||||||||||||||||||||||||||||| -->
+
+    <div class="row">
+
+        <!-- Show admins and Members here -->
+        <div class="col-6">
+            {% if current_team %}
+            <p class="h6 title_texts">
+                Admins
+                <span class="badge badge-pill badge-dark">{{ total_admins }}</span>
+            </p>
+
+            <div class="list-group">
+                {% if admins %}
+                {% for admin in admins %}
+                <a href="#" class="list-group-item list-group-item-action">
+                    {{admin.get_full_name}}
+                </a>
+                {% endfor %}
+                {% endif %}
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Show members -->
+        <div class="col-6">
+            {% if current_team %}
+            <p class="h6 title_texts">
+                Members
+                <span class="badge badge-pill badge-dark">{{ total_members }}</span>
+            </p>
+
+            <div class="list-group">
+                {% if members %}
+                {% for member in members %}
+                <a href="#" class="list-group-item list-group-item-action">
+                    {{member.get_full_name}}
+                </a>
+                {% endfor %}
+                {% endif %}
+            </div>
+            {% endif %}
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}

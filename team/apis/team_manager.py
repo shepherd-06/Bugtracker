@@ -7,19 +7,19 @@ from rest_framework.status import (HTTP_200_OK, HTTP_201_CREATED,
                                    HTTP_406_NOT_ACCEPTABLE)
 from django.views import View
 
-from organization.models import Organization
-from organization.serializer import OrgSerializer
+from team.models import Team
+from team.serializer import TeamSerializer
 from utility.helper import get_user_object
 from utility.token_manager import decode_token, protected
 
 
-class Org(View):
+class TeamManager(View):
 
     # TODO: take members email addresses in a list, as parameter.
     # TODO: get the user object via email address and add them as member.
     # TODO: Do same for admins later
 
-    required_parameters = ("org_name",)
+    required_parameters = ("team_name",)
 
     @protected
     def post(self, request):
@@ -32,35 +32,35 @@ class Org(View):
                     "status": HTTP_400_BAD_REQUEST
                 }, status=HTTP_400_BAD_REQUEST)
         data = {
-            "org_name": request.POST["org_name"],
+            "team_name": request.POST["team_name"],
         }
         data["created_by"] = user.pk
-        data["org_id"] = str(uuid4())[:12]
+        data["team_id"] = str(uuid4())[:12]
 
-        org_serializer = OrgSerializer(data=data)
-        if org_serializer.is_valid():
+        team_serializer = TeamSerializer(data=data)
+        if team_serializer.is_valid():
             try:
-                org_obj = org_serializer.save()
-                org_obj.members.add(user)
-                org_obj.org_admins.add(user)
-                org_obj.save()
+                team_obj = team_serializer.save()
+                team_obj.members.add(user)
+                team_obj.team_admins.add(user)
+                team_obj.save()
 
                 return JsonResponse({
-                    "message": "A new organization, [ {} ] has been created".format(org_obj.org_name),
-                    "org_id": org_obj.org_id,
-                    "org_name": org_obj.org_name,
-                    "created_by": org_obj.created_by.email,
-                    "created_on": org_obj.created_on,
+                    "message": "A new organization, [ {} ] has been created".format(team_obj.team_name),
+                    "team_id": team_obj.team_id,
+                    "team_name": team_obj.team_name,
+                    "created_by": team_obj.created_by.email,
+                    "created_on": team_obj.created_on,
                     "status": HTTP_201_CREATED,
                 }, status=HTTP_201_CREATED)
             except Exception as e:
-                Organization.objects.filter(org_id=org_obj.org_id).delete()
+                Team.objects.filter(team_id=team_obj.team_id).delete()
                 return JsonResponse({
                     "message": "An error occurred! {}".format(e),
                     "status": HTTP_400_BAD_REQUEST
                 }, status=HTTP_400_BAD_REQUEST)
         else:
             return JsonResponse({
-                "message": "An error occurred! {}".format(org_serializer.errors),
+                "message": "An error occurred! {}".format(team_serializer.errors),
                 "status": HTTP_406_NOT_ACCEPTABLE
             }, status=HTTP_406_NOT_ACCEPTABLE)

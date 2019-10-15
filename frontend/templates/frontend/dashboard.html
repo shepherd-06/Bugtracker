@@ -1,0 +1,153 @@
+{% extends "navbar.html" %}
+{% block title %} {{ page_title }} {% endblock %}
+
+
+{% block content %}
+<!-- # create an organization modal
+<!-- Modal -->
+
+<div class="container">
+    <br>
+    <div class="row">
+        <div class="col-8">
+            <div class="row">
+                <div class="col-8">
+                    <p class="h5 title_texts">
+                        Server Status
+                    </p>
+
+                </div>
+
+                <div class="col-4">
+                    <button style="opacity: 0.8; width:100%;" type="button" class="btn btn-sm btn-outline-primary"
+                        data-toggle="modal" data-target="#add_server">
+                        Add Server
+                    </button>
+                </div>
+            </div>
+            <br>
+            <!-- ||||||||||||||||||||||||||||| -->
+            <!-- ||||||||||||||||||||||||||||| -->
+            <!-- Ping status report -->
+            <!-- ||||||||||||||||||||||||||||| -->
+            <!-- ||||||||||||||||||||||||||||| -->
+            {% if status and ping_message %}
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                {{ ping_message }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            {% elif not status and ping_message %}
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                {{ ping_message }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <br>
+            {% endif %}
+            <!-- ||||||||||||||||||||||||||||| -->
+            <!-- ||||||||||||||||||||||||||||| -->
+            <!-- ||||||||||||||||||||||||||||| -->
+            <!-- ||||||||||||||||||||||||||||| -->
+
+            {% if server_status %}
+            <div class="table-responsive table-striped table-sm">
+                <table class="table" style="font-size: 0.5em;">
+                    <thead class="thead-dark" style="text-align: center">
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">URL</th>
+                            <th scope="col">Last Checked</th>
+                            <th scope="col">HTTP Status</th>
+                            <th scope="col">Request Type</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for server in server_status %}
+                        {% if server.status >= 200 and server.status < 300 %}
+                        <tr style="text-align: center">
+                            <th scope="row">{{ server.index }}</th>
+                            <td style="text-align: left"> {{server.url}} </td>
+                            <td id="server_check">
+                                {{server.last_checked}} UTC
+                            </td>
+                            <td> {{server.status}}</td>
+                            <td> {{server.request_type}}</td>
+                        </tr>
+                        {% else %}
+                        <tr class="table-warning" style="text-align: center;">
+                            <th scope="row">{{ server.index }}</th>
+                            <td style="text-align: left"> {{server.url}} </td>
+                            <td id="server_check">
+                                {{server.last_checked}} UTC
+                            </td>
+                            <td> {{server.status}}</td>
+                            <td> {{server.request_type}}</td>
+                        </tr>
+                        {% endif %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+</div>
+
+
+
+<!-- $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ -->
+<!-- $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ -->
+<!-- Add server to check -->
+<!-- $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ -->
+<!-- $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ -->
+<div class="modal fade" id="add_server" tabindex="-1" role="dialog" aria-labelledby="addServerCenterTitle"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="createTeamLongTitle">Add a New Server</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p class="card-text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Aliquid, at, in quos
+                    cupiditate vero aut
+                    consequuntur, natus qui delectus nesciunt harum eveniet. Repudiandae velit consequuntur,
+                    officiis
+                    eligendi
+                    ullam beatae laudantium?
+                </p>
+                <form method="POST" action="{% url 'ping_create' %}">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <input type="text" name="url" class="form-control" id="input_project" placeholder="Server URL">
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleFormControlSelect1">HTTP Methods</label>
+                        <select class="form-control" name="type" id="exampleFormControlSelect1">
+                            {% if methods %}
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                {% for method in methods %}
+                                <option value="{{ method.id }}">{{ method.type }}</option>
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                        </select>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Add</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

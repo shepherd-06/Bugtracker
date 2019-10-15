@@ -1,0 +1,116 @@
+{% extends "navbar.html" %}
+{% block title %} {{ page_title }} {% endblock %}
+
+<!-- ||||||||||||||||||||||||||||||| -->
+<!-- ||||||||||||||||||||||||||||||| -->
+<!-- |||||||| Verbose Log ||||||||||-->
+<!-- ||||||||||||||||||||||||||||||| -->
+<!-- ||||||||||||||||||||||||||||||| -->
+
+{% block content %}
+<div class="container">
+    <br>
+
+    <!-- |||||||||||||||||||||||| -->
+    <!-- |||||||||||||||||||||||| -->
+    <!-- Search box -->
+    <!-- |||||||||||||||||||||||| -->
+    <!-- |||||||||||||||||||||||| -->
+    <div class="row">
+        <div class="col-8">
+            <div class="input-group input-group-sm mb-3">
+                {% if page_title == "Verbose Log" %}
+                <input type="text" class="form-control" 
+                placeholder="search by origin or project name"
+                    aria-describedby="basic-addon2">
+                {% else %}
+                <input type="text" class="form-control" 
+                placeholder="search by name, origin, resolver or project name"
+                    aria-describedby="basic-addon2">
+                {% endif %}
+                <div class="input-group-append">
+                    <button class="btn btn-dark" type="button">Search</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-4" style="text-align: right;">
+            <!-- Empty div for spacing -->
+            <p class="h6 title_texts" style="padding: 0.5em;">
+                {% if total_logs > 0 %}
+                {{ current }} out of {{ total_logs }}
+                logs are showing</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- |||||||||||||||||||||||||||| -->
+    <!-- |||||||||||||||||||||||||||| -->
+    <!-- Show logs here -->
+    <!-- |||||||||||||||||||||||||||| -->
+    <!-- |||||||||||||||||||||||||||| -->
+    {% if total_logs > 0 %}
+    <div class="table-responsive table-striped table-sm">
+        <table class="table" style="font-size: 0.5em;">
+            <thead class="thead-dark" style="text-align: center">
+                <tr>
+                    {%for title in titles %}
+                    <th scope="col"> {{ title }} </th>
+                    {% endfor %}
+                </tr>
+            </thead>
+
+            <tbody>
+                {% if verbose_logs %}
+                {% for verbose_log in verbose_logs %}
+                <tr style="text-align: center">
+                    <th scope="row"> {{ forloop.counter }} </th>
+                    <td> {{ verbose_log.identifier }} </td>
+                    <td> {{ verbose_log.reference_project.project_name }} </td>
+                    <td> {{ verbose_log.log_description }} </td>
+                    <td> {{ verbose_log.point_of_origin }} </td>
+                    <td> {{ error_log.logged_on }} UTC </td>
+                </tr>
+                {% endfor %}
+                {% elif error_logs %}
+                {% for error_log in error_logs %}
+                <tr style="text-align: center">
+                    <th scope="row"> {{ forloop.counter }} </th>
+                    <td> {{ error_log.identifier }} </td>
+                    <td> {{ error_log.error_name }} </td>
+                    <td> {{ error_log.error_description }} </td>
+                    <td> {{ error_log.point_of_origin }} </td>
+                    <td> {{ error_log.reference_project.project_name }} </td>
+                    <td> {{ error_log.logged_on }} UTC </td>
+                    <td>
+                        {% if not error_log.is_resolved %}
+                        pending
+                        {% else %}
+                        <strong>resolved</strong>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if error_log.resolved_by is none %}
+                        None
+                        {% else %}
+                        {{ error_log.resolved_by }}
+                        {% endif %}
+                    </td>
+                    <td> {{ error_log.updated_on }} UTC </td>
+                </tr>
+                {% endfor %}
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+
+    <p class="h3 title_texts" style="text-align: center">
+        <br>
+        You don't have any logs.<br>Did you add the correct project access token on your project?
+    </p>
+    {% endif %}
+
+</div>
+
+{% endblock %}

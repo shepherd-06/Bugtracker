@@ -23,7 +23,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '&0gi$w@^ju1y^u8ahh3dgyqjs)!%u2u6uw299ij&k5nd4w$zv1'
+SECRET_KEY = config("SECRET_KEY", None)
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False  # Never Go Live with Debug - True!
@@ -40,10 +40,12 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'ping_app.apps.PingAppConfig',
+    'frontend.apps.FrontendConfig',
     'error_logger.apps.ErrorLoggerConfig',
     'token_manager.apps.TokenManagerConfig',
     'user.apps.UserConfig',
     'projects.apps.ProjectsConfig',
+    'team.apps.TeamConfig',
     'organization.apps.OrganizationConfig',
     'rest_framework',
     'guardian',
@@ -57,6 +59,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django_referrer_policy.middleware.ReferrerPolicyMiddleware',
 ]
 
 ROOT_URLCONF = 'zathura_bugtracker.urls'
@@ -64,7 +67,6 @@ ROOT_URLCONF = 'zathura_bugtracker.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        # 'DIRS': [],
         'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -76,6 +78,13 @@ TEMPLATES = [
             ],
         },
     },
+    # {
+    #     'BACKEND': 'django.template.backends.jinja2.Jinja2',
+    #     'DIRS': [
+    #         os.path.join(BASE_DIR, 'templates'),
+    #     ],
+    #     'APP_DIRS': True,
+    # },
 ]
 
 WSGI_APPLICATION = 'zathura_bugtracker.wsgi.application'
@@ -181,3 +190,8 @@ AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',  # default
     'guardian.backends.ObjectPermissionBackend',
 )
+
+SECURE_BROWSER_XSS_FILTER = True   # Protection against X-XSS
+SECURE_CONTENT_TYPE_NOSNIFF = True   # X-Content-Type-Options
+X_FRAME_OPTIONS = 'DENY'  # X-Frame-Options
+REFERRER_POLICY = 'same-origin'  # Referrer-Policy
