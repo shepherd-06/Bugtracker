@@ -110,7 +110,7 @@
             <div class="list-group">
                 {% if admins %}
                 {% for admin in admins %}
-                <a href="#" class="list-group-item list-group-item-action">
+                <a href="{% url "user_profile" admin.username %}" class="list-group-item list-group-item-action">
                     {{admin.get_full_name}}
                 </a>
                 {% endfor %}
@@ -130,7 +130,7 @@
             <div class="list-group">
                 {% if members %}
                 {% for member in members %}
-                <a href="#" class="list-group-item list-group-item-action">
+                <a href="{% url "user_profile" member.username %}" class="list-group-item list-group-item-action">
                     {{member.get_full_name}}
                 </a>
                 {% endfor %}

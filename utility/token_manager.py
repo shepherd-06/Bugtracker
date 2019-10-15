@@ -12,7 +12,7 @@ from zathura_bugtracker import settings
 
 def encode_access_token(username: str, role: str):
     payload = {
-        'exp': datetime.utcnow() + timedelta(minutes=1),
+        'exp': datetime.utcnow() + timedelta(hours=16),
         'iat': datetime.utcnow(),
         'sub': username,
         'type': 'access',
@@ -24,7 +24,7 @@ def encode_access_token(username: str, role: str):
 
 def encode_refresh_token(username: str, role: str):
     payload = {
-        'exp': datetime.utcnow() + timedelta(minutes=5),
+        'exp': datetime.utcnow() + timedelta(days=10),
         'iat': datetime.utcnow(),
         'sub': username,
         'type': 'refresh',
