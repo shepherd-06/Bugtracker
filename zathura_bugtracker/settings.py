@@ -26,10 +26,10 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = config("SECRET_KEY", None)
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True  # Never Go Live with Debug - True!
+DEBUG = False  # Never Go Live with Debug - True!
 
 # Using of wildcard is really dangerous
-ALLOWED_HOSTS = ["127.0.0.1"]
+ALLOWED_HOSTS = ['bugtracker.shepherd06.com']
 
 # Application definition
 
