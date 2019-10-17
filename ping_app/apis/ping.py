@@ -30,7 +30,7 @@ class Ping(View):
                 )
 
         data = {
-            "url": request.POST["url"],
+            "url"                                   : request.POST["url"],
             "request_type": request.POST["type"],
         }
         data["status"] = 0
@@ -47,7 +47,7 @@ class Ping(View):
                     "?ping_message={}".format(message),
                 )
             except Exception:
-                message = "An error occurred! "
+                message = "An err                                   or occurred! "
                 return HttpResponseRedirect(
                     reverse("dashboard") +
                     "?ping_message={}&status={}".format(message, False),
