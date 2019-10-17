@@ -182,7 +182,7 @@ slash appended. Note that the redirect may cause any data submitted in a POST
 request to be lost.
 """
 
-APPEND_SLASH = False
+APPEND_SLASH = True
 
 AUTH_USER_MODEL = 'user.CustomUser'  # new
 

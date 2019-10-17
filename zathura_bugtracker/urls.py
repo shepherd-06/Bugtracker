@@ -44,6 +44,7 @@ urlpatterns = [
     # ---------------------------------
     path('', Index.as_view(), name="index"),
     path('dashboard/', DashboardView.as_view(), name="dashboard"),
+    # path('dashboard/<message>/<status>/', DashboardView.as_view(), name="dashboard"),
     path('project/<project_id>/', ProjectView.as_view(), name="project"),
     path('team/<team_id>/', TeamView.as_view(), name="team"),
     path('profile/', ProfileView.as_view(), name="profile"),

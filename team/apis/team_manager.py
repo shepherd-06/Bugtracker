@@ -1,11 +1,12 @@
 from uuid import uuid4
 
-from django.http import JsonResponse
+from django.http import HttpResponseRedirect, JsonResponse
+from django.shortcuts import reverse
+from django.views import View
 from rest_framework.status import (HTTP_200_OK, HTTP_201_CREATED,
                                    HTTP_202_ACCEPTED, HTTP_400_BAD_REQUEST,
                                    HTTP_401_UNAUTHORIZED, HTTP_403_FORBIDDEN,
                                    HTTP_406_NOT_ACCEPTABLE)
-from django.views import View
 
 from team.models import Team
 from team.serializer import TeamSerializer
@@ -27,10 +28,11 @@ class TeamManager(View):
         user = get_user_object(username=payload["sub"])
         for field in self.required_parameters:
             if field not in request.POST:
-                return JsonResponse({
-                    "message": "Missing mandatory parameter, {}".format(field),
-                    "status": HTTP_400_BAD_REQUEST
-                }, status=HTTP_400_BAD_REQUEST)
+                message = "Missing mandatory parameter, {}".format(field)
+                return HttpResponseRedirect(
+                    reverse("dashboard") +
+                    "?message={}&status={}".format(message, True),
+                )
         data = {
             "team_name": request.POST["team_name"],
         }
@@ -45,22 +47,25 @@ class TeamManager(View):
                 team_obj.team_admins.add(user)
                 team_obj.save()
 
-                return JsonResponse({
-                    "message": "A new organization, [ {} ] has been created".format(team_obj.team_name),
-                    "team_id": team_obj.team_id,
-                    "team_name": team_obj.team_name,
-                    "created_by": team_obj.created_by.email,
-                    "created_on": team_obj.created_on,
-                    "status": HTTP_201_CREATED,
-                }, status=HTTP_201_CREATED)
+                message = "Success"
+                return HttpResponseRedirect(
+                    reverse("dashboard") +
+                    "?message={}&status={}".format(message, True),
+                )
             except Exception as e:
                 Team.objects.filter(team_id=team_obj.team_id).delete()
-                return JsonResponse({
-                    "message": "An error occurred! {}".format(e),
-                    "status": HTTP_400_BAD_REQUEST
-                }, status=HTTP_400_BAD_REQUEST)
+                print(
+                    "An Error occurred while creating a new team. Error message: {}".format(e))
+                message = "An error occurred!"
+                return HttpResponseRedirect(
+                    reverse("dashboard") +
+                    "?message={}&status={}".format(message, False),
+                )
         else:
-            return JsonResponse({
-                "message": "An error occurred! {}".format(team_serializer.errors),
-                "status": HTTP_406_NOT_ACCEPTABLE
-            }, status=HTTP_406_NOT_ACCEPTABLE)
+            print(
+                "An Error occurred while creating a new team. Error message: {}".format(team_serializer.errors))
+            message = "An error occurred!"
+            return HttpResponseRedirect(
+                reverse("dashboard") +
+                "?message={}&status={}".format(message, False),
+            )

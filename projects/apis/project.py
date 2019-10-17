@@ -1,6 +1,7 @@
 from uuid import uuid4
 
-from django.http import JsonResponse
+from django.http import HttpResponseRedirect, JsonResponse
+from django.shortcuts import reverse
 from django.utils import timezone
 from django.views import View
 from rest_framework.permissions import IsAuthenticated
@@ -16,11 +17,6 @@ from utility.token_manager import decode_token, protected
 
 
 class ProjectCRUD(View):
-
-    failed_to_create_project = {
-        "message": "Failed to create a new project",
-        "status": False,
-    }
 
     required_parameters = ("project_name", "team_id",)
 
@@ -39,22 +35,23 @@ class ProjectCRUD(View):
 
         for field in self.required_parameters:
             if field not in request.POST:
-                return JsonResponse({
-                    "message": "Missing mandatory parameter, {}".format(field),
-                    "status": HTTP_400_BAD_REQUEST
-                }, status=HTTP_400_BAD_REQUEST)
-                
+                message = "Missing mandatory parameter, {}".format(field)
+                return HttpResponseRedirect(
+                    reverse("dashboard") +
+                    "?message={}&status={}".format(message, False),
+                )
         data = {
             "project_name": request.POST["project_name"],
             "team_id": request.POST["team_id"],
         }
-        
+
         team_object = get_team_object(data["team_id"])
         if team_object is None:
-            return JsonResponse({
-                "status": False,
-                "message": "Team does not exist."
-            }, status=HTTP_400_BAD_REQUEST)
+            message = "Team does not exist."
+            return HttpResponseRedirect(
+                reverse("dashboard") +
+                "?message={}&status={}".format(message, False),
+            )
 
         payload = {
             "project_id": str(uuid4())[:12],
@@ -67,20 +64,27 @@ class ProjectCRUD(View):
         try:
             if project_serializer.is_valid():
                 project = project_serializer.save()
-                if project is not None:
-                    return JsonResponse({
-                        "message": "successfully added a new project",
-                        "project_id": project.project_id,
-                        "project_name": project.project_name,
-                        "team": team_object.team_name,
-                        "status": True,
-                    }, status=HTTP_201_CREATED)
+                if project:
+                    message = "Successfully added a new project"
+                    return HttpResponseRedirect(
+                        reverse("dashboard") +
+                        "?message={}&status={}".format(message, True),
+                    )
                 else:
-                    return JsonResponse(self.failed_to_create_project, status=HTTP_400_BAD_REQUEST)
+                    message = "Failed to create a new project"
+                    return HttpResponseRedirect(
+                        reverse("dashboard") +
+                        "?message={}&status={}".format(message, False),
+                    )
             else:
-                return JsonResponse(self.failed_to_create_project, status=HTTP_400_BAD_REQUEST)
-        except Exception as error:
-            return JsonResponse({
-                "message": "{}".format(error),
-                "status": HTTP_400_BAD_REQUEST
-            })
+                message = "Failed to create a new project"
+                return HttpResponseRedirect(
+                    reverse("dashboard") +
+                    "?message={}&status={}".format(message, False),
+                )
+        except Exception:
+            message = "Failed to create a new project"
+            return HttpResponseRedirect(
+                reverse("dashboard") +
+                "?message={}&status={}".format(message, False),
+            )

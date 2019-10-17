@@ -41,10 +41,10 @@ def decode_token(token: str):
     """
     try:
         _ = jwt.decode(token, settings.SECRET_KEY, algorithms='HS512')
-        print("~~~~~~~~~~~~~~~~~~~~~~~~~~~")
-        print("decode_token")
-        print(_)
-        print("~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+        # print("~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+        # print("decode_token")
+        # print(_)
+        # print("~~~~~~~~~~~~~~~~~~~~~~~~~~~")
         return _
     except ExpiredSignatureError:
         return HttpResponseRedirect(reverse("index"))
@@ -63,11 +63,11 @@ def check_refresh_token(request):
     if 'refresh_token' not in request.COOKIES:
         return HttpResponseRedirect(reverse("index"))
 
-    print("Refresh Token hits")
-    print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
-    print(request.COOKIES['refresh_token'])
+    # print("Refresh Token hits")
+    # print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+    # print(request.COOKIES['refresh_token'])
     payload = decode_token(request.COOKIES['refresh_token'])
-    print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+    # print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
     required = ('type', 'exp', 'sub', 'role')
     epoch = datetime.utcfromtimestamp(0)
 
@@ -107,19 +107,19 @@ def protected(function):
         """
         # TODO: for failed token, generate a message on screen
         """
-        print("Hits access token")
+        # print("Hits access token")
         required = ('type', 'exp', 'sub', 'role')
         epoch = datetime.utcfromtimestamp(0)
         if 'access_token' not in request.COOKIES:
             return HttpResponseRedirect(reverse("index"))
 
-        print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
-        print("|||||||||ACCESS TOKEN CHECK|||||||||")
+        # print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+        # print("|||||||||ACCESS TOKEN CHECK|||||||||")
         payload = decode_token(request.COOKIES['access_token'])
-        print(request.COOKIES['access_token'])
-        print(payload)
-        print("||||||||||||||||||||||||||||||||||||")
-        print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+        # print(request.COOKIES['access_token'])
+        # print(payload)
+        # print("||||||||||||||||||||||||||||||||||||")
+        # print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
         # Validate user and access token expiry
         for field in required:
             if field not in payload:

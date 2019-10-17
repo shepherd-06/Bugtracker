@@ -23,10 +23,11 @@ class Ping(View):
         user = get_user_object(username=payload["sub"])
         for field in self.required_parameters:
             if field not in request.POST:
-                return JsonResponse({
-                    "message": "Missing mandatory parameter, {}".format(field),
-                    "status": HTTP_400_BAD_REQUEST
-                }, status=HTTP_400_BAD_REQUEST)
+                message = "Missing mandatory parameter, {}".format(field)
+                return HttpResponseRedirect(
+                    reverse("dashboard") +
+                    "?message={}&status={}".format(message, False),
+                )
 
         data = {
             "url": request.POST["url"],

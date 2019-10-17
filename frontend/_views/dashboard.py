@@ -23,11 +23,11 @@ class DashboardView(View):
 
     @protected
     def get(self, request):
-        print("##########################")
-        print("DASHBoard")
+        # print("##########################")
+        # print("DASHBoard")
         payload = decode_token(request.COOKIES['access_token'])
         user = get_user_object(username=payload["sub"])
-        print("##########################")
+        # print("##########################")
 
         context = get_common_view_payload(user, "Dashboard")
         if "ping_message" in request.GET:
@@ -64,5 +64,12 @@ class DashboardView(View):
                 "type": "Options",
             }
         ]
+
+        if "message" in request.GET:
+            context["message"] = request.GET["message"]
+
+        if "status" in request.GET:
+            context["status"] = request.GET["status"]
+
         response = render(request, 'frontend/dashboard.html', context)
         return response
