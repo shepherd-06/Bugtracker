@@ -8,6 +8,13 @@
 <div class="container">
 
     <br>
+    {% if message %}
+
+    <p class="h1 title_texts" style="text-align: center">
+        {{ message }}
+    </p>
+
+    {% else %}
     <div class="row">
         <div class="col-6">
             <!-- Project details -->
@@ -87,6 +94,7 @@
 
 
     </div>
+    {% endif %}
 </div>
 
 <!-- |||||||||||||||||||||||||||||||||| -->
