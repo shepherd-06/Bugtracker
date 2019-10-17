@@ -1,6 +1,17 @@
 {% extends "base.html" %}
 {% block title %}Hello World{% endblock %}
 {% block content %}
+
+<!-- URL Refresh removes query parameters -->
+<script type="text/javascript">
+    var url = window.location.href;
+    new_url = url.split('?')[0];
+    if (url != new_url) {
+        window.history.replaceState({}, document.title, new_url);
+    }
+</script>
+<!-- URL Refresh removes query parameters -->
+
 <div class="container">
     <div style="text-align:center">
         <h1 class="headline">

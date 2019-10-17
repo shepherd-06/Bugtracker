@@ -22,7 +22,7 @@
                     </p>
                 </div>
 
-                <div class="col-4" style="text-align: right">
+                <div class="col-4" style="text-align: right; padding: 0.1em;">
                     {% if user.is_approved %}
 
                     <span style="opacity: 0.9" class="badge badge-pill badge-dark body_paragraphs">
@@ -55,15 +55,24 @@
                             localize_time("procreated", "Account created on: ", {{ user.created_on | safe }});
                         </script>
                     </p>
+                    <p class="h6 body_paragraphs" id="prolastseen">
+                        <script type="text/javascript">
+                            localize_time("prolastseen", "Last seen on: ", 
+                            {{ user.last_login | safe }});
+                        </script>
+                    </p>
+                    <hr>
                     <small class="text-muted body_paragraphs" id="proupdated">
                         <script type="text/javascript">
                             localize_time("proupdated", "Last updated on:: ", {{ user.modified_on | safe }});
                         </script>
                     </small>
                 </div>
+                {% if current_user == 'True' %}
                 <div class="col-4" style="text-align: right">
                     <button type="button" class="btn btn-outline-info btn-sm body_paragraphs">Update</button>
                 </div>
+                {% endif %}
             </div>
         </div>
 

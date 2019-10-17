@@ -2,9 +2,6 @@
 
 {%block teams %}
 {% if teams %}
-<script type="text/javascript">
-    set_local_storage_data("teams", {{ teams| safe }});
-</script>
 {% for team in teams %}
 <a class="dropdown-item" id="nav_team" href="{% url "team" team.team_id %}">{{ team.team_name }}</a>
 {% endfor %}
@@ -28,12 +25,11 @@
 
 {%block projects %}
 {% if projects %}
-<script type="text/javascript">
-    set_local_storage_data("projects", {{ projects | safe }});
-</script>
 {% for project in projects %}
 <!-- project.project_id -->
-<a class="dropdown-item" href="{% url "project" project.project_id %}"> {{ project.project_name }}</a>
+<a class="dropdown-item" href="{% url "project" project.project_id %}">
+     {{ project.project_name }}
+</a>
 {% endfor %}
 <div class="dropdown-divider"></div>
 {% endif %}

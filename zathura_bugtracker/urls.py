@@ -44,9 +44,11 @@ urlpatterns = [
     # ---------------------------------
     path('', Index.as_view(), name="index"),
     path('dashboard/', DashboardView.as_view(), name="dashboard"),
+    # path('dashboard/<message>/<status>/', DashboardView.as_view(), name="dashboard"),
     path('project/<project_id>/', ProjectView.as_view(), name="project"),
     path('team/<team_id>/', TeamView.as_view(), name="team"),
     path('profile/', ProfileView.as_view(), name="profile"),
+    path('profile/<username>/', ProfileView.as_view(), name="user_profile"),
     path('logout/', LogoutView.as_view(), name="logout"),
     path('errors/', ErrorLogView.as_view(), name="error_log"),
     path('logs/', VerboseView.as_view(), name="verbose_log"),

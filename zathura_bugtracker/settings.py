@@ -28,6 +28,7 @@ SECRET_KEY = config("SECRET_KEY", None)
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False  # Never Go Live with Debug - True!
 
+# Using of wildcard is really dangerous
 ALLOWED_HOSTS = ['bugtracker.shepherd06.com']
 
 # Application definition
@@ -182,7 +183,7 @@ slash appended. Note that the redirect may cause any data submitted in a POST
 request to be lost.
 """
 
-APPEND_SLASH = False
+APPEND_SLASH = True
 
 AUTH_USER_MODEL = 'user.CustomUser'  # new
 
@@ -191,7 +192,7 @@ AUTHENTICATION_BACKENDS = (
     'guardian.backends.ObjectPermissionBackend',
 )
 
-SECURE_BROWSER_XSS_FILTER = True   # Protection against X-XSS
+# SECURE_BROWSER_XSS_FILTER = True   # Protection against X-XSS
 SECURE_CONTENT_TYPE_NOSNIFF = True   # X-Content-Type-Options
 X_FRAME_OPTIONS = 'DENY'  # X-Frame-Options
 REFERRER_POLICY = 'same-origin'  # Referrer-Policy

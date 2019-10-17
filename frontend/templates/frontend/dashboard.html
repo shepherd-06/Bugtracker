@@ -1,12 +1,43 @@
 {% extends "navbar.html" %}
 {% block title %} {{ page_title }} {% endblock %}
 
-
 {% block content %}
-<!-- # create an organization modal
-<!-- Modal -->
+<!-- URL parameters removing -->
+<script type="text/javascript">
+    var url = window.location.href;
+    new_url = url.split('?')[0];
+    if (url != new_url) {
+        window.history.replaceState({}, document.title, new_url);
+    }
+</script>
+<!--  -->
 
+<!-- # create an organization modal -->
 <div class="container">
+    <br>
+    <!-- Custom messages here -->
+    {% if status == "True" %}
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    {% else %}
+    {% if message %}
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    {% endif %}
+    {% endif %}
+    <!-- end of message here -->
+    <!-- |||||||||||||||||||||||||||||||||||||| -->
+    <!-- |||||||||||||||||||||||||||||||||||||| -->
+    <!-- |||||||||||||||||||||||||||||||||||||| -->
+    <!-- |||||||||||||||||||||||||||||||||||||| -->
     <br>
     <div class="row">
         <div class="col-8">

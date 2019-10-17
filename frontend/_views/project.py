@@ -22,18 +22,20 @@ class ProjectView(View):
         user = get_user_object(username=payload["sub"])
         project = get_project_object(project_id)
         if project is None:
-            # TODO: handle error here.
-            return JsonResponse({
-                "hello": "world",
-            }, status=404)
+            context = get_common_view_payload(user, "Error!")
+            context["message"] = "This project does not exist!"
+            response = render(request, 'frontend/project.html', context)
+            return response
 
         project.created_on = datetime.timestamp(project.created_on) * 1000
         project.modified_on = datetime.timestamp(project.modified_on) * 1000
 
         project_token = get_project_token_by_project_id(project.pk)
-        
-        project_token.generated_on = datetime.timestamp(project_token.generated_on) * 1000
-        project_token.updated_on = datetime.timestamp(project_token.updated_on) * 1000
+        if project_token:
+            project_token.generated_on = datetime.timestamp(
+                project_token.generated_on) * 1000
+            project_token.updated_on = datetime.timestamp(
+                project_token.updated_on) * 1000
 
         context = get_common_view_payload(user, project.project_name)
         context["project_object"] = project
