@@ -23,7 +23,7 @@ class ProjectView(View):
         project = get_project_object(project_id)
         if project is None:
             context = get_common_view_payload(user, "Error!")
-            context["message"] = "This project does not exist!"
+            context["error_message"] = "This project does not exist!"
             response = render(request, 'frontend/project.html', context)
             return response
 
@@ -44,6 +44,12 @@ class ProjectView(View):
             project.project_id)
         context["verbose_count"] = get_verbose_count_of_a_project(
             project.project_id)
+
+        if "message" in request.GET:
+            context["message"] = request.GET["message"]
+
+        if "status" in request.GET:
+            context["status"] = request.GET["status"]
 
         response = render(request, 'frontend/project.html', context)
         return response

@@ -1,6 +1,7 @@
 from uuid import uuid4
 
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseRedirect
+from django.shortcuts import reverse
 from django.views import View
 from rest_framework.status import (HTTP_200_OK, HTTP_201_CREATED,
                                    HTTP_202_ACCEPTED, HTTP_400_BAD_REQUEST,
@@ -22,28 +23,31 @@ class ProjectToken(View):
         # TODO: check if user is an admin to create a project under this org.
 
         if "project_id" not in request.POST:
-            return JsonResponse({
-                "message": "Missing required parameter. {project_id} is required",
-                "status": False,
-            }, status=HTTP_400_BAD_REQUEST)
-        
+            message = "Missing required parameter. {project_id} is required"
+            return HttpResponseRedirect(
+                reverse("project", args=("None",))+"?message={}&status={}".format(
+                    message, False),
+            )
+
         data = {
             "project_id": request.POST["project_id"],
         }
 
         project_obj = get_project_object(project_id=data["project_id"])
         if project_obj is None:
-            return JsonResponse({
-                "message": "Selected project not found",
-                "status": False,
-            }, status=HTTP_400_BAD_REQUEST)
+            message = "Selected project is not found"
+            return HttpResponseRedirect(
+                reverse("project", args=(request.POST["project_id"],))+"?message={}&status={}".format(
+                    message, False),
+            )
 
         project_token_obj = get_project_token_by_project_id(project_obj.pk)
         if project_token_obj is not None:
-            return JsonResponse({
-                "message": "Token already generated for this project. One token per project",
-                "stauts": False,
-            }, status=HTTP_406_NOT_ACCEPTABLE)
+            message = "Token already generated for this project. One token per project"
+            return HttpResponseRedirect(
+                reverse("project", args=(request.POST["project_id"],))+"?message={}&status={}".format(
+                    message, False),
+            )
 
         data["project"] = project_obj.pk
         data["token"] = str(uuid4())
@@ -54,21 +58,22 @@ class ProjectToken(View):
             project_token_obj = project_token_serializer.save()
 
             if project_token_obj.pk:
-                return JsonResponse({
-                    "message": "successfully created new project token for {}".format(project_obj.project_name),
-                    "project": project_obj.project_name,
-                    "project_id": project_obj.project_id,
-                    "token": project_token_obj.token,
-                    "status": True,
-                }, status=HTTP_201_CREATED)
+                message = "successfully created new project token"
+                return HttpResponseRedirect(
+                    reverse("project", args=(request.POST["project_id"],))+"?message={}&status={}".format(
+                        message, True),
+                )
             else:
-                return JsonResponse({
-                    "message": "Error occurred creating new project token.",
-                    "status": False
-                }, status=HTTP_400_BAD_REQUEST)
+                message = "Error occurred creating new project token."
+                return HttpResponseRedirect(
+                    reverse("project", args=(request.POST["project_id"],))+"?message={}&status={}".format(
+                        message, False),
+                )
         else:
             # Error
-            return JsonResponse({
-                "message": "Error occurred creating new project token. {}".format(project_token_serializer.errors),
-                "status": False
-            }, status=HTTP_400_BAD_REQUEST)
+            message = "Error occurred creating new project token. {}".format(
+                project_token_serializer.errors)
+            return HttpResponseRedirect(
+                reverse("project", args=(request.POST["project_id"],))+"?message={}&status={}".format(
+                    message, False),
+            )
