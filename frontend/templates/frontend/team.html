@@ -2,11 +2,18 @@
 {% block title %} {{ page_title }} {% endblock %}
 
 {% block content %}
-<!-- # create an organization modal
-<!-- Modal -->
+<!-- # create an organization modal -->
 
 <div class="container">
     <br>
+    {% if message %}
+
+    <p class="h1 title_texts" style="text-align: center">
+        {{ message }}
+    </p>
+
+    {% else %}
+
     <div class="row">
         <div class="col-6">
             {% if current_team %}
@@ -64,14 +71,14 @@
 
         <!-- Show projects here -->
         <div class="col-6">
-            {% if projects %}
+            {% if team_projects %}
             <p class="h6 title_texts">
                 Projects
                 <span class="badge badge-pill badge-dark">{{ total_projects }}</span>
             </p>
 
             <div class="list-group">
-                {% for project in projects %}
+                {% for project in team_projects %}
                 <a href="{% url "project" project.project_id %}" class="list-group-item list-group-item-action">
                     {{ project.project_name }}
                 </a>
@@ -140,6 +147,6 @@
         </div>
 
     </div>
+    {% endif %}
 </div>
-
 {% endblock %}

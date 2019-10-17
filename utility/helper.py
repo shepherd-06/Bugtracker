@@ -96,6 +96,7 @@ def get_common_view_payload(user: CustomUser, page_title: str):
                 "project_name": project.project_name,
                 "team": team.team_id,
             })
+
     return {
         "page_title": page_title,
         "full_name": user.get_full_name,
