@@ -30,6 +30,7 @@ from frontend._views.logout import LogoutView
 from frontend._views.profile import ProfileView
 from frontend._views.project import ProjectView
 from frontend._views.team import TeamView
+from frontend._views.how_it_works import HowItWorks
 from frontend._views.error_log import ErrorLogView
 from frontend._views.verbose import VerboseView
 from ping_app.apis.ping import Ping
@@ -52,6 +53,7 @@ urlpatterns = [
     path('logout/', LogoutView.as_view(), name="logout"),
     path('errors/', ErrorLogView.as_view(), name="error_log"),
     path('logs/', VerboseView.as_view(), name="verbose_log"),
+    path('how_it_works/', HowItWorks.as_view(), name="how_it_works"),
 
 
     path('admin/', admin.site.urls),
