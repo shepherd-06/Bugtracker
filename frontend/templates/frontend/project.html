@@ -2,20 +2,49 @@
 {% block title %} {{ page_title }} {% endblock %}
 
 {% block content %}
-<!-- # create an organization modal
-<!-- Modal -->
+<!-- # create an organization modal -->
+
+<!-- URL parameters removing -->
+<script type="text/javascript">
+    var url = window.location.href;
+    newUrl = url.split('?')[0];
+    if (url != newUrl) {
+        window.history.replaceState({}, document.title, newUrl);
+    }
+</script>
+<!--  -->
 
 <div class="container">
 
     <br>
-    {% if message %}
+    {% if error_message %}
 
     <p class="h1 title_texts" style="text-align: center">
-        {{ message }}
+        {{ error_message }}
     </p>
 
     {% else %}
     <div class="row">
+        <div class="col-12" style="text-align: center">
+            {% if status == "True" %}
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            {% else %}
+            {% if message %}
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            {% endif %}
+            {% endif %}
+        </div>
+
         <div class="col-6">
             <!-- Project details -->
             {% if project_object %}
