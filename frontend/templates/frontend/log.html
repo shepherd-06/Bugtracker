@@ -67,7 +67,13 @@
                     <td> {{ verbose_log.reference_project.project_name }} </td>
                     <td> {{ verbose_log.log_description }} </td>
                     <td> {{ verbose_log.point_of_origin }} </td>
-                    <td> {{ verbose_log.logged_on }} UTC </td>
+                    <td id={{ verbose_log.logged_on }}>
+                        <script type="text/javascript">
+                            localize_time({{ verbose_log.logged_on }},
+                                "",
+                                {{ verbose_log.logged_on | safe }});
+                        </script>
+                    </td>
                 </tr>
                 {% endfor %}
                 {% elif error_logs %}
@@ -79,7 +85,13 @@
                     <td> {{ error_log.error_description }} </td>
                     <td> {{ error_log.point_of_origin }} </td>
                     <td> {{ error_log.reference_project.project_name }} </td>
-                    <td> {{ error_log.logged_on }} UTC </td>
+                    <td id={{ error_log.logged_on }}>
+                        <script type="text/javascript">
+                            localize_time({{ error_log.logged_on }},
+                                "",
+                                {{ error_log.logged_on | safe }});
+                        </script>
+                    </td>
                     <td>
                         {% if not error_log.is_resolved %}
                         pending
@@ -94,7 +106,13 @@
                         {{ error_log.resolved_by }}
                         {% endif %}
                     </td>
-                    <td> {{ error_log.updated_on }} UTC </td>
+                    <td id={{ error_log.updated_on }}>
+                        <script type="text/javascript">
+                            localize_time({{ error_log.updated_on }},
+                                "",
+                                {{ error_log.updated_on | safe }});
+                        </script>
+                    </td>
                 </tr>
                 {% endfor %}
                 {% endif %}
