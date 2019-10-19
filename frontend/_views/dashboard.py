@@ -44,8 +44,9 @@ class DashboardView(View):
             server_payload.append({
                 "index": counter,
                 "url": web.url,
-                "last_checked": web.last_checked,
+                "last_checked": datetime.timestamp(web.last_checked) * 1000,
                 "status": web.status,
+                "description": web.verbose_status,
                 "request_type": self.HTTP_Methods[web.request_type],
             })
             counter += 1
