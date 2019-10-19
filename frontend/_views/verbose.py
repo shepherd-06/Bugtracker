@@ -20,7 +20,7 @@ class VerboseView(View):
         context["verbose_logs"] = verbose_logs
         context["total_logs"] = VerboseLog.objects.all().count()
         context["current"] = len(verbose_logs)
-        context["verbose_titles"] = ["#", "User",
+        context["titles"] = ["#", "User",
                                      "Project Name", "Description", "Origin", "Logged on"]
         
         return render(request, 'frontend/log.html', context)

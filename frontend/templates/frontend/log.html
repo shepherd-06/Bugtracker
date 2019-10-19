@@ -3,7 +3,7 @@
 
 <!-- ||||||||||||||||||||||||||||||| -->
 <!-- ||||||||||||||||||||||||||||||| -->
-<!-- |||||||| Verbose Log ||||||||||-->
+<!-- |||||||| All Log ||||||||||-->
 <!-- ||||||||||||||||||||||||||||||| -->
 <!-- ||||||||||||||||||||||||||||||| -->
 
@@ -20,12 +20,10 @@
         <div class="col-8">
             <div class="input-group input-group-sm mb-3">
                 {% if page_title == "Verbose Log" %}
-                <input type="text" class="form-control" 
-                placeholder="search by origin or project name"
+                <input type="text" class="form-control" placeholder="search by origin or project name"
                     aria-describedby="basic-addon2">
                 {% else %}
-                <input type="text" class="form-control" 
-                placeholder="search by name, origin, resolver or project name"
+                <input type="text" class="form-control" placeholder="search by name, origin, resolver or project name"
                     aria-describedby="basic-addon2">
                 {% endif %}
                 <div class="input-group-append">
@@ -69,7 +67,7 @@
                     <td> {{ verbose_log.reference_project.project_name }} </td>
                     <td> {{ verbose_log.log_description }} </td>
                     <td> {{ verbose_log.point_of_origin }} </td>
-                    <td> {{ error_log.logged_on }} UTC </td>
+                    <td> {{ verbose_log.logged_on }} UTC </td>
                 </tr>
                 {% endfor %}
                 {% elif error_logs %}
