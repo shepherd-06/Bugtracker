@@ -84,3 +84,4 @@ Step 8: Restart nginx server to take the effect.
     sudo service nginx restart
 ____________________________________________________
 That's it! This should keep app running on your server, go ahead and check it out from your browser!
+
