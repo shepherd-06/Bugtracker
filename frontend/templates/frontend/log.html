@@ -3,7 +3,7 @@
 
 <!-- ||||||||||||||||||||||||||||||| -->
 <!-- ||||||||||||||||||||||||||||||| -->
-<!-- |||||||| Verbose Log ||||||||||-->
+<!-- |||||||| All Log ||||||||||-->
 <!-- ||||||||||||||||||||||||||||||| -->
 <!-- ||||||||||||||||||||||||||||||| -->
 
@@ -18,14 +18,12 @@
     <!-- |||||||||||||||||||||||| -->
     <div class="row">
         <div class="col-8">
-            <div class="input-group input-group-sm mb-3">
+            <div class="input-group input-group-md mb-3">
                 {% if page_title == "Verbose Log" %}
-                <input type="text" class="form-control" 
-                placeholder="search by origin or project name"
+                <input type="text" class="form-control" placeholder="search by origin or project name"
                     aria-describedby="basic-addon2">
                 {% else %}
-                <input type="text" class="form-control" 
-                placeholder="search by name, origin, resolver or project name"
+                <input type="text" class="form-control" placeholder="search by name, origin, resolver or project name"
                     aria-describedby="basic-addon2">
                 {% endif %}
                 <div class="input-group-append">
@@ -50,7 +48,7 @@
     <!-- |||||||||||||||||||||||||||| -->
     <!-- |||||||||||||||||||||||||||| -->
     {% if total_logs > 0 %}
-    <div class="table-responsive table-striped table-sm">
+    <div class="table-responsive table-striped table-xl">
         <table class="table" style="font-size: 0.5em;">
             <thead class="thead-dark" style="text-align: center">
                 <tr>
@@ -69,7 +67,13 @@
                     <td> {{ verbose_log.reference_project.project_name }} </td>
                     <td> {{ verbose_log.log_description }} </td>
                     <td> {{ verbose_log.point_of_origin }} </td>
-                    <td> {{ error_log.logged_on }} UTC </td>
+                    <td id={{ verbose_log.logged_on }}>
+                        <script type="text/javascript">
+                            localize_time({{ verbose_log.logged_on }},
+                                "",
+                                {{ verbose_log.logged_on | safe }});
+                        </script>
+                    </td>
                 </tr>
                 {% endfor %}
                 {% elif error_logs %}
@@ -81,7 +85,13 @@
                     <td> {{ error_log.error_description }} </td>
                     <td> {{ error_log.point_of_origin }} </td>
                     <td> {{ error_log.reference_project.project_name }} </td>
-                    <td> {{ error_log.logged_on }} UTC </td>
+                    <td id={{ error_log.logged_on }}>
+                        <script type="text/javascript">
+                            localize_time({{ error_log.logged_on }},
+                                "",
+                                {{ error_log.logged_on | safe }});
+                        </script>
+                    </td>
                     <td>
                         {% if not error_log.is_resolved %}
                         pending
@@ -96,7 +106,13 @@
                         {{ error_log.resolved_by }}
                         {% endif %}
                     </td>
-                    <td> {{ error_log.updated_on }} UTC </td>
+                    <td id={{ error_log.updated_on }}>
+                        <script type="text/javascript">
+                            localize_time({{ error_log.updated_on }},
+                                "",
+                                {{ error_log.updated_on | safe }});
+                        </script>
+                    </td>
                 </tr>
                 {% endfor %}
                 {% endif %}
