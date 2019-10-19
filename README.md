@@ -1,4 +1,4 @@
-## Bugtracker - v0.0.1 - Pre Alpha
+## Bugtracker - (v0.0.1 - Pre Alpha)
 I have written a pypi package, Zathura (https://github.com/p1r-a-t3/zathura) to register the logging. This app (Bugtracker) tracks logs by projects. Projects will be under a specific team. I have designed this to minimize the debugging hustle I have faced at work.
 
 #### Goal
