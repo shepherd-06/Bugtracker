@@ -29,7 +29,7 @@ SECRET_KEY = config("SECRET_KEY", None)
 DEBUG = True  # Never Go Live with Debug - True!
 
 # Using of wildcard is really dangerous
-ALLOWED_HOSTS = ["127.0.0.1"]
+ALLOWED_HOSTS = ["127.0.0.1", 'bugtracker.shepherd06.com']
 
 # Application definition
 
